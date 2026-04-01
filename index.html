@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Virtual Animated Maps</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="src/styles.css" />
+</head>
+<body>
+  <div id="app">
+    <header id="header">
+      <h1>Virtual Animated Maps</h1>
+      <nav id="controls">
+        <button class="ctrl-btn active" data-action="markers">Animated Markers</button>
+        <button class="ctrl-btn" data-action="route">Animated Route</button>
+        <button class="ctrl-btn" data-action="heatpulse">Pulse Zones</button>
+        <button class="ctrl-btn" data-action="tour">Fly Tour</button>
+        <button class="ctrl-btn" data-action="weather">Weather Layer</button>
+        <button class="ctrl-btn danger" data-action="reset">Reset</button>
+      </nav>
+    </header>
+    <div id="map"></div>
+    <div id="info-panel">
+      <div id="info-content">
+        <p>Select a feature above to explore animated map capabilities.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="src/map.js"></script>
+</body>
+</html>
