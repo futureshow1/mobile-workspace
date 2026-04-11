@@ -203,6 +203,125 @@ body {
   50%      { opacity: 0.6; }
 }
 
+/* ── Climate Change ────────────────────────────────────────── */
+.ctrl-btn.climate {
+  color: #ff9100;
+  border-color: rgba(255, 145, 0, 0.3);
+}
+
+.ctrl-btn.climate:hover {
+  background: rgba(255, 145, 0, 0.15);
+  color: #ffab40;
+  border-color: rgba(255, 145, 0, 0.5);
+}
+
+.ctrl-btn.climate.active {
+  background: rgba(255, 145, 0, 0.18);
+  color: #ff9100;
+  border-color: #ff9100;
+  box-shadow: 0 0 12px rgba(255, 145, 0, 0.2);
+}
+
+.climate-ring {
+  animation: climatePulse 4s ease-in-out infinite;
+}
+
+.climate-ring-0 { animation-delay: 0s; }
+.climate-ring-1 { animation-delay: 1.3s; }
+.climate-ring-2 { animation-delay: 2.6s; }
+
+@keyframes climatePulse {
+  0%, 100% { opacity: 0.2; transform: scale(1); }
+  50%      { opacity: 0.6; transform: scale(1.1); }
+}
+
+.climate-label span {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
+}
+
+.sea-level-ring {
+  animation: seaRise 3s ease-in-out infinite;
+}
+
+@keyframes seaRise {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50%      { opacity: 0.7; transform: scale(1.2); }
+}
+
+.co2-bubble {
+  animation: co2Pulse 5s ease-in-out infinite;
+}
+
+@keyframes co2Pulse {
+  0%, 100% { opacity: 0.15; transform: scale(1); }
+  50%      { opacity: 0.3; transform: scale(1.05); }
+}
+
+.climate-popup em {
+  color: #90a4ae;
+  font-size: 0.8rem;
+}
+
+/* Temperature ticker */
+#climate-ticker {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  z-index: 1000;
+  background: rgba(13, 27, 42, 0.92);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 145, 0, 0.25);
+  border-radius: 12px;
+  padding: 14px 18px;
+  width: 180px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  animation: slideIn 0.5s ease;
+  text-align: center;
+}
+
+.ticker-label {
+  font-size: 0.7rem;
+  color: #78909c;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.ticker-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #ff9100;
+  margin-bottom: 6px;
+}
+
+.ticker-bar {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.ticker-fill {
+  height: 100%;
+  background: #ff9100;
+  border-radius: 3px;
+  transition: width 0.1s linear;
+}
+
+.ticker-year {
+  font-size: 0.85rem;
+  color: #b0bec5;
+  font-weight: 600;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(30px); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
 /* ── Leaflet overrides ─────────────────────────────────────── */
 .leaflet-popup-content-wrapper {
   background: rgba(13, 27, 42, 0.95);

@@ -350,6 +350,211 @@
     `);
   }
 
+  // ── 6. Climate Change Map ──────────────────────────────────
+  const climateData = [
+    // Temperature anomaly regions (based on real trends)
+    { ll: [71, 25],   label: 'Arctic (Svalbard)',    tempRise: '+4.2°C', risk: 'extreme', desc: 'Fastest warming region on Earth. Ice loss accelerating.' },
+    { ll: [64, -51],  label: 'Greenland',            tempRise: '+3.1°C', risk: 'extreme', desc: 'Ice sheet losing 270B tonnes/year. Major sea level contributor.' },
+    { ll: [-75, 0],   label: 'Antarctica',           tempRise: '+2.5°C', risk: 'extreme', desc: 'West Antarctic ice sheet in irreversible decline.' },
+    { ll: [35, 55],   label: 'Middle East',          tempRise: '+2.1°C', risk: 'high',    desc: 'Extreme heat waves. Parts becoming uninhabitable by 2050.' },
+    { ll: [25, 78],   label: 'South Asia',           tempRise: '+1.8°C', risk: 'high',    desc: 'Monsoon disruption. 800M people at risk from flooding.' },
+    { ll: [0, 25],    label: 'Sub-Saharan Africa',   tempRise: '+1.6°C', risk: 'high',    desc: 'Drought & crop failure threatening food security.' },
+    { ll: [-3, -60],  label: 'Amazon Rainforest',    tempRise: '+1.5°C', risk: 'high',    desc: 'Approaching tipping point. Carbon sink turning to source.' },
+    { ll: [-25, 135], label: 'Australia',             tempRise: '+1.4°C', risk: 'medium',  desc: 'Record bushfires. Great Barrier Reef mass bleaching.' },
+    { ll: [40, -100], label: 'Central US',            tempRise: '+1.3°C', risk: 'medium',  desc: 'Tornado alley shifting. Extreme weather intensifying.' },
+    { ll: [48, 10],   label: 'Western Europe',        tempRise: '+1.5°C', risk: 'medium',  desc: 'Heat records broken yearly. Alpine glaciers vanishing.' },
+  ];
+
+  const seaLevelCities = [
+    { ll: [22.3, 114.2],  label: 'Hong Kong',      rise: '0.6m', pop: '7.5M at risk' },
+    { ll: [23.8, 90.4],   label: 'Dhaka',           rise: '1.0m', pop: '21M at risk' },
+    { ll: [31.2, 121.5],  label: 'Shanghai',        rise: '0.8m', pop: '24M at risk' },
+    { ll: [40.7, -74.0],  label: 'New York',        rise: '0.7m', pop: '8.3M at risk' },
+    { ll: [13.7, 100.5],  label: 'Bangkok',         rise: '1.0m', pop: '10M at risk' },
+    { ll: [-6.2, 106.8],  label: 'Jakarta',         rise: '1.2m', pop: '10M at risk' },
+    { ll: [25.0, 55.3],   label: 'Dubai',           rise: '0.5m', pop: '3.4M at risk' },
+    { ll: [51.5, -0.1],   label: 'London',          rise: '0.6m', pop: '9M at risk' },
+    { ll: [28.6, 77.2],   label: 'Delhi',           rise: '0.4m', pop: '32M at risk' },
+    { ll: [-22.9, -43.2], label: 'Rio de Janeiro',  rise: '0.7m', pop: '6.7M at risk' },
+  ];
+
+  const co2Emitters = [
+    { ll: [35, 105],  label: 'China',         co2: '10.7 Gt', pct: '30%', size: 55 },
+    { ll: [40, -100], label: 'United States',  co2: '5.0 Gt',  pct: '14%', size: 40 },
+    { ll: [22, 78],   label: 'India',          co2: '2.7 Gt',  pct: '7%',  size: 30 },
+    { ll: [55, 40],   label: 'Russia',         co2: '1.8 Gt',  pct: '5%',  size: 25 },
+    { ll: [36, 140],  label: 'Japan',          co2: '1.1 Gt',  pct: '3%',  size: 20 },
+    { ll: [51, 10],   label: 'Germany',        co2: '0.7 Gt',  pct: '2%',  size: 16 },
+    { ll: [25, 45],   label: 'Saudi Arabia',   co2: '0.6 Gt',  pct: '2%',  size: 15 },
+    { ll: [-15, -50], label: 'Brazil',         co2: '0.5 Gt',  pct: '1.3%', size: 14 },
+  ];
+
+  function riskColor(risk) {
+    if (risk === 'extreme') return '#ff1744';
+    if (risk === 'high') return '#ff9100';
+    return '#ffea00';
+  }
+
+  function showClimateChange() {
+    clearAll();
+    map.flyTo([20, 0], 3, { duration: 1.2 });
+
+    // --- Temperature anomaly zones ---
+    climateData.forEach((zone, i) => {
+      const color = riskColor(zone.risk);
+      const baseRadius = zone.risk === 'extreme' ? 45 : zone.risk === 'high' ? 35 : 28;
+
+      // Animated warming rings
+      for (let r = 0; r < 3; r++) {
+        const ring = L.circleMarker(zone.ll, {
+          radius: baseRadius + r * 10,
+          color: color,
+          fillColor: color,
+          fillOpacity: 0.04 + (0.03 * (3 - r)),
+          weight: 1,
+          className: `climate-ring climate-ring-${r}`,
+        }).addTo(map);
+        layers.push(ring);
+      }
+
+      // Center marker
+      const marker = L.circleMarker(zone.ll, {
+        radius: 7,
+        color: '#fff',
+        fillColor: color,
+        fillOpacity: 1,
+        weight: 2,
+        className: 'bounce-marker',
+      })
+        .bindPopup(`
+          <div class="climate-popup">
+            <strong>${zone.label}</strong><br>
+            <span style="color:${color}; font-size: 1.1em; font-weight: bold;">${zone.tempRise}</span> above pre-industrial<br>
+            <span style="color:${color}">Risk: ${zone.risk.toUpperCase()}</span><br>
+            <em>${zone.desc}</em>
+          </div>
+        `)
+        .addTo(map);
+      layers.push(marker);
+
+      // Temperature label
+      setTimeout(() => {
+        const label = L.marker(zone.ll, {
+          icon: L.divIcon({
+            className: 'climate-label',
+            html: `<span style="color:${color}">${zone.tempRise}</span>`,
+            iconSize: [50, 16],
+            iconAnchor: [25, -12],
+          }),
+        }).addTo(map);
+        layers.push(label);
+      }, i * 150);
+    });
+
+    // --- Sea level rise markers (blue) ---
+    seaLevelCities.forEach((city, i) => {
+      setTimeout(() => {
+        // Rising water animation ring
+        const water = L.circleMarker(city.ll, {
+          radius: 12,
+          color: '#00b0ff',
+          fillColor: '#0091ea',
+          fillOpacity: 0.25,
+          weight: 2,
+          className: 'sea-level-ring',
+        })
+          .bindPopup(`
+            <div class="climate-popup">
+              <strong>${city.label}</strong><br>
+              Projected sea rise: <span style="color:#00b0ff; font-weight:bold">${city.rise}</span> by 2100<br>
+              <span style="color:#ff9100">${city.pop}</span>
+            </div>
+          `)
+          .addTo(map);
+        layers.push(water);
+      }, i * 100);
+    });
+
+    // --- CO2 emission bubbles ---
+    co2Emitters.forEach((emitter) => {
+      const bubble = L.circleMarker(emitter.ll, {
+        radius: emitter.size,
+        color: 'rgba(255, 255, 255, 0.2)',
+        fillColor: '#b71c1c',
+        fillOpacity: 0.15,
+        weight: 1,
+        className: 'co2-bubble',
+      })
+        .bindPopup(`
+          <div class="climate-popup">
+            <strong>${emitter.label}</strong><br>
+            CO2 emissions: <span style="color:#ef5350; font-weight:bold">${emitter.co2}/year</span><br>
+            Global share: ${emitter.pct}
+          </div>
+        `)
+        .addTo(map);
+      layers.push(bubble);
+    });
+
+    // --- Animated rising temperature ticker ---
+    let temp = 1.1;
+    const tickerEl = document.createElement('div');
+    tickerEl.id = 'climate-ticker';
+    tickerEl.innerHTML = `<div class="ticker-label">Global Temp Anomaly</div><div class="ticker-value">+${temp.toFixed(1)}°C</div><div class="ticker-bar"><div class="ticker-fill" style="width:${(temp / 3) * 100}%"></div></div><div class="ticker-year">2024</div>`;
+    document.getElementById('app').appendChild(tickerEl);
+    layers._ticker = tickerEl;
+
+    let year = 2024;
+    function animateTicker() {
+      temp += 0.002;
+      year = 2024 + Math.floor((temp - 1.1) / 0.015);
+      if (year > 2100) year = 2100;
+      if (temp > 2.8) temp = 2.8;
+
+      const fillPct = Math.min((temp / 3) * 100, 100);
+      const hue = Math.max(0, 60 - (temp - 1.0) * 40);
+      tickerEl.innerHTML = `
+        <div class="ticker-label">Global Temp Anomaly</div>
+        <div class="ticker-value" style="color: hsl(${hue}, 100%, 55%)">+${temp.toFixed(1)}°C</div>
+        <div class="ticker-bar"><div class="ticker-fill" style="width:${fillPct}%; background: hsl(${hue}, 100%, 45%)"></div></div>
+        <div class="ticker-year">${year}</div>
+      `;
+
+      if (temp < 2.8) {
+        animationFrameId = requestAnimationFrame(animateTicker);
+      }
+    }
+    animationFrameId = requestAnimationFrame(animateTicker);
+
+    setInfo(`
+      <h3>Climate Change Map</h3>
+      <p><span style="color:#ff1744">Red zones</span> = temperature anomalies<br>
+      <span style="color:#00b0ff">Blue markers</span> = sea level rise risk cities<br>
+      <span style="color:#b71c1c">Dark bubbles</span> = CO2 emission by country</p>
+      <p>Click any marker for detailed data.</p>
+    `);
+  }
+
+  // Override clearAll to also remove ticker
+  const originalClearAll = clearAll;
+  function clearAllWithTicker() {
+    originalClearAll();
+    const ticker = document.getElementById('climate-ticker');
+    if (ticker) ticker.remove();
+  }
+
+  // Reassign clearAll reference
+  function clearAll() {
+    layers.forEach((l) => {
+      if (map.hasLayer(l)) map.removeLayer(l);
+    });
+    layers.length = 0;
+    if (animationFrameId) { cancelAnimationFrame(animationFrameId); animationFrameId = null; }
+    if (tourTimeout) { clearTimeout(tourTimeout); tourTimeout = null; }
+    const ticker = document.getElementById('climate-ticker');
+    if (ticker) ticker.remove();
+  }
+
   // ── Controls ──────────────────────────────────────────────
   const actions = {
     markers: showAnimatedMarkers,
@@ -357,6 +562,7 @@
     heatpulse: showPulseZones,
     tour: showTour,
     weather: showWeatherLayer,
+    climate: showClimateChange,
     reset() {
       clearAll();
       map.flyTo([20, 0], 3, { duration: 1 });
