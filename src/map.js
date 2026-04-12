@@ -543,6 +543,194 @@
     `);
   }
 
+  // ── 7. Hinton / Neural Network Atlas ──────────────────────
+  // Geoffrey Hinton — career trajectory through neural network history
+  const hintonJourney = [
+    { ll: [52.2053, 0.1218],    year: '1970', place: 'Cambridge, UK',         role: 'BA Experimental Psychology', note: 'King\'s College. Abandons AI for psychology, then returns.' },
+    { ll: [55.9533, -3.1883],   year: '1978', place: 'Edinburgh, UK',         role: 'PhD Artificial Intelligence', note: 'Thesis on relaxation nets. Supervised by Christopher Longuet-Higgins.' },
+    { ll: [50.8659, -0.0865],   year: '1980', place: 'Sussex, UK',            role: 'Research Fellow',             note: 'Cognitive science with Philip Johnson-Laird.' },
+    { ll: [32.8801, -117.2340], year: '1982', place: 'UC San Diego',          role: 'Visiting Scholar',            note: 'Joins Rumelhart and McClelland. Parallel Distributed Processing group.' },
+    { ll: [40.4433, -79.9436],  year: '1982', place: 'Carnegie Mellon',       role: 'Assistant Professor',         note: 'Develops Boltzmann machines with Terry Sejnowski.' },
+    { ll: [43.6629, -79.3957],  year: '1987', place: 'Toronto',               role: 'Professor, University of Toronto', note: 'Home base for 35+ years. Builds the dominant deep learning lab.' },
+    { ll: [37.4220, -122.0841], year: '2013', place: 'Google Brain, CA',      role: 'VP & Engineering Fellow',      note: 'Acquired via DNNresearch after AlexNet. Half-time at Google.' },
+    { ll: [43.6610, -79.3875],  year: '2023', place: 'Toronto',               role: 'Resigns from Google',          note: 'Warns publicly about existential AI risks.' },
+    { ll: [59.3293, 18.0686],   year: '2024', place: 'Stockholm',              role: 'Nobel Prize in Physics',       note: 'Awarded with John Hopfield for foundational discoveries in machine learning.' },
+  ];
+
+  // Major neural network milestones / labs beyond Hinton
+  const aiLabs = [
+    { ll: [51.5279, -0.1224],   label: 'DeepMind',               year: '2010', note: 'London. Acquired by Google 2014. AlphaGo, AlphaFold.' },
+    { ll: [37.7749, -122.4194], label: 'OpenAI',                 year: '2015', note: 'San Francisco. GPT series, ChatGPT.' },
+    { ll: [42.3601, -71.0942],  label: 'MIT CSAIL',              year: '1959', note: 'Cambridge MA. Longest-running AI lab.' },
+    { ll: [37.4275, -122.1697], label: 'Stanford AI Lab (SAIL)', year: '1963', note: 'Fei-Fei Li, ImageNet (2009).' },
+    { ll: [48.8566, 2.3522],    label: 'Meta FAIR Paris',        year: '2015', note: 'Yann LeCun — Hinton\'s co-recipient of 2018 Turing Award.' },
+    { ll: [40.0150, -105.2705], label: 'Anthropic',              year: '2021', note: 'San Francisco / Boulder. Claude, Constitutional AI.' },
+    { ll: [40.0000, 116.3974],  label: 'Tsinghua AI',            year: '1978', note: 'Beijing. China\'s flagship AI research hub.' },
+  ];
+
+  function showHinton() {
+    clearAll();
+    map.flyTo([48, -20], 3, { duration: 1.3 });
+
+    // --- Trajectory line (dashed "journey" line behind everything) ---
+    const journeyPath = hintonJourney.map((s) => s.ll);
+    const bgLine = L.polyline(journeyPath, {
+      color: 'rgba(14, 14, 12, 0.2)',
+      weight: 2,
+      dashArray: '3 8',
+      className: 'hinton-bg-line',
+    }).addTo(map);
+    layers.push(bgLine);
+
+    // Animated tracer line
+    const tracer = L.polyline([], {
+      color: '#b8431e',
+      weight: 3,
+      className: 'glow-line',
+    }).addTo(map);
+    layers.push(tracer);
+
+    // Moving dot
+    const traceDot = L.circleMarker(journeyPath[0], {
+      radius: 6,
+      color: '#0e0e0c',
+      fillColor: '#b8431e',
+      fillOpacity: 1,
+      weight: 2,
+    }).addTo(map);
+    layers.push(traceDot);
+
+    // --- AI Labs (secondary layer, grey squares-ish) ---
+    aiLabs.forEach((lab) => {
+      const ring = L.circleMarker(lab.ll, {
+        radius: 12,
+        color: '#2b3a45',
+        fillColor: 'rgba(43, 58, 69, 0.08)',
+        weight: 1.5,
+        className: 'ai-lab',
+      })
+        .bindPopup(`
+          <div>
+            <strong>${lab.label}</strong>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:#b8431e;letter-spacing:0.1em;">EST. ${lab.year}</span><br>
+            <em>${lab.note}</em>
+          </div>
+        `)
+        .addTo(map);
+      layers.push(ring);
+
+      const labLabel = L.marker(lab.ll, {
+        icon: L.divIcon({
+          className: 'ai-lab-label',
+          html: `<span>${lab.label}</span>`,
+          iconSize: [120, 16],
+          iconAnchor: [60, -14],
+        }),
+      }).addTo(map);
+      layers.push(labLabel);
+    });
+
+    // --- Animate the trajectory ---
+    function interp(a, b, t) {
+      return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+    }
+
+    const totalSegs = journeyPath.length - 1;
+    let progress = 0;
+    const speed = 0.0025;
+    let placedUntil = -1;
+
+    function placeStop(i) {
+      if (i < 0 || i > totalSegs) return;
+      const stop = hintonJourney[i];
+      const num = String(i + 1).padStart(2, '0');
+
+      // Numbered marker
+      const marker = L.circleMarker(stop.ll, {
+        radius: 10,
+        color: '#0e0e0c',
+        fillColor: '#efeae0',
+        fillOpacity: 1,
+        weight: 2,
+        className: 'hinton-marker',
+      })
+        .bindPopup(`
+          <div>
+            <strong>${stop.place}</strong>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:#b8431e;letter-spacing:0.1em;">${stop.year} &middot; ${num}/${String(hintonJourney.length).padStart(2,'0')}</span><br>
+            <span style="font-weight:600;font-size:0.82rem;">${stop.role}</span><br>
+            <em>${stop.note}</em>
+          </div>
+        `)
+        .addTo(map);
+      layers.push(marker);
+
+      // Numbered label
+      const labelHtml = `<span class="hinton-num">${num}</span><span class="hinton-year">${stop.year}</span><span class="hinton-place">${stop.place.split(',')[0]}</span>`;
+      const labelMarker = L.marker(stop.ll, {
+        icon: L.divIcon({
+          className: 'hinton-label',
+          html: labelHtml,
+          iconSize: [140, 40],
+          iconAnchor: [70, -14],
+        }),
+      }).addTo(map);
+      layers.push(labelMarker);
+    }
+
+    // Place first stop immediately
+    placeStop(0);
+    placedUntil = 0;
+
+    function step() {
+      progress += speed;
+      if (progress >= totalSegs) progress = totalSegs;
+
+      const segIdx = Math.min(Math.floor(progress), totalSegs - 1);
+      const t = progress - segIdx;
+      const pos = interp(journeyPath[segIdx], journeyPath[segIdx + 1] || journeyPath[segIdx], t);
+
+      // Build trail through segIdx and then to current pos
+      const trail = journeyPath.slice(0, segIdx + 1).concat([pos]);
+      tracer.setLatLngs(trail);
+      traceDot.setLatLng(pos);
+
+      // Place a stop when we cross into a new segment
+      const currentStop = Math.ceil(progress);
+      if (currentStop > placedUntil && currentStop <= totalSegs) {
+        placeStop(currentStop);
+        placedUntil = currentStop;
+      }
+
+      if (progress < totalSegs) {
+        animationFrameId = requestAnimationFrame(step);
+      }
+    }
+    animationFrameId = requestAnimationFrame(step);
+
+    // --- Editorial byline / masthead card ---
+    const bylineEl = document.createElement('div');
+    bylineEl.id = 'hinton-byline';
+    bylineEl.innerHTML = `
+      <div class="byline-kicker">FEATURE &middot; 07</div>
+      <div class="byline-title"><em>Geoffrey Hinton</em></div>
+      <div class="byline-sub">The Godfather of Deep Learning</div>
+      <div class="byline-rule"></div>
+      <div class="byline-stats">
+        <div><span class="stat-num">09</span><span class="stat-label">Stops</span></div>
+        <div><span class="stat-num">54</span><span class="stat-label">Years</span></div>
+        <div><span class="stat-num">01</span><span class="stat-label">Nobel</span></div>
+      </div>
+    `;
+    document.getElementById('app').appendChild(bylineEl);
+
+    setInfo(`
+      <h3>A Cartography of Neural Nets</h3>
+      <p>Follow <em>Geoffrey Hinton</em> &mdash; from Cambridge psychology to the 2024 Nobel &mdash; across nine stops that trace the deep learning revolution.</p>
+      <p>Grey rings mark adjacent landmark AI laboratories. Click any point for detail.</p>
+    `);
+  }
+
   // Override clearAll to also remove ticker
   const originalClearAll = clearAll;
   function clearAllWithTicker() {
@@ -561,6 +749,8 @@
     if (tourTimeout) { clearTimeout(tourTimeout); tourTimeout = null; }
     const ticker = document.getElementById('climate-ticker');
     if (ticker) ticker.remove();
+    const byline = document.getElementById('hinton-byline');
+    if (byline) byline.remove();
   }
 
   // ── Controls ──────────────────────────────────────────────
@@ -571,6 +761,7 @@
     tour: showTour,
     weather: showWeatherLayer,
     climate: showClimateChange,
+    hinton: showHinton,
     reset() {
       clearAll();
       map.flyTo([20, 0], 3, { duration: 1 });
