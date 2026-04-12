@@ -403,15 +403,17 @@
     return '#ffea00';
   }
 
-  function openClimateIntro() {
+  function openIntro() {
+    // Don't double-stack
+    if (document.getElementById('climate-intro')) return;
     const overlay = document.createElement('div');
     overlay.id = 'climate-intro';
     overlay.innerHTML = `
       <div class="intro-card">
         <button class="intro-close" aria-label="Close">&times;</button>
-        <div class="intro-kicker">DISPATCH N&deg; 06 &middot; FEATURE</div>
+        <div class="intro-kicker">ATLAS N&deg; 01 &middot; VOL. I &middot; ISSUE IV</div>
         <h2 class="intro-title"><em>A Quiet</em><br>Catastrophe</h2>
-        <div class="intro-sub">What this map is. How it works. Why it matters.</div>
+        <div class="intro-sub">What this atlas is. How it works. Why it matters.</div>
         <div class="intro-rule"></div>
 
         <div class="intro-body">
@@ -419,10 +421,13 @@
           <span class="hl">+1.2&deg;C</span> since the 19th century. That number
           sounds small. It isn't. Every tenth of a degree rewrites coastlines,
           harvest seasons, and habitability for hundreds of millions of people.
-          This map makes that quiet catastrophe legible.</p>
+          This atlas makes that quiet catastrophe legible &mdash; through seven
+          animated lenses on a single world map.</p>
 
-          <p><strong>HOW TO READ IT &mdash;</strong> Three overlapping layers
-          of data, each drawn from public climate science:</p>
+          <p><strong>HOW IT WORKS &mdash;</strong> Use the numbered tabs at the top
+          to switch between views. Each tab loads a different layer of data on the
+          same basemap &mdash; click any pulsing marker for detail. The flagship
+          view is <em>06 Climate</em>, which layers three datasets at once:</p>
 
           <div class="intro-legend">
             <div class="legend-row">
@@ -473,7 +478,7 @@
           </div>
         </div>
 
-        <button class="intro-enter">Enter the map &rarr;</button>
+        <button class="intro-enter">Enter the atlas &rarr;</button>
       </div>
     `;
     document.getElementById('app').appendChild(overlay);
@@ -489,7 +494,6 @@
   function showClimateChange() {
     clearAll();
     map.flyTo([20, 0], 3, { duration: 1.2 });
-    openClimateIntro();
 
     // --- Temperature anomaly zones ---
     climateData.forEach((zone, i) => {
@@ -675,6 +679,12 @@
     actions[action]();
   });
 
-  // ── Kick off with animated markers ────────────────────────
+  // ── Re-open intro button ──────────────────────────────────
+  const aboutBtn = document.getElementById('about-btn');
+  if (aboutBtn) aboutBtn.addEventListener('click', openIntro);
+
+  // ── Kick off ──────────────────────────────────────────────
   showAnimatedMarkers();
+  // The intro is the front door of the whole atlas
+  openIntro();
 })();

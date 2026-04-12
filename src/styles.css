@@ -122,6 +122,39 @@ body::before {
   text-transform: uppercase;
 }
 
+.brand-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.about-btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--rust);
+  background: var(--paper);
+  border: 1px solid var(--rust);
+  padding: 4px 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 var(--rust);
+  transition: all 0.15s ease;
+}
+
+.about-btn:hover {
+  background: var(--rust);
+  color: var(--paper);
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+.about-btn:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 var(--rust);
+}
+
 /* ── Navigation : Industrial tabs ─────────────────────────── */
 #controls {
   display: flex;
