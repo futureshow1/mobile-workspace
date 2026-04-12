@@ -499,6 +499,287 @@ body::before {
   to   { transform: translate(0, 0);       opacity: 1; }
 }
 
+/* ── Climate intro overlay : editorial long-form ──────────── */
+#climate-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 5000;
+  background: rgba(14, 14, 12, 0.55);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 20px;
+  overflow-y: auto;
+  animation: fadeIn 0.35s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.intro-card {
+  position: relative;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  max-width: 620px;
+  width: 100%;
+  padding: 34px 42px 30px;
+  box-shadow: 10px 10px 0 var(--ink);
+  animation: cardIn 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+  max-height: calc(100vh - 60px);
+  overflow-y: auto;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+@keyframes cardIn {
+  from { transform: translate(-6px, 14px); opacity: 0; }
+  to   { transform: translate(0, 0);       opacity: 1; }
+}
+
+.intro-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  width: 28px;
+  height: 28px;
+  font-size: 1.2rem;
+  line-height: 1;
+  color: var(--ink);
+  cursor: pointer;
+  font-family: 'JetBrains Mono', monospace;
+  box-shadow: 2px 2px 0 var(--ink);
+  transition: all 0.15s ease;
+}
+.intro-close:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.intro-kicker {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.25em;
+  color: var(--rust);
+  text-transform: uppercase;
+  font-weight: 600;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--ink);
+  margin-bottom: 14px;
+}
+
+.intro-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 3.4rem;
+  font-weight: 900;
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+.intro-title em { font-style: italic; }
+
+.intro-sub {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--ink-soft);
+  margin-bottom: 18px;
+}
+
+.intro-rule {
+  height: 3px;
+  background: var(--ink);
+  margin-bottom: 18px;
+  position: relative;
+}
+.intro-rule::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; top: 5px;
+  height: 1px;
+  background: var(--ink);
+}
+
+.intro-body {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+.intro-body p {
+  margin-bottom: 14px;
+}
+
+.intro-body p strong {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  color: var(--rust);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.intro-body .hl {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-weight: 900;
+  color: var(--rust);
+  font-size: 1.05rem;
+}
+
+/* Legend */
+.intro-legend {
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+  padding: 14px 0;
+  margin: 16px 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.legend-row {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.legend-dot {
+  flex: 0 0 14px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--ink);
+  margin-top: 4px;
+  box-shadow: 2px 2px 0 var(--ink);
+}
+.legend-dot.red    { background: var(--hot); }
+.legend-dot.blue   { background: #1d72b8; }
+.legend-dot.dark   { background: #5a1010; }
+.legend-dot.ticker { background: var(--rust); border-radius: 0; }
+
+.legend-name {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.2;
+  margin-bottom: 3px;
+}
+
+.legend-desc {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+.legend-desc em {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  color: var(--rust-dark);
+}
+
+/* Enigma paragraph */
+.intro-enigma {
+  border-left: 3px solid var(--rust);
+  padding: 10px 16px;
+  background: var(--paper-alt);
+  font-size: 0.9rem;
+  color: var(--ink);
+  margin: 18px 0 !important;
+  position: relative;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.intro-enigma em {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-weight: 700;
+  color: var(--rust-dark);
+  font-size: 0.98rem;
+}
+
+.enigma-mark {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: var(--rust);
+  margin-right: 4px;
+}
+
+/* Meta footer */
+.intro-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  border-top: 1px dashed var(--ink);
+  padding-top: 12px;
+  margin-top: 18px;
+  color: var(--mute);
+}
+.intro-meta > div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.intro-meta > div + div {
+  border-left: 1px solid var(--ink);
+  padding-left: 10px;
+}
+.meta-k {
+  color: var(--rust);
+  font-weight: 600;
+}
+.meta-v {
+  color: var(--ink);
+}
+
+/* Enter button */
+.intro-enter {
+  display: block;
+  width: 100%;
+  margin-top: 22px;
+  padding: 14px 16px;
+  background: var(--ink);
+  color: var(--paper);
+  border: 1px solid var(--ink);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.84rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 var(--rust);
+  transition: all 0.15s ease;
+}
+.intro-enter:hover {
+  background: var(--rust);
+  box-shadow: 4px 4px 0 var(--ink);
+  transform: translate(-1px, -1px);
+}
+.intro-enter:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--rust);
+}
+
+@media (max-width: 640px) {
+  .intro-card { padding: 22px 20px 20px; box-shadow: 6px 6px 0 var(--ink); }
+  .intro-title { font-size: 2.2rem; }
+  .intro-sub { font-size: 0.88rem; }
+  .intro-meta { flex-direction: column; gap: 6px; }
+  .intro-meta > div + div { border-left: none; border-top: 1px dashed var(--ink); padding-left: 0; padding-top: 6px; }
+}
+
 /* ── Leaflet overrides ─────────────────────────────────────── */
 .leaflet-container {
   background: var(--paper-alt);

@@ -403,9 +403,93 @@
     return '#ffea00';
   }
 
+  function openClimateIntro() {
+    const overlay = document.createElement('div');
+    overlay.id = 'climate-intro';
+    overlay.innerHTML = `
+      <div class="intro-card">
+        <button class="intro-close" aria-label="Close">&times;</button>
+        <div class="intro-kicker">DISPATCH N&deg; 06 &middot; FEATURE</div>
+        <h2 class="intro-title"><em>A Quiet</em><br>Catastrophe</h2>
+        <div class="intro-sub">What this map is. How it works. Why it matters.</div>
+        <div class="intro-rule"></div>
+
+        <div class="intro-body">
+          <p><strong>THE BRIEF &mdash;</strong> Earth has warmed roughly
+          <span class="hl">+1.2&deg;C</span> since the 19th century. That number
+          sounds small. It isn't. Every tenth of a degree rewrites coastlines,
+          harvest seasons, and habitability for hundreds of millions of people.
+          This map makes that quiet catastrophe legible.</p>
+
+          <p><strong>HOW TO READ IT &mdash;</strong> Three overlapping layers
+          of data, each drawn from public climate science:</p>
+
+          <div class="intro-legend">
+            <div class="legend-row">
+              <span class="legend-dot red"></span>
+              <div>
+                <div class="legend-name">Temperature anomalies</div>
+                <div class="legend-desc">Ten hotspots where warming exceeds the global average. Pulsing rings encode risk tier &mdash; <em>extreme / high / medium</em>. Arctic leads at +4.2&deg;C.</div>
+              </div>
+            </div>
+            <div class="legend-row">
+              <span class="legend-dot blue"></span>
+              <div>
+                <div class="legend-name">Sea-level exposure</div>
+                <div class="legend-desc">Ten coastal megacities ranked by population at risk under a 0.5&ndash;1.2 m rise by 2100. Jakarta and Dhaka lead.</div>
+              </div>
+            </div>
+            <div class="legend-row">
+              <span class="legend-dot dark"></span>
+              <div>
+                <div class="legend-name">CO&#8322; emissions</div>
+                <div class="legend-desc">Bubble size is annual output. Eight countries emit two-thirds of the total. China alone is 30%.</div>
+              </div>
+            </div>
+            <div class="legend-row">
+              <span class="legend-dot ticker"></span>
+              <div>
+                <div class="legend-name">The ticker (top-right)</div>
+                <div class="legend-desc">A running counter of projected global temperature anomaly from 2024 forward &mdash; the number you do not want to watch climb.</div>
+              </div>
+            </div>
+          </div>
+
+          <p class="intro-enigma">
+            <span class="enigma-mark">&para;</span>
+            <em>The enigma.</em> Climate change is not one thing. It is thousands
+            of slow, linked feedback loops &mdash; ice that reflects sunlight until
+            it doesn't, forests that absorb carbon until they exhale it, permafrost
+            that stays locked until it unlocks. Each pulse on this map is a system
+            whose tipping point we can calculate but cannot quite predict. You are
+            looking at the <strong>present</strong>, animated with the
+            <strong>future</strong>.
+          </p>
+
+          <div class="intro-meta">
+            <div><span class="meta-k">Sources</span><span class="meta-v">NASA GISS, IPCC AR6, Climate Central</span></div>
+            <div><span class="meta-k">Scale</span><span class="meta-v">1 : world</span></div>
+            <div><span class="meta-k">Year</span><span class="meta-v">2024 &rarr; 2100</span></div>
+          </div>
+        </div>
+
+        <button class="intro-enter">Enter the map &rarr;</button>
+      </div>
+    `;
+    document.getElementById('app').appendChild(overlay);
+
+    const close = () => overlay.remove();
+    overlay.querySelector('.intro-close').addEventListener('click', close);
+    overlay.querySelector('.intro-enter').addEventListener('click', close);
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) close();
+    });
+  }
+
   function showClimateChange() {
     clearAll();
     map.flyTo([20, 0], 3, { duration: 1.2 });
+    openClimateIntro();
 
     // --- Temperature anomaly zones ---
     climateData.forEach((zone, i) => {
@@ -542,9 +626,6 @@
       <p>Click any marker for detailed data.</p>
     `);
   }
-
-  // ── 7. Hinton / Neural Network Atlas ──────────────────────
-  // Removed — Hinton is a separate project and does not belong here.
 
   // Override clearAll to also remove ticker
   const originalClearAll = clearAll;
