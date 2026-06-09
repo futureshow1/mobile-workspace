@@ -1,0 +1,32 @@
+[Unit]
+Description=Hermes Agent messaging gateway (Slack)
+Documentation=https://hermes-agent.nousresearch.com/docs
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=hermes
+Group=hermes
+WorkingDirectory=/home/hermes
+Environment=PATH=/home/hermes/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+# Reads tokens & API key from /home/hermes/.hermes/.env (managed by `hermes gateway setup`)
+ExecStart=/home/hermes/.local/bin/hermes gateway
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=20
+
+# --- Hardening ---
+# NOTE: home is intentionally writable. Hermes self-improves — it lazy-installs
+# Python extras into its venv (~/.local) on first use and writes skills/memory/
+# sessions under ~/.hermes. A read-only home would break both. The `hermes` user
+# owns only its own home, so the blast radius is already contained.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+
+[Install]
+WantedBy=multi-user.target
