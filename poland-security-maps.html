@@ -109,6 +109,7 @@
     border: 1px solid var(--hairline); border-radius: 5px; padding: 4px 8px;
     pointer-events: none;
   }
+  .map-wrap.grid .map-badge { top: auto; bottom: 10px; }
   #tooltip {
     position: absolute; pointer-events: none; display: none; z-index: 5;
     max-width: 230px; background: var(--surface); color: var(--ink);
@@ -296,23 +297,39 @@ const canvas = document.getElementById('map');
 const ctx = canvas.getContext('2d');
 const wrap = canvas.parentElement;
 let W = 0, H = 0, DPR = 1, proj = null, pxPerKm = 1;
+let VP = { x: 0, y: 0, w: 0, h: 0 };   // current drawing viewport (a grid cell or the full canvas)
+let COMPACT = false;                    // grid cells drop small text labels
+let gridCols = 2;
+
+function setViewport(r) {
+  VP = r;
+  const sx = r.w / ((BB.lon1 - BB.lon0) * KX);
+  const sy = r.h / (BB.lat1 - BB.lat0);
+  const s = Math.min(sx, sy);
+  const ox = r.x + (r.w - (BB.lon1 - BB.lon0) * KX * s) / 2;
+  const oy = r.y + (r.h - (BB.lat1 - BB.lat0) * s) / 2;
+  proj = ([lon, lat]) => [ox + (lon - BB.lon0) * KX * s, oy + (BB.lat1 - lat) * s];
+  pxPerKm = s / 111; // ~111 km per degree of latitude
+}
 
 function layout() {
   const cssW = wrap.clientWidth;
   const aspect = ((BB.lon1 - BB.lon0) * KX) / (BB.lat1 - BB.lat0);
-  const cssH = Math.max(320, Math.min(640, cssW / aspect));
+  let cssH;
+  if (views[cur] && views[cur].grid) {
+    gridCols = cssW < 560 ? 1 : 2;
+    const rows = Math.ceil(4 / gridCols);
+    const cellH = Math.max(220, Math.min(420, (cssW / gridCols) / aspect));
+    cssH = cellH * rows;
+  } else {
+    cssH = Math.max(320, Math.min(640, cssW / aspect));
+  }
   DPR = Math.min(2, window.devicePixelRatio || 1);
   canvas.width = Math.round(cssW * DPR);
   canvas.height = Math.round(cssH * DPR);
   canvas.style.height = cssH + 'px';
   W = cssW; H = cssH;
-  const sx = W / ((BB.lon1 - BB.lon0) * KX);
-  const sy = H / (BB.lat1 - BB.lat0);
-  const s = Math.min(sx, sy);
-  const ox = (W - (BB.lon1 - BB.lon0) * KX * s) / 2;
-  const oy = (H - (BB.lat1 - BB.lat0) * s) / 2;
-  proj = ([lon, lat]) => [ox + (lon - BB.lon0) * KX * s, oy + (BB.lat1 - lat) * s];
-  pxPerKm = s / 111; // ~111 km per degree of latitude
+  setViewport({ x: 0, y: 0, w: W, h: H });
   views.forEach(v => v.rebuild && v.rebuild());
 }
 
@@ -323,7 +340,7 @@ function poly(pts, close) {
 }
 
 function drawBase(cityKeys) {
-  ctx.fillStyle = C.sea; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = C.sea; ctx.fillRect(VP.x, VP.y, VP.w, VP.h);
   for (const shape of [MAINLAND, SWEDEN, ZEALAND, OLAND, GOTLAND, BORNHOLM]) {
     poly(shape, true);
     ctx.fillStyle = C.land; ctx.fill();
@@ -337,7 +354,8 @@ function drawBase(cityKeys) {
 
   ctx.fillStyle = C.muted;
   for (const [t, lon, lat, size] of LAND_LABELS) {
-    ctx.font = `${t === 'POLAND' ? '600 ' : ''}${size}px ui-monospace, Menlo, monospace`;
+    if (COMPACT && t !== 'POLAND') continue;
+    ctx.font = `${t === 'POLAND' ? '600 ' : ''}${COMPACT ? 10 : size}px ui-monospace, Menlo, monospace`;
     ctx.textAlign = 'center';
     if (t === 'BALTIC SEA') { ctx.save(); ctx.globalAlpha = 0.8; }
     ctx.fillText(t, ...proj([lon, lat]));
@@ -345,7 +363,8 @@ function drawBase(cityKeys) {
   }
   for (const k of cityKeys) {
     const c = CITIES[k], q = proj(c.p);
-    ctx.beginPath(); ctx.arc(q[0], q[1], 2.4, 0, 7); ctx.fillStyle = C.ink2; ctx.fill();
+    ctx.beginPath(); ctx.arc(q[0], q[1], COMPACT ? 1.8 : 2.4, 0, 7); ctx.fillStyle = C.ink2; ctx.fill();
+    if (COMPACT) continue;
     ctx.font = '10.5px system-ui, sans-serif'; ctx.fillStyle = C.ink2;
     ctx.textAlign = 'left'; ctx.fillText(c.n, q[0] + 5, q[1] + 3.5);
   }
@@ -541,8 +560,9 @@ const viewEnergy = {
     // terminals
     const dot = (p, color, label, dy) => {
       const q = proj(p);
-      ctx.beginPath(); ctx.arc(q[0], q[1], 4.5, 0, 7); ctx.fillStyle = color; ctx.fill();
+      ctx.beginPath(); ctx.arc(q[0], q[1], COMPACT ? 3 : 4.5, 0, 7); ctx.fillStyle = color; ctx.fill();
       ctx.strokeStyle = C.ink; ctx.lineWidth = 1; ctx.stroke();
+      if (COMPACT) return;
       ctx.font = '600 10px system-ui, sans-serif'; ctx.fillStyle = C.ink2; ctx.textAlign = 'left';
       ctx.fillText(label, q[0] + 7, q[1] + (dy || 3));
     };
@@ -710,6 +730,7 @@ const viewFleet = {
     drawBase(this.cities);
     for (const inf of INFRA) {
       inf.path.stroke(withAlpha(C.infra, 0.8), 1.6, [6, 4]);
+      if (COMPACT) continue;
       const m = inf.path.at(inf.path.total * inf.labelAt);
       ctx.font = '9px ui-monospace, Menlo, monospace'; ctx.fillStyle = C.infra; ctx.textAlign = 'center';
       ctx.fillText(inf.name.split(' (')[0], m[0], m[1] - 6);
@@ -742,8 +763,10 @@ const viewFleet = {
         const ph = (t * 1.2 + si) % 1;
         ctx.beginPath(); ctx.arc(q[0], q[1], 6 + ph * 16, 0, 7);
         ctx.strokeStyle = withAlpha(C.threat, (1 - ph) * 0.8); ctx.lineWidth = 1.6; ctx.stroke();
-        ctx.font = '600 8.5px ui-monospace, Menlo, monospace'; ctx.fillStyle = C.threat; ctx.textAlign = 'center';
-        ctx.fillText('AIS DARK', q[0], q[1] - 12);
+        if (!COMPACT) {
+          ctx.font = '600 8.5px ui-monospace, Menlo, monospace'; ctx.fillStyle = C.threat; ctx.textAlign = 'center';
+          ctx.fillText('AIS DARK', q[0], q[1] - 12);
+        }
       }
     }
   },
@@ -774,8 +797,67 @@ const viewFleet = {
   },
 };
 
+/* =========================================================
+   VIEW 5 — all four layers at once (2×2 live grid)
+   ========================================================= */
+const viewAll = {
+  id: 'all', name: 'All views', grid: true,
+  color: () => `conic-gradient(${C.jam} 0 25%, ${C.neu} 0 50%, ${C.nato} 0 75%, ${C.threat} 0)`,
+  timeline: null,
+  ambient: 'FOUR LIVE LAYERS — TIMELINES AUTO-CYCLE',
+  desc: 'The whole picture, side by side: all four layers animate at once. The GPS-interference and energy maps replay their timelines on a loop (each cell shows its current date); the mobility and shadow-fleet maps run continuously. Hover any cell for detail, or open a tab for the full-size version.',
+  _spots: [],
+  rebuild() {},
+  hotspots() { return this._spots; },
+  draw(t) {
+    this._spots = [];
+    const cols = gridCols, rows = Math.ceil(4 / cols);
+    const cw = W / cols, ch = H / rows;
+    COMPACT = true;
+    for (let i = 0; i < 4; i++) {
+      const r = { x: (i % cols) * cw, y: Math.floor(i / cols) * ch, w: cw, h: ch };
+      setViewport(r);
+      const v = views[i];
+      v.rebuild();
+      const tli = v.timeline ? Math.floor((t * v.timeline.rate) % (v.timeline.max + 1)) : 0;
+      ctx.save();
+      ctx.beginPath(); ctx.rect(r.x, r.y, r.w, r.h); ctx.clip();
+      v.draw(t, tli);
+      ctx.restore();
+      for (const s of v.hotspots()) this._spots.push({ ...s, px: s.px || proj(s.p) });
+      // cell chrome: frame + title chip
+      ctx.strokeStyle = C.hairline; ctx.lineWidth = 1;
+      ctx.strokeRect(r.x + 0.5, r.y + 0.5, r.w - 1, r.h - 1);
+      const label = v.name + (v.timeline ? ' · ' + v.timeline.label(tli) : '');
+      ctx.font = '600 10px ui-monospace, Menlo, monospace';
+      const tw = ctx.measureText(label).width;
+      ctx.fillStyle = C.land;
+      ctx.fillRect(r.x + 8, r.y + 8, tw + 26, 19);
+      ctx.strokeStyle = C.hairline; ctx.strokeRect(r.x + 8.5, r.y + 8.5, tw + 25, 18);
+      ctx.fillStyle = v.color();
+      ctx.beginPath(); ctx.arc(r.x + 17, r.y + 17.5, 3.5, 0, 7); ctx.fill();
+      ctx.fillStyle = C.ink; ctx.textAlign = 'left';
+      ctx.fillText(label, r.x + 25, r.y + 21);
+    }
+    COMPACT = false;
+    setViewport({ x: 0, y: 0, w: W, h: H });
+  },
+  side() {
+    return `
+      <h2>All four layers at once</h2>
+      <p class="desc">${this.desc}</p>
+      <div class="legend">
+        <div class="li"><span class="sw" style="background:${C.jam}"></span><span><strong>GPS interference</strong> — jamming field pulsing from Kaliningrad, Jan 2022 → Jun 2026</span></div>
+        <div class="li"><span class="sw" style="background:${C.neu}"></span><span><strong>Energy pivot</strong> — Russian arteries (red) die, new routes (aqua) light up, 2004 → 2026</span></div>
+        <div class="li"><span class="sw" style="background:${C.nato}"></span><span><strong>Mobility friction</strong> — reinforcement flow bunching at chokepoint rings</span></div>
+        <div class="li"><span class="sw" style="background:${C.threat}"></span><span><strong>Shadow fleet</strong> — tankers going AIS-dark over undersea cables</span></div>
+      </div>
+      <p class="note">Each cell's chip shows which moment of its timeline is playing. Tooltips work in every cell.</p>`;
+  },
+};
+
 /* ---------- app shell ---------- */
-const views = [viewJam, viewEnergy, viewMob, viewFleet];
+const views = [viewJam, viewEnergy, viewMob, viewFleet, viewAll];
 let cur = 0, tl = 0, playing = true, lastSideRefresh = 0;
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 if (reduceMotion) playing = false;
@@ -804,19 +886,22 @@ function paintTabs() {
 
 function selectView(i) {
   cur = i; tl = 0;
+  layout(); // grid mode changes canvas height; leaving it must restore the full-canvas projection
   const v = views[cur];
+  wrap.classList.toggle('grid', !!v.grid);
   if (v.timeline) {
     scrub.style.display = ''; timelabel.style.display = '';
     scrub.max = v.timeline.max; scrub.value = 0;
     timebar.querySelector('.ambient')?.remove();
   } else {
     scrub.style.display = 'none'; timelabel.style.display = 'none';
-    if (!timebar.querySelector('.ambient')) {
-      const d = document.createElement('div');
+    let d = timebar.querySelector('.ambient');
+    if (!d) {
+      d = document.createElement('div');
       d.className = 'ambient mono';
-      d.textContent = 'CONTINUOUS LOOP — NO TIMELINE';
       timebar.appendChild(d);
     }
+    d.textContent = v.ambient || 'CONTINUOUS LOOP — NO TIMELINE';
   }
   paintTabs(); refreshSide(0);
   hideTip();
