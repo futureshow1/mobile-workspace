@@ -1,0 +1,889 @@
+<title>The Unseen Front — Poland in Four Maps</title>
+<style>
+  :root {
+    --bg: #f4f4f1;
+    --surface: #fcfcfb;
+    --sea: #e7ecee;
+    --land: #f3f2ec;
+    --land-line: rgba(11,11,11,0.14);
+    --poland: #fbfaf4;
+    --poland-line: rgba(11,11,11,0.55);
+    --ink: #0b0b0b;
+    --ink-2: #52514e;
+    --muted: #898781;
+    --hairline: rgba(11,11,11,0.10);
+    --grid: #e1e0d9;
+    --s-jam: #eda100;      /* yellow — interference */
+    --s-nato: #2a78d6;     /* blue — friendly flows */
+    --s-new: #1baf7a;      /* aqua — new energy routes */
+    --s-threat: #e34948;   /* red — Russian / hostile */
+    --s-infra: #4a3aa7;    /* violet — undersea infrastructure */
+    --serious: #ec835a;
+    --critical: #d03b3b;
+    --chip-bg: rgba(11,11,11,0.05);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0d0d0d;
+      --surface: #1a1a19;
+      --sea: #10161b;
+      --land: #1e1e1c;
+      --land-line: rgba(255,255,255,0.13);
+      --poland: #26261f;
+      --poland-line: rgba(255,255,255,0.55);
+      --ink: #ffffff;
+      --ink-2: #c3c2b7;
+      --muted: #898781;
+      --hairline: rgba(255,255,255,0.10);
+      --grid: #2c2c2a;
+      --s-jam: #c98500;
+      --s-nato: #3987e5;
+      --s-new: #199e70;
+      --s-threat: #e66767;
+      --s-infra: #9085e9;
+      --chip-bg: rgba(255,255,255,0.06);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0d0d0d; --surface: #1a1a19; --sea: #10161b; --land: #1e1e1c;
+    --land-line: rgba(255,255,255,0.13); --poland: #26261f; --poland-line: rgba(255,255,255,0.55);
+    --ink: #ffffff; --ink-2: #c3c2b7; --muted: #898781; --hairline: rgba(255,255,255,0.10);
+    --grid: #2c2c2a; --s-jam: #c98500; --s-nato: #3987e5; --s-new: #199e70;
+    --s-threat: #e66767; --s-infra: #9085e9; --chip-bg: rgba(255,255,255,0.06);
+  }
+  :root[data-theme="light"] {
+    --bg: #f4f4f1; --surface: #fcfcfb; --sea: #e7ecee; --land: #f3f2ec;
+    --land-line: rgba(11,11,11,0.14); --poland: #fbfaf4; --poland-line: rgba(11,11,11,0.55);
+    --ink: #0b0b0b; --ink-2: #52514e; --muted: #898781; --hairline: rgba(11,11,11,0.10);
+    --grid: #e1e0d9; --s-jam: #eda100; --s-nato: #2a78d6; --s-new: #1baf7a;
+    --s-threat: #e34948; --s-infra: #4a3aa7; --chip-bg: rgba(11,11,11,0.05);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height: 1.45;
+  }
+  .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+
+  .app { max-width: 1180px; margin: 0 auto; padding: 20px 16px 40px; }
+
+  header .eyebrow {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 11px; letter-spacing: 0.14em; color: var(--muted);
+    text-transform: uppercase; margin-bottom: 6px;
+  }
+  header h1 { margin: 0; font-size: clamp(24px, 4vw, 34px); letter-spacing: -0.01em; text-wrap: balance; }
+  header .sub { margin: 4px 0 0; color: var(--ink-2); font-size: 15px; max-width: 60ch; }
+
+  .tabs {
+    display: flex; gap: 6px; margin: 18px 0 12px; overflow-x: auto;
+    border-bottom: 1px solid var(--hairline); padding-bottom: 0;
+  }
+  .tabs button {
+    appearance: none; background: none; border: none; cursor: pointer;
+    font: inherit; font-size: 13.5px; color: var(--ink-2);
+    padding: 9px 12px 11px; white-space: nowrap;
+    border-bottom: 2px solid transparent; margin-bottom: -1px;
+  }
+  .tabs button:hover { color: var(--ink); }
+  .tabs button:focus-visible { outline: 2px solid var(--s-nato); outline-offset: -2px; border-radius: 4px; }
+  .tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--ink); font-weight: 600; }
+  .tabs .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 7px; vertical-align: 1px; }
+
+  main { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 14px; align-items: start; }
+  @media (max-width: 860px) { main { grid-template-columns: 1fr; } }
+
+  .map-wrap {
+    position: relative; background: var(--surface);
+    border: 1px solid var(--hairline); border-radius: 10px; overflow: hidden;
+  }
+  canvas { display: block; width: 100%; height: auto; }
+  .map-badge {
+    position: absolute; top: 10px; left: 10px;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 10px; letter-spacing: 0.12em; color: var(--muted);
+    background: color-mix(in srgb, var(--surface) 82%, transparent);
+    border: 1px solid var(--hairline); border-radius: 5px; padding: 4px 8px;
+    pointer-events: none;
+  }
+  #tooltip {
+    position: absolute; pointer-events: none; display: none; z-index: 5;
+    max-width: 230px; background: var(--surface); color: var(--ink);
+    border: 1px solid var(--hairline); border-radius: 8px;
+    box-shadow: 0 6px 22px rgba(0,0,0,0.18);
+    padding: 8px 10px; font-size: 12.5px;
+  }
+  #tooltip .tt-title { font-weight: 600; margin-bottom: 2px; }
+  #tooltip .tt-body { color: var(--ink-2); }
+
+  aside {
+    background: var(--surface); border: 1px solid var(--hairline);
+    border-radius: 10px; padding: 14px 16px; font-size: 13.5px;
+  }
+  aside h2 { margin: 0 0 6px; font-size: 15px; }
+  aside p.desc { margin: 0 0 12px; color: var(--ink-2); }
+  .hero-num { font-size: 30px; font-weight: 650; line-height: 1.1; }
+  .hero-cap {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted); margin-top: 2px;
+  }
+  .readout { margin: 10px 0 12px; padding: 10px 12px; background: var(--chip-bg); border-radius: 8px; }
+  .note { color: var(--ink-2); font-size: 12.5px; margin: 8px 0 0; min-height: 2.4em; }
+
+  .legend { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+  .legend .li { display: flex; align-items: center; gap: 8px; color: var(--ink-2); font-size: 12.5px; }
+  .legend .sw { width: 14px; height: 14px; border-radius: 4px; flex: none; }
+  .legend .sw.line { height: 3px; border-radius: 2px; }
+
+  ul.cklist { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+  ul.cklist li { display: flex; gap: 8px; align-items: baseline; font-size: 12.5px; color: var(--ink-2); }
+  ul.cklist .sev {
+    flex: none; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 9.5px;
+    letter-spacing: 0.08em; padding: 2px 6px; border-radius: 4px; color: #fff;
+  }
+  .sev.hi { background: var(--critical); }
+  .sev.md { background: var(--serious); }
+
+  details { margin-top: 14px; border-top: 1px solid var(--hairline); padding-top: 10px; }
+  summary { cursor: pointer; color: var(--ink-2); font-size: 12.5px; }
+  table { border-collapse: collapse; width: 100%; margin-top: 8px; font-size: 12px; }
+  th, td { text-align: right; padding: 4px 6px; border-bottom: 1px solid var(--hairline);
+           font-variant-numeric: tabular-nums; }
+  th:first-child, td:first-child { text-align: left; }
+  th { color: var(--muted); font-weight: 500; }
+
+  .timebar {
+    display: flex; align-items: center; gap: 12px; margin-top: 14px;
+    background: var(--surface); border: 1px solid var(--hairline);
+    border-radius: 10px; padding: 10px 14px;
+  }
+  .timebar button {
+    appearance: none; border: 1px solid var(--hairline); background: var(--chip-bg);
+    color: var(--ink); border-radius: 7px; width: 34px; height: 30px; cursor: pointer;
+    font-size: 13px; flex: none;
+  }
+  .timebar button:focus-visible { outline: 2px solid var(--s-nato); }
+  .timebar input[type="range"] { flex: 1; accent-color: var(--s-nato); min-width: 60px; }
+  #timelabel { flex: none; font-size: 12.5px; color: var(--ink-2); min-width: 84px; text-align: right; }
+  .timebar .ambient { flex: 1; color: var(--muted); font-size: 12px; letter-spacing: 0.06em; }
+
+  footer.pagefoot { margin-top: 14px; color: var(--muted); font-size: 12px; max-width: 80ch; }
+</style>
+
+<div class="app">
+  <header>
+    <div class="eyebrow">Security cartography · illustrative data</div>
+    <h1>The Unseen Front</h1>
+    <p class="sub">Poland's security situation in four non-obvious animated maps — electronic warfare,
+    energy plumbing, logistics friction, and grey-zone traffic on the Baltic.</p>
+  </header>
+
+  <nav class="tabs" role="tablist" id="tabs"></nav>
+
+  <main>
+    <div class="map-wrap">
+      <canvas id="map" aria-label="Animated map of Poland and the Baltic region"></canvas>
+      <div class="map-badge">ILLUSTRATIVE — NOT OPERATIONAL DATA</div>
+      <div id="tooltip"></div>
+    </div>
+    <aside id="side"></aside>
+  </main>
+
+  <div class="timebar" id="timebar">
+    <button id="play" aria-label="Play or pause">⏸</button>
+    <input type="range" id="scrub" min="0" max="53" step="1" value="0" aria-label="Timeline">
+    <div id="timelabel" class="mono"></div>
+  </div>
+
+  <footer class="pagefoot">
+    All values are hand-modeled from open reporting (gpsjam-style ADS-B observations, ENTSO-G flow data,
+    press coverage of Baltic incidents) to illustrate patterns — they are indicative, not measurements.
+  </footer>
+</div>
+
+<script>
+(() => {
+"use strict";
+
+/* ---------- theme-aware color access ---------- */
+let C = {};
+function readColors() {
+  const s = getComputedStyle(document.documentElement);
+  const g = (n) => s.getPropertyValue(n).trim();
+  C = {
+    sea: g('--sea'), land: g('--land'), landLine: g('--land-line'),
+    poland: g('--poland'), polandLine: g('--poland-line'),
+    ink: g('--ink'), ink2: g('--ink-2'), muted: g('--muted'),
+    grid: g('--grid'), hairline: g('--hairline'),
+    jam: g('--s-jam'), nato: g('--s-nato'), neu: g('--s-new'),
+    threat: g('--s-threat'), infra: g('--s-infra'),
+    serious: g('--serious'), critical: g('--critical'),
+  };
+}
+readColors();
+new MutationObserver(readColors).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', readColors);
+
+function withAlpha(hex, a) {
+  const h = hex.replace('#','');
+  const r = parseInt(h.slice(0,2),16), g = parseInt(h.slice(2,4),16), b = parseInt(h.slice(4,6),16);
+  return `rgba(${r},${g},${b},${a})`;
+}
+
+/* ---------- geometry (hand-simplified, illustrative) ---------- */
+const BB = { lon0: 13.5, lon1: 29.5, lat0: 48.5, lat1: 58.5 };
+const KX = Math.cos(53.5 * Math.PI / 180);
+
+const POLAND = [
+  [14.23,53.90],[14.60,53.97],[15.30,54.13],[15.99,54.26],[16.56,54.51],[17.26,54.72],
+  [17.90,54.82],[18.34,54.83],[18.81,54.63],[18.56,54.50],[18.66,54.36],[18.95,54.35],
+  [19.42,54.44],[19.64,54.45],[20.80,54.40],[22.79,54.36],[23.00,54.26],[23.48,53.95],
+  [23.87,53.45],[23.92,53.00],[23.65,52.60],[23.62,52.35],[23.60,52.10],[23.55,51.55],
+  [23.65,51.30],[24.00,50.95],[24.14,50.86],[23.95,50.40],[23.50,50.25],[22.95,49.85],
+  [22.65,49.50],[22.56,49.09],[22.00,49.20],[21.00,49.42],[20.30,49.40],[20.10,49.24],
+  [19.80,49.20],[19.45,49.52],[18.85,49.52],[18.57,49.90],[17.85,50.05],[17.60,50.27],
+  [16.90,50.44],[16.65,50.10],[16.20,50.42],[15.35,50.78],[14.82,50.87],[14.98,51.35],
+  [14.72,51.55],[14.60,51.82],[14.75,52.07],[14.55,52.35],[14.63,52.57],[14.30,52.83],
+  [14.15,53.05],[14.38,53.33],[14.30,53.55]
+];
+const MAINLAND = [
+  [8.00,55.20],[9.50,54.80],[10.80,54.35],[11.40,54.15],[12.20,54.25],[12.90,54.43],
+  [13.50,54.28],[13.85,54.10],[14.23,53.90],[14.60,53.97],[15.30,54.13],[15.99,54.26],
+  [16.56,54.51],[17.26,54.72],[17.90,54.82],[18.34,54.83],[18.81,54.63],[18.56,54.50],
+  [18.66,54.36],[18.95,54.35],[19.42,54.44],[19.64,54.45],[19.90,54.62],[19.95,54.80],
+  [20.20,54.95],[20.65,54.95],[20.95,55.28],[21.10,55.70],[21.05,56.05],[21.00,56.50],
+  [21.40,57.05],[21.55,57.40],[22.60,57.75],[23.25,57.10],[24.05,57.05],[24.35,57.25],
+  [24.50,57.90],[24.45,58.38],[24.45,61.00],[36.00,61.00],[36.00,40.00],[8.00,40.00]
+];
+const SWEDEN = [
+  [12.45,55.52],[12.90,55.40],[13.30,55.34],[13.90,55.43],[14.20,55.40],[14.36,55.55],[14.75,56.00],[15.60,56.18],
+  [16.05,56.22],[16.45,56.68],[16.55,57.15],[16.65,57.72],[17.10,58.35],[17.30,61.00],[11.50,61.00],[11.50,56.00]
+];
+const ZEALAND = [[11.80,54.95],[12.55,55.05],[12.65,55.65],[12.00,56.05],[11.20,55.75],[11.10,55.20]];
+const OLAND = [[16.40,56.20],[16.48,56.32],[17.10,57.30],[17.02,57.36],[16.55,56.80],[16.38,56.25]];
+const GOTLAND = [[18.10,57.25],[18.35,56.92],[18.80,57.00],[19.10,57.40],[18.95,57.85],[18.70,57.95],[18.55,57.75],[18.15,57.45]];
+const BORNHOLM = [[14.70,55.10],[15.05,55.05],[15.16,55.23],[14.90,55.30],[14.68,55.22]];
+const KGD_BORDER = [[19.64,54.45],[20.60,54.36],[22.79,54.36],[22.85,54.70],[22.60,54.95],[21.90,55.10],[21.27,55.25]];
+
+const LAND_LABELS = [
+  ['POLAND',        19.0, 52.1, 13],
+  ['GERMANY',       14.1, 51.9, 10], ['CZECHIA', 16.4, 49.55, 10], ['SLOVAKIA', 20.6, 48.85, 10],
+  ['UKRAINE',       25.4, 50.2, 10], ['BELARUS', 26.2, 52.9, 10], ['LITHUANIA', 24.2, 55.25, 10],
+  ['LATVIA',        24.6, 56.7, 10], ['SWEDEN', 15.2, 57.7, 10], ['RUSSIA (KALININGRAD)', 21.85, 54.48, 8.5],
+  ['BALTIC SEA',    17.6, 56.0, 10],
+];
+const CITIES = {
+  warsaw:   { p: [21.01,52.23], n: 'Warsaw' },
+  gdansk:   { p: [18.65,54.35], n: 'Gdańsk' },
+  szczecin: { p: [14.55,53.43], n: 'Szczecin' },
+  poznan:   { p: [16.93,52.41], n: 'Poznań' },
+  wroclaw:  { p: [17.03,51.11], n: 'Wrocław' },
+  krakow:   { p: [19.94,50.06], n: 'Kraków' },
+  bialystok:{ p: [23.16,53.13], n: 'Białystok' },
+  rzeszow:  { p: [22.00,50.04], n: 'Rzeszów' },
+  suwalki:  { p: [22.93,54.10], n: 'Suwałki' },
+  kgd:      { p: [20.51,54.71], n: 'Kaliningrad' },
+  vilnius:  { p: [25.28,54.69], n: 'Vilnius' },
+  minsk:    { p: [27.56,53.90], n: 'Minsk' },
+};
+
+/* ---------- canvas + projection ---------- */
+const canvas = document.getElementById('map');
+const ctx = canvas.getContext('2d');
+const wrap = canvas.parentElement;
+let W = 0, H = 0, DPR = 1, proj = null, pxPerKm = 1;
+
+function layout() {
+  const cssW = wrap.clientWidth;
+  const aspect = ((BB.lon1 - BB.lon0) * KX) / (BB.lat1 - BB.lat0);
+  const cssH = Math.max(320, Math.min(640, cssW / aspect));
+  DPR = Math.min(2, window.devicePixelRatio || 1);
+  canvas.width = Math.round(cssW * DPR);
+  canvas.height = Math.round(cssH * DPR);
+  canvas.style.height = cssH + 'px';
+  W = cssW; H = cssH;
+  const sx = W / ((BB.lon1 - BB.lon0) * KX);
+  const sy = H / (BB.lat1 - BB.lat0);
+  const s = Math.min(sx, sy);
+  const ox = (W - (BB.lon1 - BB.lon0) * KX * s) / 2;
+  const oy = (H - (BB.lat1 - BB.lat0) * s) / 2;
+  proj = ([lon, lat]) => [ox + (lon - BB.lon0) * KX * s, oy + (BB.lat1 - lat) * s];
+  pxPerKm = s / 111; // ~111 km per degree of latitude
+  views.forEach(v => v.rebuild && v.rebuild());
+}
+
+function poly(pts, close) {
+  ctx.beginPath();
+  pts.forEach((p, i) => { const q = proj(p); i ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1]); });
+  if (close) ctx.closePath();
+}
+
+function drawBase(cityKeys) {
+  ctx.fillStyle = C.sea; ctx.fillRect(0, 0, W, H);
+  for (const shape of [MAINLAND, SWEDEN, ZEALAND, OLAND, GOTLAND, BORNHOLM]) {
+    poly(shape, true);
+    ctx.fillStyle = C.land; ctx.fill();
+    ctx.strokeStyle = C.landLine; ctx.lineWidth = 1; ctx.stroke();
+  }
+  poly(POLAND, true);
+  ctx.fillStyle = C.poland; ctx.fill();
+  ctx.strokeStyle = C.polandLine; ctx.lineWidth = 1.6; ctx.stroke();
+  poly(KGD_BORDER, false);
+  ctx.strokeStyle = C.landLine; ctx.setLineDash([3, 3]); ctx.stroke(); ctx.setLineDash([]);
+
+  ctx.fillStyle = C.muted;
+  for (const [t, lon, lat, size] of LAND_LABELS) {
+    ctx.font = `${t === 'POLAND' ? '600 ' : ''}${size}px ui-monospace, Menlo, monospace`;
+    ctx.textAlign = 'center';
+    if (t === 'BALTIC SEA') { ctx.save(); ctx.globalAlpha = 0.8; }
+    ctx.fillText(t, ...proj([lon, lat]));
+    if (t === 'BALTIC SEA') ctx.restore();
+  }
+  for (const k of cityKeys) {
+    const c = CITIES[k], q = proj(c.p);
+    ctx.beginPath(); ctx.arc(q[0], q[1], 2.4, 0, 7); ctx.fillStyle = C.ink2; ctx.fill();
+    ctx.font = '10.5px system-ui, sans-serif'; ctx.fillStyle = C.ink2;
+    ctx.textAlign = 'left'; ctx.fillText(c.n, q[0] + 5, q[1] + 3.5);
+  }
+}
+
+/* ---------- path helper ---------- */
+function makePath(lonlats) {
+  const path = { src: lonlats, pts: [], cum: [0], total: 0 };
+  path.rebuild = () => {
+    path.pts = lonlats.map(proj);
+    path.cum = [0]; path.total = 0;
+    for (let i = 1; i < path.pts.length; i++) {
+      const dx = path.pts[i][0] - path.pts[i-1][0], dy = path.pts[i][1] - path.pts[i-1][1];
+      path.total += Math.hypot(dx, dy);
+      path.cum.push(path.total);
+    }
+  };
+  path.at = (d) => { // d in px along path → [x, y, segIndex]
+    d = Math.max(0, Math.min(path.total, d));
+    let i = 1;
+    while (i < path.cum.length - 1 && path.cum[i] < d) i++;
+    const f = (d - path.cum[i-1]) / Math.max(1e-6, path.cum[i] - path.cum[i-1]);
+    const a = path.pts[i-1], b = path.pts[i];
+    return [a[0] + (b[0]-a[0]) * f, a[1] + (b[1]-a[1]) * f, i - 1];
+  };
+  path.stroke = (style, width, dash) => {
+    ctx.beginPath();
+    path.pts.forEach((q, i) => i ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1]));
+    ctx.strokeStyle = style; ctx.lineWidth = width;
+    if (dash) ctx.setLineDash(dash);
+    ctx.stroke(); ctx.setLineDash([]);
+  };
+  return path;
+}
+// deterministic pseudo-random (no Math.random — keeps frames reproducible)
+function rnd(i) { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); }
+
+/* =========================================================
+   VIEW 1 — GPS interference time-lapse
+   ========================================================= */
+const MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+const JAM = {
+  start: 2022,
+  intensity: [
+    .12,.15,.20,.18,.16,.15,.14,.16,.15,.17,.18,.22,
+    .25,.24,.28,.30,.27,.30,.32,.35,.38,.42,.48,.62,
+    .78,.72,.85,.80,.70,.65,.62,.60,.63,.66,.70,.72,
+    .74,.70,.68,.66,.70,.72,.75,.78,.95,.88,.82,.80,
+    .78,.82,.85,.80,.76,.74,
+  ],
+  notes: [
+    [0,  'Full-scale invasion of Ukraine begins; low-level interference near Kaliningrad.'],
+    [23, 'Baltic-wide GPS outages begin appearing in airline reports.'],
+    [26, 'Peak wave: flights across the SE Baltic log unreliable GPS for days at a time.'],
+    [44, 'Drone-incursion week over Poland — interference spikes along the whole eastern flank.'],
+    [50, 'Interference has become the background condition of Baltic aviation.'],
+  ],
+  center: [20.6, 54.85],
+  secondary: [23.85, 53.65], // Belarus border area, appears from late 2023
+};
+function jamLabel(i) { return MONTHS[i % 12] + ' ' + (JAM.start + Math.floor(i / 12)); }
+
+const viewJam = {
+  id: 'jam', name: 'GPS interference', color: () => C.jam,
+  timeline: { max: JAM.intensity.length - 1, rate: 2.2, label: jamLabel },
+  desc: 'Electronic warfare rendered as weather: a monthly time-lapse of GPS jamming radiating from the Kaliningrad exclave over the Baltic and NE Poland, as seen by aircraft position reports. It never crosses a border on the ground — and degrades navigation for everyone.',
+  cities: ['gdansk', 'kgd', 'warsaw', 'suwalki'],
+  rebuild() {},
+  hotspots() {
+    return [
+      { p: JAM.center, r: 26, title: 'Kaliningrad exclave', body: 'Assessed origin of most Baltic GPS interference — jamming and spoofing observed by aircraft since 2022 (illustrative intensity model).' },
+      { p: JAM.secondary, r: 18, title: 'Belarus border area', body: 'Secondary interference observed along the eastern flank from late 2023.' },
+    ];
+  },
+  draw(t, tl) {
+    drawBase(this.cities);
+    const i = Math.round(tl);
+    const k = JAM.intensity[i];
+    const k2 = i >= 20 ? k * 0.5 : 0;
+    const blob = (lonlat, kk, seed) => {
+      if (kk <= 0.01) return;
+      const q = proj(lonlat);
+      const R = (55 + kk * 250) * pxPerKm;
+      for (let j = 0; j < 3; j++) {
+        const ox = Math.sin(t * 0.25 + seed + j * 2.1) * R * 0.16;
+        const oy = Math.cos(t * 0.21 + seed * 1.7 + j * 1.4) * R * 0.13;
+        const rr = R * (0.75 + 0.25 * Math.sin(t * 0.3 + j + seed));
+        const g = ctx.createRadialGradient(q[0]+ox, q[1]+oy, 0, q[0]+ox, q[1]+oy, rr);
+        g.addColorStop(0, withAlpha(C.jam, 0.16 + kk * 0.12));
+        g.addColorStop(0.7, withAlpha(C.jam, 0.07 * kk + 0.03));
+        g.addColorStop(1, withAlpha(C.jam, 0));
+        ctx.fillStyle = g;
+        ctx.beginPath(); ctx.arc(q[0]+ox, q[1]+oy, rr, 0, 7); ctx.fill();
+      }
+      for (let j = 0; j < 3; j++) { // expanding rings
+        const ph = ((t * 0.22 + j / 3 + seed * 0.1) % 1);
+        ctx.beginPath(); ctx.arc(q[0], q[1], ph * R, 0, 7);
+        ctx.strokeStyle = withAlpha(C.jam, (1 - ph) * 0.4 * (0.3 + kk)); ctx.lineWidth = 1.4; ctx.stroke();
+      }
+      // aircraft losing GPS: flickering × marks inside the field
+      const n = Math.round(kk * 26);
+      ctx.strokeStyle = withAlpha(C.threat, 0.85); ctx.lineWidth = 1.3;
+      for (let j = 0; j < n; j++) {
+        if (Math.sin(t * 3 + j * 2.7 + seed) < 0) continue;
+        const a = rnd(j + seed) * 6.28, rr = Math.sqrt(rnd(j * 3 + 1 + seed)) * R * 0.85;
+        const x = q[0] + Math.cos(a) * rr, y = q[1] + Math.sin(a) * rr * 0.8;
+        ctx.beginPath(); ctx.moveTo(x-3, y-3); ctx.lineTo(x+3, y+3);
+        ctx.moveTo(x+3, y-3); ctx.lineTo(x-3, y+3); ctx.stroke();
+      }
+      const s = proj(lonlat); // source mark
+      ctx.beginPath(); ctx.arc(s[0], s[1], 4, 0, 7);
+      ctx.fillStyle = C.jam; ctx.fill();
+      ctx.strokeStyle = C.ink; ctx.lineWidth = 1; ctx.stroke();
+    };
+    blob(JAM.center, k, 0);
+    blob(JAM.secondary, k2, 40);
+  },
+  side(tl) {
+    const i = Math.round(tl), k = JAM.intensity[i];
+    let note = '';
+    for (const [at, txt] of JAM.notes) if (i >= at) note = txt;
+    return `
+      <h2>GPS interference over the Baltic</h2>
+      <p class="desc">${this.desc}</p>
+      <div class="readout">
+        <div class="hero-num">${Math.round(k * 52)}<span style="font-size:18px">%</span></div>
+        <div class="hero-cap">flights over NE Poland reporting degraded GPS · ${jamLabel(i)}</div>
+      </div>
+      <p class="note">${note}</p>
+      <div class="legend">
+        <div class="li"><span class="sw" style="background:${C.jam}"></span>Interference field (modeled intensity)</div>
+        <div class="li"><span class="sw" style="background:${C.threat}"></span>× aircraft reporting jammed / spoofed GPS</div>
+      </div>
+      <details><summary>Data table (every 6 months)</summary><table>
+        <tr><th>Month</th><th>Index</th><th>Flights affected</th></tr>
+        ${JAM.intensity.map((v, j) => j % 6 ? '' :
+          `<tr><td>${jamLabel(j)}</td><td>${v.toFixed(2)}</td><td>${Math.round(v*52)}%</td></tr>`).join('')}
+      </table></details>`;
+  },
+};
+
+/* =========================================================
+   VIEW 2 — the energy pivot, 2004 → 2026
+   ========================================================= */
+const EN = {
+  y0: 2004,
+  russia:     [.88,.86,.85,.84,.82,.80,.78,.76,.74,.72,.70,.68,.64,.60,.58,.55,.55,.53,.20,0,0,0,0],
+  lng:        [0,0,0,0,0,0,0,0,0,0,0,0,.08,.12,.15,.23,.25,.28,.42,.44,.45,.44,.42],
+  balticpipe: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,.06,.30,.36,.38,.38],
+  oilEnds: 2023,
+};
+const enRoutes = {
+  yamal:  makePath([[23.90,53.28],[22.50,53.05],[21.00,52.90],[19.05,52.66],[17.40,52.55],[15.80,52.48],[14.55,52.38]]),
+  druzhba:makePath([[23.55,52.75],[21.90,52.62],[19.70,52.55],[17.80,52.85],[16.00,53.00],[14.35,53.05]]),
+  lng:    makePath([[13.50,55.05],[14.00,54.60],[14.20,54.15],[14.24,53.95]]),
+  bpipe:  makePath([[13.50,55.35],[14.20,54.90],[14.75,54.45],[15.05,54.10]]),
+  gipl:   makePath([[23.90,54.90],[23.30,54.20],[22.80,53.60]]),
+};
+const viewEnergy = {
+  id: 'energy', name: 'Energy pivot', color: () => C.neu,
+  timeline: { max: 22, rate: 0.8, label: (i) => String(EN.y0 + Math.round(i)) },
+  desc: 'Security as plumbing. Scrub two decades: Russian gas (Yamal pipeline) and oil (Druzhba) arteries thin out and die, while the Świnoujście LNG terminal, the Baltic Pipe from Norway, and the Lithuania interconnector light up. The map barely moves — the flows reverse.',
+  cities: ['warsaw', 'szczecin', 'gdansk'],
+  rebuild() { Object.values(enRoutes).forEach(p => p.rebuild()); },
+  hotspots() {
+    return [
+      { p: [14.24,53.95], r: 14, title: 'Świnoujście LNG terminal', body: 'Opened 2016, expanded since — Qatari, US and other LNG replacing pipeline gas.' },
+      { p: [15.05,54.10], r: 14, title: 'Baltic Pipe landfall', body: 'Online Oct 2022: Norwegian gas via Denmark, ~10 bcm/yr — sized to replace Yamal volumes almost exactly.' },
+      { p: [23.90,53.28], r: 14, title: 'Yamal pipeline entry', body: 'Russian gas via Belarus. Poland refused rouble payment in Apr 2022; flows stopped.' },
+      { p: [23.55,52.75], r: 14, title: 'Druzhba oil pipeline', body: '"Friendship" pipeline. Polish refiners dropped Russian crude entirely by Feb 2023.' },
+      { p: [23.30,54.20], r: 14, title: 'GIPL interconnector', body: 'Gas link to Lithuania (2022) — ends the Baltic states’ island status, in both directions.' },
+    ];
+  },
+  draw(t, tl) {
+    drawBase(this.cities);
+    const i = Math.round(tl);
+    const flow = (path, share, color, speed, dir, seed) => {
+      path.stroke(withAlpha(color, share > 0 ? 0.30 : 0.10), share > 0 ? 1.5 + share * 3.5 : 1, share > 0 ? null : [4,4]);
+      const n = Math.round(share * 22);
+      ctx.fillStyle = color;
+      for (let j = 0; j < n; j++) {
+        let d = ((t * speed + rnd(j + seed) * path.total * 4) % path.total);
+        if (dir < 0) d = path.total - d;
+        const q = path.at(d);
+        ctx.beginPath(); ctx.arc(q[0], q[1], 2.2, 0, 7); ctx.fill();
+      }
+    };
+    flow(enRoutes.yamal,  EN.russia[i], C.threat, 34, -1, 3);
+    flow(enRoutes.druzhba, EN.y0 + i < EN.oilEnds ? 0.35 : 0, C.threat, 22, -1, 7);
+    flow(enRoutes.lng,    EN.lng[i], C.neu, 26, 1, 11);
+    flow(enRoutes.bpipe,  EN.balticpipe[i], C.neu, 30, 1, 17);
+    flow(enRoutes.gipl,   EN.y0 + i >= 2022 ? 0.15 : 0, C.neu, 20, 1, 23);
+    // terminals
+    const dot = (p, color, label, dy) => {
+      const q = proj(p);
+      ctx.beginPath(); ctx.arc(q[0], q[1], 4.5, 0, 7); ctx.fillStyle = color; ctx.fill();
+      ctx.strokeStyle = C.ink; ctx.lineWidth = 1; ctx.stroke();
+      ctx.font = '600 10px system-ui, sans-serif'; ctx.fillStyle = C.ink2; ctx.textAlign = 'left';
+      ctx.fillText(label, q[0] + 7, q[1] + (dy || 3));
+    };
+    dot([14.24,53.95], C.neu, 'LNG Świnoujście', 10);
+    dot([15.05,54.10], C.neu, 'Baltic Pipe');
+    dot([23.90,53.28], C.threat, 'Yamal (gas)');
+    dot([23.55,52.75], C.threat, 'Druzhba (oil)', 12);
+    dot([23.30,54.20], C.neu, 'GIPL → LT');
+  },
+  side(tl) {
+    const i = Math.round(tl), y = EN.y0 + i;
+    const ru = EN.russia[i];
+    return `
+      <h2>The energy pivot, 2004 → 2026</h2>
+      <p class="desc">${this.desc}</p>
+      <div class="readout">
+        <div class="hero-num">${Math.round(ru * 100)}<span style="font-size:18px">%</span></div>
+        <div class="hero-cap">Russian share of Poland's gas imports · ${y}</div>
+      </div>
+      <p class="note">${
+        y < 2016 ? 'One dominant supplier, one direction of flow — and price talks to match.' :
+        y < 2022 ? 'The LNG terminal is open; leverage is quietly shifting west, cargo by cargo.' :
+        y < 2023 ? 'April 2022: Gazprom cuts Poland off over rouble payments. The pivot was already built.' :
+        'Zero Russian pipeline gas. Zero Russian crude in Polish refineries since Feb 2023.'}</p>
+      <div class="legend">
+        <div class="li"><span class="sw line" style="background:${C.threat}"></span>Russian arteries (Yamal gas · Druzhba oil)</div>
+        <div class="li"><span class="sw line" style="background:${C.neu}"></span>Replacement routes (LNG · Baltic Pipe · GIPL)</div>
+      </div>
+      <details><summary>Data table (gas import mix)</summary><table>
+        <tr><th>Year</th><th>Russia</th><th>LNG</th><th>Baltic Pipe</th></tr>
+        ${EN.russia.map((v, j) => j % 2 ? '' :
+          `<tr><td>${EN.y0 + j}</td><td>${Math.round(v*100)}%</td><td>${Math.round(EN.lng[j]*100)}%</td><td>${Math.round(EN.balticpipe[j]*100)}%</td></tr>`).join('')}
+      </table></details>`;
+  },
+};
+
+/* =========================================================
+   VIEW 3 — military mobility friction
+   ========================================================= */
+const MOB = [
+  { name: 'North corridor (Berlin → Suwałki gap)',
+    path: makePath([[14.55,52.36],[15.90,52.42],[16.93,52.41],[18.50,52.35],[20.20,52.25],[21.01,52.23],[22.20,52.70],[23.16,53.13],[23.00,53.60],[22.93,54.10],[23.25,54.30],[23.50,54.40]]),
+    speed: [1,1,1,1,.45,.8,.8,.4,.4,.35,.35], n: 26 },
+  { name: 'South corridor (Dresden → Ukraine gauge break)',
+    path: makePath([[14.82,51.05],[15.90,51.10],[17.03,51.11],[18.20,50.70],[19.02,50.26],[20.50,50.05],[22.00,50.04],[22.70,49.90],[22.90,49.80]]),
+    speed: [1,1,.9,.7,.9,.6,.55,.3], n: 20 },
+  { name: 'Sea line (Gdańsk / Gdynia → Warsaw)',
+    path: makePath([[18.65,54.30],[18.90,53.80],[19.20,53.20],[19.90,52.60],[21.01,52.23]]),
+    speed: [.55,.7,.7,.6], n: 12 },
+];
+const CHOKE = [
+  { p: [21.00,52.30], sev: 'md', title: 'Vistula crossings',
+    body: 'Only a handful of bridges on the whole river take military-load-class traffic; each is a queue and a target.' },
+  { p: [23.05,53.62], sev: 'md', title: 'Single-track rail NE of Białystok',
+    body: 'Capacity collapses from double- to single-track heading toward the Lithuanian border.' },
+  { p: [23.10,54.22], sev: 'hi', title: 'Suwałki corridor',
+    body: '~65 km of land between Kaliningrad and Belarus — the only ground link from Poland to the Baltic states.' },
+  { p: [22.90,49.80], sev: 'hi', title: 'Medyka gauge break',
+    body: 'European standard gauge ends at the Ukrainian border: every railcar is transloaded or re-bogied here.' },
+  { p: [18.68,54.38], sev: 'md', title: 'Port throughput',
+    body: 'Reinforcement by sea funnels through two ports inside short-range strike distance of Kaliningrad.' },
+];
+const viewMob = {
+  id: 'mob', name: 'Mobility friction', color: () => C.nato,
+  timeline: null,
+  desc: 'Logistics as a traffic jam. NATO reinforcement flows west-to-east as moving particles — watch them physically slow and bunch at real chokepoints: the few military-load Vistula bridges, single-track rail toward the Suwałki corridor, and the rail gauge break into Ukraine. Speed is the defense; friction is the vulnerability.',
+  cities: ['poznan', 'warsaw', 'wroclaw', 'krakow', 'bialystok', 'rzeszow', 'suwalki', 'gdansk'],
+  rebuild() { MOB.forEach(r => r.path.rebuild()); },
+  hotspots() { return CHOKE.map(c => ({ p: c.p, r: 16, title: c.title, body: c.body })); },
+  draw(t) {
+    drawBase(this.cities);
+    for (const r of MOB) r.path.stroke(withAlpha(C.nato, 0.25), 3);
+    for (const [ri, r] of MOB.entries()) {
+      ctx.fillStyle = C.nato;
+      for (let j = 0; j < r.n; j++) {
+        // integrate particle position with per-segment speed (bunching happens naturally)
+        let d = (rnd(j * 13 + ri * 91) * r.path.total);
+        let tt = (t * 30) % (r.path.total * 3);
+        while (tt > 0) {
+          const seg = r.path.at(d)[2];
+          const step = Math.min(tt, 6) * (r.speed[seg] || 1);
+          d += step; tt -= 6;
+          if (d >= r.path.total) d -= r.path.total;
+        }
+        const q = r.path.at(d);
+        ctx.beginPath(); ctx.arc(q[0], q[1], 2.6, 0, 7); ctx.fill();
+      }
+    }
+    for (const c of CHOKE) {
+      const q = proj(c.p);
+      const col = c.sev === 'hi' ? C.critical : C.serious;
+      const ph = (t * 0.9 + q[0] * 0.01) % 1;
+      ctx.beginPath(); ctx.arc(q[0], q[1], 6 + ph * 14, 0, 7);
+      ctx.strokeStyle = withAlpha(col, (1 - ph) * 0.7); ctx.lineWidth = 2; ctx.stroke();
+      ctx.beginPath(); ctx.arc(q[0], q[1], 4, 0, 7);
+      ctx.fillStyle = col; ctx.fill();
+      ctx.strokeStyle = C.ink; ctx.lineWidth = 1; ctx.stroke();
+    }
+  },
+  side() {
+    return `
+      <h2>Military mobility friction</h2>
+      <p class="desc">${this.desc}</p>
+      <div class="legend">
+        <div class="li"><span class="sw" style="background:${C.nato}"></span>Reinforcement flow (rail / road / sea)</div>
+        <div class="li"><span class="sw" style="background:${C.critical}"></span>Critical chokepoint</div>
+        <div class="li"><span class="sw" style="background:${C.serious}"></span>Capacity bottleneck</div>
+      </div>
+      <ul class="cklist">
+        ${CHOKE.map(c => `<li><span class="sev ${c.sev}">${c.sev === 'hi' ? 'CRIT' : 'BTLNK'}</span><span><strong>${c.title}.</strong> ${c.body}</span></li>`).join('')}
+      </ul>
+      <p class="note">Hover the pulsing rings on the map for detail. Particle speed is proportional to modeled corridor capacity.</p>`;
+  },
+};
+
+/* =========================================================
+   VIEW 4 — shadow fleet & undersea infrastructure
+   ========================================================= */
+const INFRA = [
+  { name: 'Baltic Pipe (gas, DK→PL)', labelAt: 0.72, path: makePath([[13.50,55.18],[14.40,54.75],[15.05,54.10]]),
+    body: 'Poland’s Norwegian-gas artery. Patrolled since repeated anchor-drag incidents nearby.' },
+  { name: 'C-Lion1 (data, FI→DE)', labelAt: 0.30, path: makePath([[19.40,58.50],[18.00,57.20],[16.40,55.90],[14.80,55.05],[13.50,54.75]]),
+    body: 'Finland–Germany fibre trunk. Severed in Nov 2024; a passing ship’s dragged anchor traced along its route.' },
+  { name: 'SwePol Link (power, SE→PL)', labelAt: 0.85, path: makePath([[14.86,56.16],[15.70,55.50],[16.85,54.60]]),
+    body: '600 MW HVDC link between the Swedish and Polish grids.' },
+  { name: 'NordBalt (power, SE→LT)', labelAt: 0.68, path: makePath([[16.05,56.25],[18.50,55.95],[21.05,55.72]]),
+    body: 'Sweden–Lithuania interconnector; repeatedly buzzed and shadowed.' },
+];
+const LANES = {
+  main: makePath([[21.70,58.50],[20.30,57.40],[19.20,56.60],[17.60,55.75],[16.20,55.45],[15.10,55.42],[14.40,55.25],[13.50,55.10]]),
+  kgd:  makePath([[19.90,54.65],[18.90,54.90],[17.50,55.20],[16.20,55.45]]),
+  gdn:  makePath([[18.70,54.45],[17.60,55.20],[16.20,55.45],[15.10,55.42]]),
+};
+const SHIPS = [
+  { lane: 'main', off: 0.05, spd: 26, shadow: true,  gaps: [[0.40,0.56],[0.78,0.90]] },
+  { lane: 'main', off: 0.35, spd: 22, shadow: true,  gaps: [[0.28,0.44]] },
+  { lane: 'main', off: 0.62, spd: 24, shadow: false, gaps: [] },
+  { lane: 'main', off: 0.80, spd: 28, shadow: false, gaps: [] },
+  { lane: 'main', off: 0.50, spd: 20, shadow: false, gaps: [] },
+  { lane: 'kgd',  off: 0.20, spd: 18, shadow: true,  gaps: [[0.55,0.80]] },
+  { lane: 'kgd',  off: 0.70, spd: 22, shadow: false, gaps: [] },
+  { lane: 'gdn',  off: 0.30, spd: 24, shadow: false, gaps: [] },
+  { lane: 'gdn',  off: 0.75, spd: 26, shadow: false, gaps: [] },
+];
+const INCIDENTS = [
+  ['OCT 2023', 'Balticconnector gas pipe & cables damaged (Gulf of Finland, NE of frame)'],
+  ['NOV 2024', 'C-Lion1 data cable severed between Sweden and Öland'],
+  ['DEC 2024', 'Estlink 2 power cable damaged; tanker with dragging anchor boarded'],
+  ['JAN 2025', 'Sweden–Latvia fibre damaged; NATO launches Baltic Sentry patrols'],
+  ['2025–26', 'Poland extends escort patrols around Baltic Pipe and SwePol Link'],
+];
+const viewFleet = {
+  id: 'fleet', name: 'Shadow fleet', color: () => C.threat,
+  timeline: null,
+  desc: 'Grey-zone traffic, visualized. Aging, opaquely-owned tankers haul sanctioned Russian oil past Poland’s sea lines — and the Baltic’s cables and pipelines lie right under their keels. Watch the red ships: when their track goes hollow, the transponder is dark, and it happens suspiciously often above infrastructure.',
+  cities: ['gdansk', 'kgd', 'szczecin'],
+  rebuild() { INFRA.forEach(i => i.path.rebuild()); Object.values(LANES).forEach(p => p.rebuild()); },
+  hotspots() {
+    return INFRA.map(i => {
+      const m = i.path.at(i.path.total * 0.5);
+      return { px: [m[0], m[1]], r: 18, title: i.name, body: i.body };
+    });
+  },
+  draw(t) {
+    drawBase(this.cities);
+    for (const inf of INFRA) {
+      inf.path.stroke(withAlpha(C.infra, 0.8), 1.6, [6, 4]);
+      const m = inf.path.at(inf.path.total * inf.labelAt);
+      ctx.font = '9px ui-monospace, Menlo, monospace'; ctx.fillStyle = C.infra; ctx.textAlign = 'center';
+      ctx.fillText(inf.name.split(' (')[0], m[0], m[1] - 6);
+    }
+    for (const lane of Object.values(LANES)) lane.stroke(withAlpha(C.ink2, 0.14), 5);
+    for (const [si, sh] of SHIPS.entries()) {
+      const lane = LANES[sh.lane];
+      const prog = ((t * sh.spd) / lane.total + sh.off) % 1;
+      const dark = sh.gaps.some(([a, b]) => prog >= a && prog <= b);
+      const q = lane.at(prog * lane.total);
+      const q2 = lane.at(Math.min(lane.total, prog * lane.total + 6));
+      const ang = Math.atan2(q2[1] - q[1], q2[0] - q[0]);
+      // wake
+      ctx.beginPath(); ctx.moveTo(q[0], q[1]);
+      const wl = 16;
+      ctx.lineTo(q[0] - Math.cos(ang) * wl, q[1] - Math.sin(ang) * wl);
+      ctx.strokeStyle = withAlpha(sh.shadow ? C.threat : C.ink2, 0.30); ctx.lineWidth = 2; ctx.stroke();
+      // hull
+      ctx.save(); ctx.translate(q[0], q[1]); ctx.rotate(ang);
+      ctx.beginPath();
+      ctx.moveTo(6, 0); ctx.lineTo(2, -2.6); ctx.lineTo(-5, -2.6); ctx.lineTo(-5, 2.6); ctx.lineTo(2, 2.6);
+      ctx.closePath();
+      if (dark) {
+        ctx.strokeStyle = C.threat; ctx.lineWidth = 1.5; ctx.setLineDash([2.5, 2]); ctx.stroke(); ctx.setLineDash([]);
+      } else {
+        ctx.fillStyle = sh.shadow ? C.threat : C.ink2; ctx.fill();
+      }
+      ctx.restore();
+      if (dark) { // AIS-dark alert ring
+        const ph = (t * 1.2 + si) % 1;
+        ctx.beginPath(); ctx.arc(q[0], q[1], 6 + ph * 16, 0, 7);
+        ctx.strokeStyle = withAlpha(C.threat, (1 - ph) * 0.8); ctx.lineWidth = 1.6; ctx.stroke();
+        ctx.font = '600 8.5px ui-monospace, Menlo, monospace'; ctx.fillStyle = C.threat; ctx.textAlign = 'center';
+        ctx.fillText('AIS DARK', q[0], q[1] - 12);
+      }
+    }
+  },
+  side(tl, t) {
+    let darkCount = 0;
+    for (const sh of SHIPS) {
+      const lane = LANES[sh.lane];
+      const prog = ((t * sh.spd) / lane.total + sh.off) % 1;
+      if (sh.gaps.some(([a, b]) => prog >= a && prog <= b)) darkCount++;
+    }
+    return `
+      <h2>Shadow fleet over the cables</h2>
+      <p class="desc">${this.desc}</p>
+      <div class="readout">
+        <div class="hero-num">${darkCount}<span style="font-size:18px"> / ${SHIPS.filter(s => s.shadow).length}</span></div>
+        <div class="hero-cap">suspect tankers currently AIS-dark (modeled)</div>
+      </div>
+      <div class="legend">
+        <div class="li"><span class="sw" style="background:${C.threat}"></span>Shadow-fleet tanker (hollow = transponder off)</div>
+        <div class="li"><span class="sw" style="background:${C.ink2}"></span>Ordinary merchant traffic</div>
+        <div class="li"><span class="sw line" style="background:${C.infra}"></span>Undersea cable / pipeline</div>
+      </div>
+      <details open><summary>Incident log (reported events)</summary>
+        <table>${INCIDENTS.map(([d, txt]) =>
+          `<tr><td class="mono" style="white-space:nowrap">${d}</td><td style="text-align:left">${txt}</td></tr>`).join('')}
+        </table>
+      </details>`;
+  },
+};
+
+/* ---------- app shell ---------- */
+const views = [viewJam, viewEnergy, viewMob, viewFleet];
+let cur = 0, tl = 0, playing = true, lastSideRefresh = 0;
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (reduceMotion) playing = false;
+
+const tabsEl = document.getElementById('tabs');
+const sideEl = document.getElementById('side');
+const playBtn = document.getElementById('play');
+const scrub = document.getElementById('scrub');
+const timelabel = document.getElementById('timelabel');
+const timebar = document.getElementById('timebar');
+const tooltip = document.getElementById('tooltip');
+
+views.forEach((v, i) => {
+  const b = document.createElement('button');
+  b.setAttribute('role', 'tab');
+  b.innerHTML = `<span class="dot"></span>${v.name}`;
+  b.addEventListener('click', () => selectView(i));
+  tabsEl.appendChild(b);
+});
+function paintTabs() {
+  [...tabsEl.children].forEach((b, i) => {
+    b.setAttribute('aria-selected', String(i === cur));
+    b.querySelector('.dot').style.background = views[i].color();
+  });
+}
+
+function selectView(i) {
+  cur = i; tl = 0;
+  const v = views[cur];
+  if (v.timeline) {
+    scrub.style.display = ''; timelabel.style.display = '';
+    scrub.max = v.timeline.max; scrub.value = 0;
+    timebar.querySelector('.ambient')?.remove();
+  } else {
+    scrub.style.display = 'none'; timelabel.style.display = 'none';
+    if (!timebar.querySelector('.ambient')) {
+      const d = document.createElement('div');
+      d.className = 'ambient mono';
+      d.textContent = 'CONTINUOUS LOOP — NO TIMELINE';
+      timebar.appendChild(d);
+    }
+  }
+  paintTabs(); refreshSide(0);
+  hideTip();
+  if (reduceMotion) render(performance.now());
+}
+function refreshSide(t) {
+  const v = views[cur];
+  sideEl.innerHTML = v.side(tl, t / 1000);
+  if (v.timeline) timelabel.textContent = v.timeline.label(Math.round(tl));
+}
+
+playBtn.addEventListener('click', () => {
+  playing = !playing;
+  playBtn.textContent = playing ? '⏸' : '▶';
+  if (playing) { last = performance.now(); requestAnimationFrame(loop); }
+});
+scrub.addEventListener('input', () => {
+  tl = +scrub.value; refreshSide(performance.now());
+  if (!playing || reduceMotion) render(performance.now());
+});
+
+/* tooltips */
+function hideTip() { tooltip.style.display = 'none'; }
+canvas.addEventListener('pointermove', (e) => {
+  const r = canvas.getBoundingClientRect();
+  const x = e.clientX - r.left, y = e.clientY - r.top;
+  const spots = views[cur].hotspots();
+  let hit = null;
+  for (const s of spots) {
+    const q = s.px || proj(s.p);
+    if (Math.hypot(q[0] - x, q[1] - y) < s.r) { hit = { s, q }; break; }
+  }
+  if (!hit) { hideTip(); canvas.style.cursor = 'default'; return; }
+  canvas.style.cursor = 'pointer';
+  tooltip.innerHTML = `<div class="tt-title">${hit.s.title}</div><div class="tt-body">${hit.s.body}</div>`;
+  tooltip.style.display = 'block';
+  const tw = tooltip.offsetWidth;
+  tooltip.style.left = Math.min(W - tw - 8, Math.max(8, hit.q[0] + 12)) + 'px';
+  tooltip.style.top = Math.max(8, hit.q[1] - tooltip.offsetHeight - 10) + 'px';
+});
+canvas.addEventListener('pointerleave', hideTip);
+
+/* main loop */
+let last = performance.now();
+function render(now) {
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  views[cur].draw(now / 1000, tl);
+}
+function loop(now) {
+  const dt = Math.min(0.1, (now - last) / 1000);
+  last = now;
+  const v = views[cur];
+  if (playing && v.timeline) {
+    tl += dt * v.timeline.rate;
+    if (tl > v.timeline.max) tl = 0;
+    scrub.value = Math.round(tl);
+  }
+  render(now);
+  if (now - lastSideRefresh > 400) { lastSideRefresh = now; refreshSide(now); }
+  if (playing) requestAnimationFrame(loop);
+}
+
+window.addEventListener('resize', () => { layout(); if (!playing) render(performance.now()); });
+layout();
+selectView(0);
+if (playing) requestAnimationFrame(loop);
+else { render(performance.now()); playBtn.textContent = '▶'; }
+
+})();
+</script>
