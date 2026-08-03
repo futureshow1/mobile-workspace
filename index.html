@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1F6B5E">
+<title>Charyzma — trening komunikacji</title>
+<style>
+  :root {
+    --paper: #F5F4EF;
+    --ink: #20261F;
+    --ink-soft: #4A5248;
+    --accent: #1F6B5E;
+    --accent-ink: #FFFFFF;
+    --accent-soft: #E3EDE9;
+    --signal: #A6690F;
+    --signal-soft: #F4E9D7;
+    --line: #D9D8CF;
+    --card: #FCFBF8;
+    --done: #1F6B5E;
+    --shadow: 0 1px 3px rgba(30, 40, 34, 0.08);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #141816;
+      --ink: #E8E6DD;
+      --ink-soft: #A9B0A6;
+      --accent: #5FB8A4;
+      --accent-ink: #10201B;
+      --accent-soft: #1E2C28;
+      --signal: #D99A3D;
+      --signal-soft: #2C2419;
+      --line: #313933;
+      --card: #1C211E;
+      --done: #5FB8A4;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #141816;
+    --ink: #E8E6DD;
+    --ink-soft: #A9B0A6;
+    --accent: #5FB8A4;
+    --accent-ink: #10201B;
+    --accent-soft: #1E2C28;
+    --signal: #D99A3D;
+    --signal-soft: #2C2419;
+    --line: #313933;
+    --card: #1C211E;
+    --done: #5FB8A4;
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  }
+  :root[data-theme="light"] {
+    --paper: #F5F4EF;
+    --ink: #20261F;
+    --ink-soft: #4A5248;
+    --accent: #1F6B5E;
+    --accent-ink: #FFFFFF;
+    --accent-soft: #E3EDE9;
+    --signal: #A6690F;
+    --signal-soft: #F4E9D7;
+    --line: #D9D8CF;
+    --card: #FCFBF8;
+    --done: #1F6B5E;
+    --shadow: 0 1px 3px rgba(30, 40, 34, 0.08);
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: Charter, "Iowan Old Style", Georgia, serif;
+    font-size: 1.02rem;
+    line-height: 1.62;
+    padding-bottom: calc(4.4rem + env(safe-area-inset-bottom));
+  }
+  .ui, button, .tag, .lnum, nav, .stat b, .appbar { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+
+  .shell { max-width: 40rem; margin: 0 auto; padding: 0 1rem; }
+
+  .appbar {
+    display: flex; align-items: baseline; justify-content: space-between;
+    padding: 1.1rem 0 0.6rem;
+  }
+  .appbar h1 { font-size: 1.05rem; margin: 0; letter-spacing: 0.01em; font-weight: 700; }
+  .appbar .sub { font-size: 0.75rem; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.12em; font-weight: 600; }
+
+  /* ---- progress ring / bar ---- */
+  .hero {
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+    padding: 1rem 1.1rem; margin: 0.4rem 0 1.1rem; box-shadow: var(--shadow);
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .ring { flex: none; width: 64px; height: 64px; }
+  .ring svg { display: block; width: 100%; height: 100%; }
+  .ring .track { stroke: var(--line); }
+  .ring .fill { stroke: var(--accent); transition: stroke-dashoffset 0.4s ease; }
+  .ring text { fill: var(--ink); font-family: system-ui, sans-serif; font-size: 15px; font-weight: 700; }
+  .hero .msg { font-size: 0.95rem; }
+  .hero .msg b { display: block; font-size: 1rem; }
+  .hero .msg span { color: var(--ink-soft); font-size: 0.86rem; }
+
+  /* ---- lesson list ---- */
+  .lrow {
+    display: flex; align-items: center; gap: 0.85rem; width: 100%;
+    text-align: left; background: var(--card); color: var(--ink);
+    border: 1px solid var(--line); border-radius: 12px;
+    padding: 0.8rem 0.95rem; margin-bottom: 0.6rem; cursor: pointer;
+    font-family: inherit; font-size: 1rem; box-shadow: var(--shadow);
+  }
+  .lrow:active { transform: scale(0.99); }
+  .lnum {
+    flex: none; width: 2rem; height: 2rem; border-radius: 50%;
+    display: grid; place-items: center;
+    font-size: 0.8rem; font-weight: 700;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .lrow.done .lnum { background: var(--done); color: var(--accent-ink); }
+  .lrow .lt { flex: 1; min-width: 0; }
+  .lrow .lt b { display: block; font-weight: 600; line-height: 1.3; }
+  .lrow .lt span { font-size: 0.78rem; color: var(--ink-soft); font-family: system-ui, sans-serif; }
+  .lrow .chev { flex: none; color: var(--ink-soft); }
+
+  /* ---- lesson view ---- */
+  .back {
+    background: none; border: none; color: var(--accent); font-size: 0.9rem;
+    font-weight: 600; padding: 0.9rem 0 0.2rem; cursor: pointer; display: inline-flex; align-items: center; gap: 0.3rem;
+  }
+  .tag {
+    display: inline-block; font-size: 0.68rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--accent); background: var(--accent-soft);
+    padding: 0.22rem 0.6rem; border-radius: 99px; margin: 0.5rem 0 0.3rem;
+  }
+  article h2 { font-size: 1.5rem; line-height: 1.18; margin: 0.2rem 0 0.9rem; text-wrap: balance; }
+  article h3 { font-size: 1.02rem; margin: 1.4rem 0 0.4rem; }
+  article p { margin: 0 0 0.9rem; }
+  article ul, article ol { margin: 0 0 0.9rem; padding-left: 1.3rem; }
+  article li { margin-bottom: 0.4rem; }
+  .science {
+    color: var(--ink-soft); font-size: 0.91rem;
+    border-left: 3px solid var(--accent); padding-left: 0.85rem; margin: 1rem 0;
+  }
+  .dialog {
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+    padding: 0.8rem 1rem; margin: 0.9rem 0; font-size: 0.95rem;
+  }
+  .dialog p { margin-bottom: 0.5rem; }
+  .dialog p:last-child { margin-bottom: 0; }
+  .bad { color: var(--ink-soft); text-decoration: line-through; text-decoration-thickness: 1px; }
+  .box { border-radius: 10px; padding: 0.9rem 1.05rem; margin: 1.2rem 0 0.3rem; }
+  .box p:last-child { margin-bottom: 0; }
+  .box .bl {
+    display: block; text-transform: uppercase; letter-spacing: 0.12em;
+    font-size: 0.66rem; font-weight: 700; margin-bottom: 0.45rem;
+    font-family: system-ui, sans-serif;
+  }
+  .box.ex { background: var(--signal-soft); }
+  .box.ex .bl { color: var(--signal); }
+  .box.rule { background: var(--accent-soft); }
+  .box.rule .bl { color: var(--accent); }
+  .tbl { overflow-x: auto; margin: 0.9rem 0; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+  th, td { text-align: left; padding: 0.5rem 0.7rem 0.5rem 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-family: system-ui, sans-serif; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-soft); }
+
+  .markers { display: flex; flex-direction: column; gap: 0.55rem; margin: 1.4rem 0 1rem; }
+  .mark {
+    display: flex; align-items: center; gap: 0.7rem; width: 100%;
+    background: var(--card); color: var(--ink); border: 1px solid var(--line);
+    border-radius: 12px; padding: 0.75rem 0.95rem; font-size: 0.95rem; font-weight: 600;
+    cursor: pointer; font-family: system-ui, sans-serif;
+  }
+  .mark .cb {
+    flex: none; width: 1.35rem; height: 1.35rem; border-radius: 50%;
+    border: 2px solid var(--line); display: grid; place-items: center; color: transparent;
+  }
+  .mark.on { border-color: var(--accent); }
+  .mark.on .cb { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .lessonnav { display: flex; justify-content: space-between; gap: 0.6rem; margin: 1rem 0 1.4rem; }
+  .lessonnav button {
+    background: var(--card); border: 1px solid var(--line); color: var(--ink);
+    border-radius: 10px; padding: 0.6rem 1rem; font-size: 0.9rem; font-weight: 600; cursor: pointer;
+  }
+  .lessonnav button:disabled { opacity: 0.35; cursor: default; }
+
+  /* ---- flashcards ---- */
+  .cardstage { perspective: 1200px; margin: 1rem 0 0.9rem; }
+  .fcard {
+    position: relative; width: 100%; min-height: 15rem; cursor: pointer;
+    transform-style: preserve-3d; transition: transform 0.45s ease;
+    border: none; background: none; padding: 0; font-family: inherit; color: var(--ink);
+    display: block; text-align: center;
+  }
+  .fcard.flipped { transform: rotateY(180deg); }
+  @media (prefers-reduced-motion: reduce) {
+    .fcard { transition: none; }
+  }
+  .face {
+    position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden;
+    background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+    box-shadow: var(--shadow); padding: 1.4rem 1.3rem;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.6rem;
+  }
+  .face.backface { transform: rotateY(180deg); background: var(--accent-soft); border-color: transparent; }
+  .face .fl { font-family: system-ui, sans-serif; font-size: 0.66rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.13em; color: var(--accent); }
+  .face .ft { font-size: 1.15rem; line-height: 1.45; text-wrap: balance; }
+  .cardbtns { display: flex; gap: 0.6rem; }
+  .cardbtns button {
+    flex: 1; border-radius: 12px; padding: 0.8rem; font-size: 0.95rem; font-weight: 700;
+    cursor: pointer; border: 1px solid var(--line); background: var(--card); color: var(--ink);
+  }
+  .cardbtns .know { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .cardmeta { text-align: center; font-family: system-ui, sans-serif; font-size: 0.8rem; color: var(--ink-soft); margin-bottom: 0.4rem; }
+  .hint { text-align: center; font-family: system-ui, sans-serif; font-size: 0.78rem; color: var(--ink-soft); margin: 0.5rem 0 1rem; }
+
+  /* ---- progress screen ---- */
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin: 0.6rem 0 1.1rem; }
+  .stat {
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 0.8rem 0.95rem; box-shadow: var(--shadow);
+  }
+  .stat b { display: block; font-size: 1.5rem; font-variant-numeric: tabular-nums; }
+  .stat span { font-size: 0.76rem; color: var(--ink-soft); font-family: system-ui, sans-serif; text-transform: uppercase; letter-spacing: 0.1em; }
+  .plist { list-style: none; margin: 0 0 1.2rem; padding: 0; }
+  .plist li {
+    display: flex; align-items: center; gap: 0.6rem;
+    padding: 0.55rem 0.2rem; border-bottom: 1px solid var(--line); font-size: 0.93rem;
+  }
+  .pdot { flex: none; width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--line); }
+  .pdot.half { background: var(--signal); }
+  .pdot.full { background: var(--done); }
+  .plist .pstate { margin-left: auto; font-family: system-ui, sans-serif; font-size: 0.72rem; color: var(--ink-soft); flex: none; }
+  .danger {
+    background: none; border: 1px solid var(--line); color: var(--ink-soft);
+    border-radius: 10px; padding: 0.55rem 1rem; font-size: 0.85rem; cursor: pointer; margin-bottom: 2rem;
+  }
+
+  /* ---- bottom nav ---- */
+  nav.tabs {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
+    background: var(--card); border-top: 1px solid var(--line);
+    display: flex; justify-content: space-around;
+    padding: 0.35rem 0 calc(0.35rem + env(safe-area-inset-bottom));
+  }
+  nav.tabs button {
+    background: none; border: none; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 0.15rem;
+    color: var(--ink-soft); font-size: 0.68rem; font-weight: 600; letter-spacing: 0.04em;
+    padding: 0.3rem 1.1rem; border-radius: 10px;
+  }
+  nav.tabs button.active { color: var(--accent); }
+  nav.tabs svg { width: 22px; height: 22px; }
+  button:focus-visible, .lrow:focus-visible, .fcard:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .screen { display: none; }
+  .screen.active { display: block; }
+  em { color: var(--ink); }
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="appbar" id="appbar">
+    <h1>Charyzma</h1>
+    <span class="sub">Trening komunikacji</span>
+  </div>
+
+  <!-- LISTA LEKCJI -->
+  <div class="screen active" id="screen-list">
+    <div class="hero">
+      <div class="ring" id="ringbox"></div>
+      <div class="msg" id="heromsg"></div>
+    </div>
+    <div id="lessonlist"></div>
+  </div>
+
+  <!-- WIDOK LEKCJI -->
+  <div class="screen" id="screen-lesson">
+    <button class="back" id="backbtn">‹ Wszystkie lekcje</button>
+    <article id="lessonbody"></article>
+    <div class="markers" id="markers"></div>
+    <div class="lessonnav">
+      <button id="prevbtn">‹ Poprzednia</button>
+      <button id="nextbtn">Następna ›</button>
+    </div>
+  </div>
+
+  <!-- FISZKI -->
+  <div class="screen" id="screen-cards">
+    <p class="tag" style="margin-top:1rem">Powtórka</p>
+    <h2 style="font-size:1.4rem; margin:0.2rem 0 0.2rem">Fiszki: złote zasady i techniki</h2>
+    <p class="hint">Dotknij karty, żeby ją odwrócić. „Umiem" chowa kartę do końca sesji, „Powtórz" wraca do niej później.</p>
+    <div class="cardmeta" id="cardmeta"></div>
+    <div class="cardstage">
+      <button class="fcard" id="fcard" aria-live="polite">
+        <span class="face"><span class="fl" id="cf-label"></span><span class="ft" id="cf-front"></span></span>
+        <span class="face backface"><span class="fl">Odpowiedź</span><span class="ft" id="cf-back"></span></span>
+      </button>
+    </div>
+    <div class="cardbtns">
+      <button id="againbtn">Powtórz</button>
+      <button class="know" id="knowbtn">Umiem</button>
+    </div>
+  </div>
+
+  <!-- POSTĘP -->
+  <div class="screen" id="screen-progress">
+    <p class="tag" style="margin-top:1rem">Postęp</p>
+    <h2 style="font-size:1.4rem; margin:0.2rem 0 0.6rem">Twój trening</h2>
+    <div class="stats" id="statgrid"></div>
+    <ul class="plist" id="plist"></ul>
+    <button class="danger" id="resetbtn">Wyczyść cały postęp</button>
+  </div>
+</div>
+
+<nav class="tabs" id="tabs">
+  <button data-tab="list" class="active" aria-label="Lekcje">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+    Lekcje
+  </button>
+  <button data-tab="cards" aria-label="Fiszki">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="15" height="13" rx="2"/><path d="M7 6V4a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2h-2"/></svg>
+    Fiszki
+  </button>
+  <button data-tab="progress" aria-label="Postęp">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-6 3 3 5-8"/></svg>
+    Postęp
+  </button>
+</nav>
+
+<script>
+'use strict';
+
+/* ============ DANE KURSU ============ */
+var LESSONS = [
+{ id:'l0', n:'Wstęp', t:'Trzy filary Arystotelesa', min:4, rule:'Charyzma to dawkowanie trzech filarów naraz: wiarygodności, emocji i logiki.', html:
+'<p>Cała retoryka od 2300 lat opiera się na trzech filarach. Kiedy ktoś Cię nie słucha, zawsze brakuje jednego z nich:</p>'+
+'<ul><li><em>Ethos</em> — wiarygodność. „Czy mogę ci ufać?" Budujesz go spójnością słów i zachowania, przyznawaniem się do niewiedzy i spokojem.</li>'+
+'<li><em>Pathos</em> — emocje. „Czy mnie to obchodzi?" Budujesz go historiami i konkretem, nie abstrakcją.</li>'+
+'<li><em>Logos</em> — logika. „Czy to ma sens?" Budujesz go strukturą: teza, argument, przykład.</li></ul>'+
+'<p>Większość ludzi mówi samym logosem — i dziwi się, że nikt ich nie słucha. Charyzma to umiejętność dawkowania wszystkich trzech. Każda kolejna lekcja ćwiczy któryś z filarów.</p>'+
+'<div class="box ex"><span class="bl">Ćwiczenie na dziś</span><p>Przypomnij sobie osobę, której zawsze chętnie słuchasz. Nazwij, który filar ma najsilniejszy — i którego najbardziej brakuje Tobie.</p></div>'
+},
+{ id:'l1', n:'Lekcja 1', t:'Pierwsze wrażenie', min:6, rule:'Najpierw pokaż, że jesteś po ich stronie, dopiero potem — że jesteś dobry w tym, co robisz.', html:
+'<p>Ludzie oceniają Cię w ciągu sekund i potem szukają potwierdzenia tej oceny (efekt halo). Dobra wiadomość: pierwsze wrażenie ocenia się na dwóch osiach i obie są w Twojej kontroli.</p>'+
+'<p class="science">Amy Cuddy (Harvard) wykazała, że ludzi oceniamy najpierw na osi <em>ciepła</em> („czy jesteś przyjazny?"), a dopiero potem <em>kompetencji</em> („czy jesteś zdolny?"). Większość ludzi próbuje najpierw pokazać kompetencję — a powinni zacząć od ciepła.</p>'+
+'<h3>Technika: sekwencja otwarcia</h3>'+
+'<ol><li><em>Uśmiech z opóźnieniem.</em> Spójrz na osobę, przez pół sekundy „rozpoznaj ją", dopiero wtedy się uśmiechnij. Taki uśmiech odbierany jest jako szczery; „przyklejony" z góry — jako maska.</li>'+
+'<li><em>Imię w pierwszej minucie.</em> „Miło mi, Jan" — a potem raz użyj imienia rozmówcy w naturalnym zdaniu. Nie częściej.</li>'+
+'<li><em>Pierwsze pytanie o rozmówcę, nie o siebie.</em> Osoba, która pyta, jest oceniana jako bardziej sympatyczna (Huang i in., Harvard 2017).</li></ol>'+
+'<div class="box ex"><span class="bl">Ćwiczenie na dziś</span><p>Przy najbliższych trzech powitaniach zastosuj sekwencję: kontakt wzrokowy → pół sekundy → uśmiech → pytanie o drugą osobę. Zwróć uwagę, jak zmienia się ton odpowiedzi.</p></div>'
+},
+{ id:'l2', n:'Lekcja 2', t:'Buduj zaufanie głosem', min:6, rule:'Nie musisz mówić głośniej ani mądrzej. Wystarczy wolniej, niżej i z ciszą zamiast „yyy".', html:
+'<p>Głos to instrument, na którym większość ludzi nigdy świadomie nie grała. Trzy parametry robią 90% różnicy:</p>'+
+'<ul><li><em>Tempo.</em> Zdenerwowanie przyspiesza mowę. Osoby odbierane jako pewne siebie zwalniają w kluczowych momentach — zwolnienie sygnalizuje: „nie boję się, że mi przerwiesz".</li>'+
+'<li><em>Pauza.</em> Pauza przed ważnym zdaniem tworzy napięcie; pauza po nim daje mu wybrzmieć. Amatorzy zapełniają ciszę „yyy"; profesjonaliści zostawiają ją pustą.</li>'+
+'<li><em>Intonacja opadająca.</em> Kończenie zdań tonem w górę (jak pytanie?) sygnalizuje niepewność. Kończ twierdzenia tonem lekko w dół — najprostsza pojedyncza zmiana, jaka istnieje.</li></ul>'+
+'<p class="science">Negocjator FBI Chris Voss nazywa spokojny, niski, powolny ton „głosem DJ-a late-night FM" — słuchacz mimowolnie dostraja swój stan emocjonalny do głosu rozmówcy.</p>'+
+'<div class="box ex"><span class="bl">Ćwiczenie na dziś</span><p>Nagraj 60 sekund opowiadania o swoim dniu. Policz „yyy" i zdania kończone w górę. Nagraj drugą wersję, w której każde „yyy" zastępujesz ciszą. Porównaj.</p></div>'
+},
+{ id:'l3', n:'Lekcja 3', t:'Pewność siebie wygrywa', min:7, rule:'Nie czekaj, aż poczujesz pewność, żeby działać. Działaj — pewność przychodzi po, nie przed.', html:
+'<p>Pewność siebie nie jest cechą — jest stanem, który można wywołać.</p>'+
+'<h3>1. Przeetykietuj stres jako ekscytację</h3>'+
+'<p>Trema i ekscytacja fizjologicznie są tym samym: szybsze serce, adrenalina, płytszy oddech. Różni je tylko etykieta.</p>'+
+'<p class="science">Alison Wood Brooks (Harvard) wykazała, że osoby mówiące sobie przed występem „jestem podekscytowany" zamiast „muszę się uspokoić" wypadały obiektywnie lepiej.</p>'+
+'<h3>2. Przygotuj pierwsze 30 sekund co do słowa</h3>'+
+'<p>Lęk jest największy na starcie. Jeśli pierwsze dwa–trzy zdania masz opanowane do automatyzmu, przejeżdżasz przez szczyt stresu „na pamięci mięśniowej". Reszty nie ucz się na pamięć — tylko otwarcia.</p>'+
+'<h3>3. Ciało prowadzi głowę</h3>'+
+'<p>Rozluźnione ramiona, ciężar na obu stopach, wydech dłuższy niż wdech (4 s wdech, 6 s wydech) — wydłużony wydech aktywuje układ przywspółczulny, czyli hamulec stresu. Działa w trakcie rozmowy, niezauważalnie.</p>'+
+'<div class="box ex"><span class="bl">Ćwiczenie na dziś</span><p>Przed następną stresującą rozmową: 3 cykle oddechu 4/6, potem powiedz sobie „to ekscytacja, nie strach". Wejdź z gotowym pierwszym zdaniem.</p></div>'
+},
+{ id:'l4', n:'Lekcja 4', t:'Zabieraj głos w każdym pomieszczeniu', min:7, rule:'Teza najpierw. Jeśli zaczynasz od tła, ludzie przestają słuchać, zanim dojdziesz do sedna.', html:
+'<p>Ludzie nie pamiętają, jak często mówisz — pamiętają, czy to, co mówisz, ma kształt.</p>'+
+'<h3>Struktura PREP — kształt w 20 sekund</h3>'+
+'<div class="tbl"><table><tr><th>Krok</th><th>Co mówisz</th><th>Przykład</th></tr>'+
+'<tr><td><em>P</em>oint</td><td>Teza</td><td>„Uważam, że powinniśmy przesunąć termin."</td></tr>'+
+'<tr><td><em>R</em>eason</td><td>Powód</td><td>„Bo testy wykryły błąd, którego nie zdążymy naprawić."</td></tr>'+
+'<tr><td><em>E</em>xample</td><td>Konkret</td><td>„Wczoraj taki sam błąd kosztował nas dwa dni."</td></tr>'+
+'<tr><td><em>P</em>oint</td><td>Teza znów</td><td>„Dlatego proponuję piątek zamiast środy."</td></tr></table></div>'+
+'<p>Struktura wykorzystuje <em>efekt pierwszeństwa i świeżości</em>: zapamiętujemy początek i koniec. PREP umieszcza tezę w obu miejscach.</p>'+
+'<h3>Jak wejść do dyskusji, gdy wszyscy mówią</h3>'+
+'<ul><li>Zacznij od nawiązania: „Dokładnie o tym, co powiedziała Kasia…" — nikt nie przerywa komuś, kto go chwali.</li>'+
+'<li>Podnieś dłoń na wysokość klatki piersiowej i weź wyraźny wdech — ludzie podświadomie robią miejsce.</li>'+
+'<li>Pierwsze zdanie powiedz odrobinę głośniej, potem wróć do normalnego tonu.</li></ul>'+
+'<div class="box ex"><span class="bl">Ćwiczenie na dziś</span><p>Na najbliższym spotkaniu sformułuj jedną wypowiedź dokładnie w strukturze PREP. Zapisz ją wcześniej w 4 linijkach, jeśli trzeba.</p></div>'
+},
+{ id:'l5', n:'Lekcja 5', t:'Sekrety storytellingu', min:8, rule:'Nie ma nudnych tematów — są historie bez komplikacji. Zawsze zaczynaj od problemu.', html:
+'<p>Mózg nie zapamiętuje danych — zapamiętuje historie. Dane przekonują umysł, historia porusza decyzję.</p>'+
+'<h3>Szkielet: Sytuacja → Komplikacja → Zwrot → Puenta</h3>'+
+'<ol><li><em>Sytuacja</em> — jedno zdanie osadzenia. „W zeszły wtorek, pięć minut przed prezentacją dla zarządu…"</li>'+
+'<li><em>Komplikacja</em> — coś idzie nie tak. To silnik historii. „…padł mi laptop."</li>'+
+'<li><em>Zwrot</em> — decyzja lub odkrycie. „Wziąłem flipchart i narysowałem całość ręcznie."</li>'+
+'<li><em>Puenta</em> — co z tego wynika. „Najlepiej odebrana prezentacja w roku — bo patrzyłem na ludzi, nie na slajdy."</li></ol>'+
+'<h3>Trzy zasady wykonania</h3>'+
+'<ul><li><em>Konkret zamiast abstrakcji.</em> Nie „miałem trudny okres", tylko „przez trzy tygodnie jadłem obiady o 23:00". Szczegół sensoryczny uruchamia u słuchacza symulację sceny.</li>'+
+'<li><em>Czas teraźniejszy w kulminacji.</em> „I nagle wstaje, patrzy na mnie i mówi…" — wciąga słuchacza do środka.</li>'+
+'<li><em>Maksymalnie 90 sekund.</em> Anegdota ma być pociskiem, nie serialem.</li></ul>'+
+'<div class="box ex"><span class="bl">Ćwiczenie na dziś</span><p>Wybierz jedno wydarzenie z ostatniego tygodnia i ułóż z niego historię w 4 zdaniach — po jednym na każdy element szkieletu. Opowiedz ją dziś komuś.</p></div>'
+},
+{ id:'l6', n:'Lekcja 6', t:'Mowa ciała', min:7, rule:'Nie graj mowy ciała. Usuń bariery i zwolnij ruchy — reszta wyniknie ze spokoju.', html:
+'<p>Najpierw mit: „93% komunikacji to mowa ciała" to błędna interpretacja badań Mehrabiana — dotyczyły tylko komunikowania emocji. Ciało nie zastąpi słów. Ale decyduje, czy słowom się <em>wierzy</em>.</p>'+
+'<h3>Pięć nawyków, które robią różnicę</h3>'+
+'<ul><li><em>Otwarta klatka piersiowa.</em> Telefon, kubek, skrzyżowane ręce — wszystko między Tobą a rozmówcą czytane jest jako bariera.</li>'+
+'<li><em>Stopy w stronę rozmówcy.</em> Ludzie kierują stopy tam, gdzie chcą iść. Rozmowa „przez ramię" sygnalizuje: „zaraz ucieknę".</li>'+
+'<li><em>Gesty na wysokości tułowia.</em> Dłonie widoczne, otwarte, rysujące to, o czym mówisz. Ukryte dłonie obniżają zaufanie.</li>'+
+'<li><em>Powolne ruchy głowy.</em> Szybkie kiwanie sygnalizuje podporządkowanie. Wolne, pojedyncze kiwnięcie — zrozumienie i status.</li>'+
+'<li><em>Kontakt wzrokowy 60–70%.</em> Patrz podczas słuchania, odrywaj wzrok naturalnie podczas formułowania myśli.</li></ul>'+
+'<div class="box ex"><span class="bl">Ćwiczenie na dziś</span><p>Przez jeden dzień pilnuj tylko jednej rzeczy: nic między Tobą a rozmówcą (odłóż telefon, opuść ręce). Jedna zmiana naraz.</p></div>'
+},
+{ id:'l7', n:'Lekcja 7', t:'Czytaj ludzi jak profesjonalista', min:7, rule:'Sygnał niewerbalny to nie odpowiedź — to wskazówka, gdzie zadać pytanie.', html:
+'<p>Profesjonaliści nie czytają pojedynczych gestów. Czytają <em>zmiany względem linii bazowej</em>.</p>'+
+'<h3>Metoda trzech kroków</h3>'+
+'<ol><li><em>Ustal baseline.</em> Jak ta osoba zachowuje się, gdy jest swobodna? Pierwsze minuty służą kalibracji, nie ocenie.</li>'+
+'<li><em>Wypatruj odchyleń.</em> Ktoś gadatliwy nagle milknie przy jednym temacie; ktoś spokojny zaczyna bawić się długopisem. Nie wiesz jeszcze <em>co</em> to znaczy — wiesz <em>gdzie</em> kopać.</li>'+
+'<li><em>Czytaj klastry.</em> Skrzyżowane ręce mogą znaczyć „zimno mi". Ale skrzyżowane ręce + cofnięcie tułowia + krótkie odpowiedzi — to klaster wycofania. Minimum trzy sygnały naraz.</li></ol>'+
+'<p class="science">Paul Ekman (badania nad mikroekspresjami) podkreślał: mikroekspresja mówi, ŻE ktoś coś czuje — nie DLACZEGO. Odchylenie od baseline to zaproszenie do pytania, nie do wyroku.</p>'+
+'<div class="box ex"><span class="bl">Ćwiczenie na dziś</span><p>W jednej rozmowie przez 2 minuty kalibruj baseline (tempo, gesty, głośność). Zauważ jedno odchylenie i zamiast interpretować — dopytaj: „Widzę, że przy tym temacie się zatrzymałeś. Co o tym myślisz?"</p></div>'
+},
+{ id:'l8', n:'Lekcja 8', t:'Trudny feedback w 40 sekund', min:7, rule:'Opisuj to, co zarejestrowałaby kamera — nigdy to, co „wiesz" o czyichś intencjach.', html:
+'<p>Feedback rani, gdy atakuje tożsamość („jesteś niesolidny"). Działa, gdy opisuje zachowanie i skutek.</p>'+
+'<h3>Model SBI: Sytuacja → Zachowanie → Wpływ</h3>'+
+'<div class="dialog"><p><span class="bad">„Jesteś wiecznie nieprzygotowany i przez ciebie wyszliśmy na amatorów."</span></p>'+
+'<p>„Na wczorajszym spotkaniu <em>(sytuacja)</em> nie miałeś liczb, o które prosiłem w piątek <em>(zachowanie)</em>. Klient spytał, czy panujemy nad projektem — musiałem improwizować <em>(wpływ)</em>. Jak to zabezpieczymy na przyszły raz?"</p></div>'+
+'<ul><li><em>Sytuacja</em> konkretna — nie „ostatnio", tylko „wczoraj na spotkaniu". „Zawsze" i „nigdy" natychmiast uruchamiają obronę.</li>'+
+'<li><em>Zachowanie</em> — to, co widziała kamera. Nie intencje, nie cechy charakteru.</li>'+
+'<li><em>Wpływ</em> — co to spowodowało, także dla Ciebie. Tego nie da się podważyć.</li>'+
+'<li>Zakończ pytaniem o rozwiązanie — zamienia konfrontację we współpracę.</li></ul>'+
+'<p>Unikaj „kanapki" (pochwała–krytyka–pochwała): ludzie uczą się, że Twoja pochwała zwiastuje cios, i przestają wierzyć w obie.</p>'+
+'<div class="box ex"><span class="bl">Ćwiczenie na dziś</span><p>Przypomnij sobie feedback, który odkładasz. Zapisz go w trzech zdaniach SBI + pytanie. Samo zapisanie zwykle pokazuje, że rozmowa jest łatwiejsza, niż się wydawała.</p></div>'
+},
+{ id:'l9', n:'Lekcja 9', t:'Trudni ludzie — z głową', min:7, rule:'Nie da się jednocześnie krzyczeć i czuć się wysłuchanym. Daj drugie — zniknie pierwsze.', html:
+'<p>Z osobą wzburzoną nie wygrywa się argumentami — mózg w pobudzeniu emocjonalnym gorzej przetwarza logikę. Najpierw obniż temperaturę.</p>'+
+'<h3>1. Etykietowanie emocji (labeling)</h3>'+
+'<p>Nazwij na głos emocję rozmówcy: „Widzę, że to cię naprawdę zdenerwowało". Neurobiologicznie działa: nazwanie emocji zmniejsza aktywność ciała migdałowatego. Chris Voss zbudował na tym metodę negocjacji FBI. Ważne: „widzę, że…", nie „rozumiem cię".</p>'+
+'<h3>2. Pytania zamiast tarczy</h3>'+
+'<p>Na atak nie odpowiadaj obroną (eskaluje), tylko spokojnym pytaniem o konkret: „Co dokładnie powinno się wydarzyć, żebyś uznał, że to naprawione?" Pytanie przełącza z trybu ataku w tryb myślenia.</p>'+
+'<h3>3. Szara skała dla manipulantów</h3>'+
+'<p>Wobec osoby, która prowokuje dla reakcji: odpowiadaj krótko, neutralnie, nudno. „Możliwe." „Rozumiem, że tak to widzisz." Manipulacja żywi się Twoją reakcją — bez paliwa gaśnie.</p>'+
+'<div class="box ex"><span class="bl">Ćwiczenie na dziś</span><p>Gdy ktoś podniesie głos, zamiast się bronić powiedz jedno zdanie etykietujące: „Widzę, że to cię mocno poruszyło". Obserwuj temperaturę rozmowy.</p></div>'
+},
+{ id:'l10', n:'Lekcja 10', t:'Mów „nie" i bądź lubiany', min:6, rule:'Szybkie, ciepłe „nie" buduje więcej szacunku niż powolne, wymęczone „tak".', html:
+'<p>Boimy się odmawiać, bo przeceniamy koszt odmowy. Badania Vanessy Bohns pokazują, że proszący spodziewa się „nie" znacznie częściej, niż sądzimy. Szkodzi nie odmowa — tylko wykręty, zwlekanie i zniknięcie.</p>'+
+'<h3>Formuła: uznanie + „nie" + alternatywa</h3>'+
+'<div class="dialog"><p><span class="bad">„No nie wiem… może… zobaczę, odezwę się."</span> (i tydzień ciszy)</p>'+
+'<p>„Cieszę się, że o mnie pomyślałeś <em>(uznanie)</em>. Nie wezmę tego — mam pełny tydzień i zrobiłbym to słabo <em>(czyste „nie")</em>. Mogę polecić Ci Marka, siedzi w temacie <em>(alternatywa)</em>."</p></div>'+
+'<ul><li><em>Jeden powód, nie pięć.</em> Każdy dodatkowy to zaproszenie do negocjacji.</li>'+
+'<li><em>Nie przepraszaj nadmiernie.</em> Inaczej zmuszasz rozmówcę, żeby pocieszał Ciebie.</li>'+
+'<li><em>Zdarta płyta na nacisk.</em> Powtórz to samo zdanie spokojnie, tymi samymi słowami. Dwa–trzy razy kończą temat.</li>'+
+'<li><em>Alternatywa tylko, gdy szczera</em> — nie jako wata.</li></ul>'+
+'<div class="box ex"><span class="bl">Ćwiczenie na dziś</span><p>Odmów jednej małej rzeczy, na którą normalnie zgodziłbyś się z grzeczności. Użyj formuły: uznanie + jedno zdanie + ewentualna alternatywa.</p></div>'
+},
+{ id:'l11', n:'Lekcja 11', t:'Przerywaj płynnie', min:6, rule:'Ludzie nie mają żalu, że im przerwano — mają żal, że ich nie usłyszano. Przerywaj parafrazą.', html:
+'<p>Czasem trzeba przerwać — gadule, dygresji, spotkaniu, które płonie. Sztuka polega na tym, by przerwać <em>osobie</em>, nie odbierając jej <em>twarzy</em>.</p>'+
+'<h3>Trzy wejścia, od najmiększego</h3>'+
+'<ol><li><em>Przez imię.</em> Mózg priorytetowo przetwarza własne imię: „Marku — " (pauza) „— chcę się upewnić, że zdążymy z drugim tematem."</li>'+
+'<li><em>Przez parafrazę.</em> Pierwszym zdaniem oddajesz to, co powiedział rozmówca: „Czyli kluczowe jest, żeby klient zobaczył to przed piątkiem — złapałem. Żeby to się udało, przejdźmy do budżetu." Rozmówca czuje się wysłuchany, więc nie walczy o głos.</li>'+
+'<li><em>Przez metakomunikat.</em> Mówisz o rozmowie zamiast o temacie: „Zatrzymam nas na chwilę — mamy 10 minut, a dwa punkty przed nami."</li></ol>'+
+'<p>Do tego gest: uniesiona dłoń otwartą stroną (nie palec!), lekkie pochylenie i wdech. Większość ludzi oddaje głos, zanim skończysz pierwsze słowo.</p>'+
+'<div class="box ex"><span class="bl">Ćwiczenie na dziś</span><p>Przećwicz wejście przez parafrazę w luźnej rozmowie: przerwij komuś życzliwie, zaczynając od streszczenia jego myśli. Zauważ, że nikt się nie obraża.</p></div>'
+},
+{ id:'l12', n:'Lekcja 12', t:'Rozładuj każdy konflikt', min:8, rule:'W konflikcie wygrywa ten, kto pierwszy przestanie walczyć o rację i zapyta o potrzebę.', html:
+'<p>John Gottman, obserwując tysiące par, przewidywał rozpad relacji z ponad 90% trafnością. Te same mechanizmy działają w pracy i przyjaźni.</p>'+
+'<h3>Miękki start decyduje o wszystkim</h3>'+
+'<p class="science">Po pierwszych minutach rozmowy można przewidzieć jej wynik: rozmowa zaczęta ostro („ty znowu…") prawie nigdy nie kończy się dobrze. Zacznij od „ja" i konkretu: „Zmartwiłem się, kiedy zobaczyłem maila" zamiast „Czemu znowu mnie pominąłeś?".</p>'+
+'<h3>Czterej jeźdźcy — czego nie robić nigdy</h3>'+
+'<ul><li><em>Krytyka osoby</em> zamiast zachowania → wróć do lekcji 8.</li>'+
+'<li><em>Pogarda</em> (sarkazm, przewracanie oczami) → najsilniejszy predyktor rozpadu relacji. Zero tolerancji u siebie.</li>'+
+'<li><em>Defensywność</em> („a bo ty…") → weź odpowiedzialność za choćby 5% problemu: „Masz rację, że powiedziałem o tym za późno". To rozbraja.</li>'+
+'<li><em>Mur milczenia</em> → jeśli się „wyłączasz", powiedz wprost: „Potrzebuję 20 minut przerwy, wrócę i dokończymy" — i wróć.</li></ul>'+
+'<h3>Szukaj interesu pod stanowiskiem</h3>'+
+'<p>Stanowiska („chcę X!") bywają nie do pogodzenia; interesy pod nimi — prawie zawsze tak. Pytanie-klucz: „Co jest dla ciebie w tym najważniejsze?"</p>'+
+'<div class="box ex"><span class="bl">Ćwiczenie na dziś</span><p>Przypomnij sobie ostatnie spięcie. Zapisz swoje pierwsze zdanie — i przepisz je na miękki start („ja" + konkret + uczucie). Miej tę wersję gotową na następny raz.</p></div>'
+},
+{ id:'l13', n:'Lekcja 13', t:'Słuchaj jak lider', min:6, rule:'Mów tak, żeby Cię słuchano — ale słuchaj tak, żeby ludzie chcieli wracać.', html:
+'<p>Paradoks charyzmy: najbardziej charyzmatyczni to nie ci, po których myślisz „jaki błyskotliwy" — to ci, po których myślisz „jaki JA byłem przy nim błyskotliwy".</p>'+
+'<h3>Looping — pętla potwierdzenia</h3>'+
+'<ol><li>Słuchasz do końca, nie układając w głowie odpowiedzi.</li>'+
+'<li>Parafrazujesz sedno: „Czyli najbardziej martwi cię, że…"</li>'+
+'<li>Sprawdzasz: „Dobrze złapałem?" — i słuchasz poprawki.</li></ol>'+
+'<p>Dopiero po zamknięciu pętli mówisz swoje. Ludzie, wobec których zastosowano looping, oceniają rozmówcę jako bardziej godnego zaufania — nawet gdy się z nimi nie zgadza.</p>'+
+'<h3>Trzy nawyki słuchacza wysokiej klasy</h3>'+
+'<ul><li><em>Pytania pogłębiające zamiast zmiany tematu.</em> „Co było w tym najtrudniejsze?" zamiast „A u mnie…". Rozmowa to nie ping-pong anegdot.</li>'+
+'<li><em>Wytrzymaj 2 sekundy ciszy</em> po tym, jak ktoś skończy. Zwykle wtedy pada najważniejsze zdanie.</li>'+
+'<li><em>Zapamiętuj szczegóły i wracaj do nich.</em> Jedno pytanie tydzień później buduje więcej relacji niż godzina small talku.</li></ul>'+
+'<div class="box ex"><span class="bl">Ćwiczenie na dziś</span><p>W jednej rozmowie: zanim powiesz cokolwiek od siebie, najpierw sparafrazuj i zadaj jedno pytanie pogłębiające. Cała rozmowa, bez wyjątków.</p></div>'
+},
+{ id:'l14', n:'Bonus', t:'Mistrzostwo small talku', min:8, rule:'Nie musisz być interesujący. Wystarczy, że będziesz zainteresowany.', html:
+'<p>Small talk to nie „gadanie o pogodzie" — to rytuał kalibracji: dwoje ludzi sprawdza, czy rozmowa jest bezpieczna, zanim przejdzie głębiej. Kto go pomija, wypada zimno; kto w nim utknie — płytko. Sztuką jest przejście.</p>'+
+'<h3>Metoda ARE: zaczep → ujawnij → przejdź</h3>'+
+'<ol><li><em>Anchor (kotwica)</em> — skomentuj wspólny kontekst: „Ta kolejka chyba nigdy się nie skończy", „Pierwszy raz na tej konferencji?"</li>'+
+'<li><em>Reveal (ujawnienie)</em> — dodaj coś o sobie; to zaproszenie do wzajemności: „Ja przyjechałem głównie dla wykładu o negocjacjach".</li>'+
+'<li><em>Encourage (zachęta)</em> — otwarte pytanie: „A co ciebie tu ściągnęło?"</li></ol>'+
+'<h3>Drabina pytań: jak zejść głębiej</h3>'+
+'<p>Fakty → doświadczenia → opinie → wartości. Nie skacz od razu na górę:</p>'+
+'<div class="dialog"><p>„Czym się zajmujesz?" <em>(fakt)</em> → „Co cię do tego przyciągnęło?" <em>(doświadczenie)</em> → „Co w tym jest najlepsze, a czego ludzie nie widzą?" <em>(opinia)</em> → i nagle rozmawiacie naprawdę.</p></div>'+
+'<p class="science">W badaniu z Harvardu (Huang i in., 2017) osoby zadające więcej pytań pogłębiających były istotnie częściej lubiane — a mimo to zadajemy ich za mało, bo skupiamy się na tym, co sami powiemy.</p>'+
+'<h3>Wyjście z klasą</h3>'+
+'<p>Docenienie + powód + przyszłość: „Świetnie się rozmawiało — muszę złapać organizatora, zanim zniknie. Znajdę cię na LinkedIn?"</p>'+
+'<div class="box ex"><span class="bl">Ćwiczenie na dziś</span><p>Zainicjuj jedną krótką rozmowę metodą ARE (kolejka, winda, kuchnia w pracy). Cel minimum: kotwica + ujawnienie + jedno otwarte pytanie.</p></div>'
+}
+];
+
+var EXTRA_CARDS = [
+{ l:'Technika', q:'Jak zbudować wypowiedź, która ma kształt? (4 kroki)', a:'PREP: Point (teza) → Reason (powód) → Example (konkret) → Point (teza jeszcze raz).' },
+{ l:'Technika', q:'Szkielet każdej dobrej historii?', a:'Sytuacja → Komplikacja → Zwrot → Puenta. Silnikiem jest komplikacja — bez problemu nie ma opowieści.' },
+{ l:'Technika', q:'Jak dać trudny feedback bez ranienia?', a:'SBI: Sytuacja (konkretna) → Zachowanie (to, co widziała kamera) → Wpływ (skutek, także dla Ciebie) + pytanie o rozwiązanie.' },
+{ l:'Technika', q:'Jak zacząć small talk z nieznajomym?', a:'ARE: Anchor (skomentuj wspólny kontekst) → Reveal (ujawnij coś o sobie) → Encourage (otwarte pytanie).' },
+{ l:'Technika', q:'Jak uspokoić wzburzonego rozmówcę jednym zdaniem?', a:'Etykietowanie: nazwij jego emocję. „Widzę, że to cię naprawdę zdenerwowało." Nazwanie emocji wycisza ciało migdałowate.' },
+{ l:'Technika', q:'Jak słuchać, żeby budować zaufanie? (3 kroki)', a:'Looping: wysłuchaj do końca → sparafrazuj sedno → sprawdź „dobrze złapałem?". Dopiero potem mów swoje.' },
+{ l:'Technika', q:'Czterej jeźdźcy Gottmana — czego nie robić w konflikcie?', a:'Krytyka osoby, pogarda, defensywność, mur milczenia. Pogarda jest najgroźniejsza.' },
+{ l:'Technika', q:'Oddech, który wyłącza stres w trakcie rozmowy?', a:'Wydech dłuższy niż wdech: 4 sekundy wdechu, 6 wydechu. Wydłużony wydech aktywuje układ przywspółczulny.' }
+];
+
+/* ============ STAN ============ */
+var storage = {
+  get: function () {
+    try { return JSON.parse(localStorage.getItem('charyzma') || '{}'); }
+    catch (e) { return this._mem || {}; }
+  },
+  set: function (s) {
+    this._mem = s;
+    try { localStorage.setItem('charyzma', JSON.stringify(s)); } catch (e) {}
+  }
+};
+var state = storage.get();
+if (!state.lessons) state.lessons = {};
+if (!state.streak) state.streak = { last: '', count: 0 };
+
+function save() { storage.set(state); }
+function lstate(id) { return state.lessons[id] || { read: false, ex: false }; }
+function isDone(id) { var s = lstate(id); return s.read && s.ex; }
+function doneCount() { return LESSONS.filter(function (l) { return isDone(l.id); }).length; }
+
+function todayKey() {
+  var d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+function bumpStreak() {
+  var t = todayKey();
+  if (state.streak.last === t) return;
+  var y = new Date(); y.setDate(y.getDate() - 1);
+  var yk = y.getFullYear() + '-' + String(y.getMonth() + 1).padStart(2, '0') + '-' + String(y.getDate()).padStart(2, '0');
+  state.streak.count = (state.streak.last === yk) ? state.streak.count + 1 : 1;
+  state.streak.last = t;
+}
+
+/* ============ EKRANY ============ */
+var screens = { list: 'screen-list', lesson: 'screen-lesson', cards: 'screen-cards', progress: 'screen-progress' };
+var currentIdx = 0;
+
+function show(name) {
+  Object.keys(screens).forEach(function (k) {
+    document.getElementById(screens[k]).classList.toggle('active', k === name);
+  });
+  var tabName = name === 'lesson' ? 'list' : name;
+  document.querySelectorAll('nav.tabs button').forEach(function (b) {
+    b.classList.toggle('active', b.dataset.tab === tabName);
+  });
+  window.scrollTo(0, 0);
+}
+
+/* ---- lista ---- */
+function renderList() {
+  var box = document.getElementById('lessonlist');
+  box.innerHTML = '';
+  LESSONS.forEach(function (l, i) {
+    var s = lstate(l.id);
+    var btn = document.createElement('button');
+    btn.className = 'lrow' + (isDone(l.id) ? ' done' : '');
+    var status = isDone(l.id) ? 'ukończona' : (s.read || s.ex) ? 'w trakcie' : l.min + ' min czytania';
+    var numLabel = l.n === 'Wstęp' ? '•' : (l.n === 'Bonus' ? '★' : String(i));
+    btn.innerHTML =
+      '<span class="lnum">' + (isDone(l.id) ? '✓' : numLabel) + '</span>' +
+      '<span class="lt"><b>' + l.t + '</b><span>' + l.n + ' · ' + status + '</span></span>' +
+      '<span class="chev">›</span>';
+    btn.addEventListener('click', function () { openLesson(i); });
+    box.appendChild(btn);
+  });
+  renderHero();
+}
+
+function renderHero() {
+  var total = LESSONS.length, done = doneCount();
+  var pct = Math.round(done / total * 100);
+  var r = 26, c = 2 * Math.PI * r;
+  document.getElementById('ringbox').innerHTML =
+    '<svg viewBox="0 0 64 64" role="img" aria-label="Postęp ' + pct + '%">' +
+    '<circle class="track" cx="32" cy="32" r="' + r + '" fill="none" stroke-width="6"/>' +
+    '<circle class="fill" cx="32" cy="32" r="' + r + '" fill="none" stroke-width="6" stroke-linecap="round" ' +
+    'stroke-dasharray="' + c + '" stroke-dashoffset="' + (c * (1 - done / total)) + '" transform="rotate(-90 32 32)"/>' +
+    '<text x="32" y="37" text-anchor="middle">' + done + '/' + total + '</text></svg>';
+  var msg = document.getElementById('heromsg');
+  var streakTxt = state.streak.count > 1 ? state.streak.count + ' dni treningu z rzędu.' : 'Jedna lekcja dziennie wystarczy.';
+  if (done === 0) msg.innerHTML = '<b>Zacznij od wstępu</b><span>5–10 minut czytania + jedno ćwiczenie dziennie.</span>';
+  else if (done < total) msg.innerHTML = '<b>Tak trzymaj!</b><span>' + streakTxt + ' Lekcja jest ukończona, gdy zrobisz też ćwiczenie.</span>';
+  else msg.innerHTML = '<b>Kurs ukończony!</b><span>Wróć do lekcji 2 i powtórz nagranie głosu — to najlepszy miernik postępu.</span>';
+}
+
+/* ---- lekcja ---- */
+function openLesson(i) {
+  currentIdx = i;
+  var l = LESSONS[i];
+  document.getElementById('lessonbody').innerHTML =
+    '<span class="tag">' + l.n + ' · ok. ' + l.min + ' min</span>' +
+    '<h2>' + l.t + '</h2>' + l.html +
+    '<div class="box rule"><span class="bl">Złota zasada</span><p>' + l.rule + '</p></div>';
+  renderMarkers();
+  document.getElementById('prevbtn').disabled = i === 0;
+  document.getElementById('nextbtn').disabled = i === LESSONS.length - 1;
+  show('lesson');
+}
+
+function renderMarkers() {
+  var l = LESSONS[currentIdx];
+  var s = lstate(l.id);
+  var box = document.getElementById('markers');
+  box.innerHTML = '';
+  [{ k: 'read', label: 'Przeczytane' }, { k: 'ex', label: 'Ćwiczenie wykonane' }].forEach(function (m) {
+    var b = document.createElement('button');
+    b.className = 'mark' + (s[m.k] ? ' on' : '');
+    b.setAttribute('aria-pressed', s[m.k] ? 'true' : 'false');
+    b.innerHTML = '<span class="cb">✓</span>' + m.label;
+    b.addEventListener('click', function () {
+      var cur = lstate(l.id);
+      cur[m.k] = !cur[m.k];
+      state.lessons[l.id] = cur;
+      if (cur[m.k]) bumpStreak();
+      save();
+      renderMarkers();
+      renderList();
+    });
+    box.appendChild(b);
+  });
+}
+
+document.getElementById('backbtn').addEventListener('click', function () { show('list'); renderList(); });
+document.getElementById('prevbtn').addEventListener('click', function () { if (currentIdx > 0) openLesson(currentIdx - 1); });
+document.getElementById('nextbtn').addEventListener('click', function () { if (currentIdx < LESSONS.length - 1) openLesson(currentIdx + 1); });
+
+/* ---- fiszki ---- */
+var deck = [], deckPos = 0, flipped = false;
+
+function buildDeck() {
+  deck = LESSONS.map(function (l) {
+    return { l: l.n + ' · ' + l.t, q: 'Złota zasada tej lekcji?', a: l.rule };
+  }).concat(EXTRA_CARDS);
+  for (var i = deck.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = deck[i]; deck[i] = deck[j]; deck[j] = tmp;
+  }
+  deckPos = 0;
+}
+
+function renderCard() {
+  var meta = document.getElementById('cardmeta');
+  var card = document.getElementById('fcard');
+  flipped = false;
+  card.classList.remove('flipped');
+  if (deckPos >= deck.length) {
+    meta.textContent = 'Sesja skończona 🎉';
+    document.getElementById('cf-label').textContent = 'Koniec sesji';
+    document.getElementById('cf-front').textContent = 'Wszystkie karty przerobione. Dotknij, żeby zacząć nową sesję.';
+    document.getElementById('cf-back').textContent = '';
+    return;
+  }
+  var c = deck[deckPos];
+  meta.textContent = 'Karta ' + (deckPos + 1) + ' z ' + deck.length;
+  document.getElementById('cf-label').textContent = c.l;
+  document.getElementById('cf-front').textContent = c.q;
+  document.getElementById('cf-back').textContent = c.a;
+}
+
+document.getElementById('fcard').addEventListener('click', function () {
+  if (deckPos >= deck.length) { buildDeck(); renderCard(); return; }
+  flipped = !flipped;
+  this.classList.toggle('flipped', flipped);
+});
+document.getElementById('knowbtn').addEventListener('click', function () {
+  if (deckPos >= deck.length) return;
+  deckPos++;
+  renderCard();
+});
+document.getElementById('againbtn').addEventListener('click', function () {
+  if (deckPos >= deck.length) return;
+  var c = deck.splice(deckPos, 1)[0];
+  var insertAt = Math.min(deck.length, deckPos + 3 + Math.floor(Math.random() * 3));
+  deck.splice(insertAt, 0, c);
+  renderCard();
+});
+
+/* ---- postęp ---- */
+function renderProgress() {
+  var done = doneCount(), total = LESSONS.length;
+  var readCount = LESSONS.filter(function (l) { return lstate(l.id).read; }).length;
+  var exCount = LESSONS.filter(function (l) { return lstate(l.id).ex; }).length;
+  document.getElementById('statgrid').innerHTML =
+    '<div class="stat"><b>' + Math.round(done / total * 100) + '%</b><span>kursu ukończone</span></div>' +
+    '<div class="stat"><b>' + state.streak.count + '</b><span>' + (state.streak.count === 1 ? 'dzień serii' : 'dni serii') + '</span></div>' +
+    '<div class="stat"><b>' + readCount + '/' + total + '</b><span>przeczytane</span></div>' +
+    '<div class="stat"><b>' + exCount + '/' + total + '</b><span>ćwiczenia zrobione</span></div>';
+  var ul = document.getElementById('plist');
+  ul.innerHTML = '';
+  LESSONS.forEach(function (l) {
+    var s = lstate(l.id);
+    var li = document.createElement('li');
+    var cls = isDone(l.id) ? 'full' : (s.read || s.ex) ? 'half' : '';
+    var label = isDone(l.id) ? 'ukończona' : (s.read && !s.ex) ? 'brak ćwiczenia' : (s.ex && !s.read) ? 'brak czytania' : '—';
+    li.innerHTML = '<span class="pdot ' + cls + '"></span>' + l.t + '<span class="pstate">' + label + '</span>';
+    ul.appendChild(li);
+  });
+}
+
+document.getElementById('resetbtn').addEventListener('click', function () {
+  if (!confirm('Na pewno wyczyścić cały postęp? Tego nie da się cofnąć.')) return;
+  state = { lessons: {}, streak: { last: '', count: 0 } };
+  save();
+  renderProgress();
+  renderList();
+});
+
+/* ---- nawigacja ---- */
+document.querySelectorAll('nav.tabs button').forEach(function (b) {
+  b.addEventListener('click', function () {
+    var t = b.dataset.tab;
+    if (t === 'list') { renderList(); show('list'); }
+    if (t === 'cards') { if (!deck.length) buildDeck(); renderCard(); show('cards'); }
+    if (t === 'progress') { renderProgress(); show('progress'); }
+  });
+});
+
+renderList();
+</script>
+
+</body>
+</html>
