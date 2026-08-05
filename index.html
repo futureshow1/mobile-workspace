@@ -238,6 +238,60 @@
     border-radius: 10px; padding: 0.55rem 1rem; font-size: 0.85rem; cursor: pointer; margin-bottom: 2rem;
   }
 
+  /* ---- quiz ---- */
+  .quiz { margin: 1.5rem 0 0.3rem; }
+  .qq {
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 0.85rem 1rem; margin: 0.7rem 0;
+  }
+  .qq .qt { font-weight: 600; margin: 0 0 0.6rem; font-size: 0.98rem; }
+  .qopt {
+    display: block; width: 100%; text-align: left;
+    background: var(--paper); border: 1px solid var(--line); border-radius: 9px;
+    padding: 0.55rem 0.8rem; margin-bottom: 0.45rem;
+    font-size: 0.93rem; color: var(--ink); cursor: pointer; font-family: inherit;
+  }
+  .qopt:last-child { margin-bottom: 0; }
+  .qopt.correct { border-color: var(--done); background: var(--accent-soft); font-weight: 600; }
+  .qopt.wrong { border-color: var(--signal); background: var(--signal-soft); color: var(--ink-soft); }
+
+  /* ---- dziennik ---- */
+  .jwrap {
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 0.9rem 1rem; margin: 1rem 0 0.2rem;
+  }
+  .jwrap .jl {
+    display: block; text-transform: uppercase; letter-spacing: 0.12em;
+    font-size: 0.66rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;
+    font-family: system-ui, sans-serif;
+  }
+  .jwrap textarea {
+    width: 100%; border: 1px solid var(--line); border-radius: 8px;
+    background: var(--paper); color: var(--ink);
+    font-family: inherit; font-size: 0.95rem; padding: 0.55rem 0.65rem; resize: vertical;
+  }
+  .jwrap textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  #jsave {
+    margin-top: 0.55rem; background: var(--accent); color: var(--accent-ink);
+    border: none; border-radius: 9px; padding: 0.55rem 1.1rem;
+    font-weight: 700; font-size: 0.88rem; cursor: pointer;
+  }
+  #jlist { list-style: none; margin: 0.8rem 0 2rem; padding: 0; }
+  .jentry {
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 0.75rem 1rem; margin-bottom: 0.6rem; font-size: 0.96rem;
+  }
+  .jentry .jm {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 0.6rem;
+    font-family: system-ui, sans-serif; font-size: 0.7rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.09em; color: var(--ink-soft); margin-bottom: 0.3rem;
+  }
+  .jentry .jdel {
+    background: none; border: none; color: var(--ink-soft); cursor: pointer;
+    font-size: 1rem; line-height: 1; padding: 0 0.1rem;
+  }
+  .jempty { color: var(--ink-soft); font-size: 0.95rem; padding: 0.4rem 0.2rem; }
+
   /* ---- bottom nav ---- */
   nav.tabs {
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
@@ -249,7 +303,7 @@
     background: none; border: none; cursor: pointer;
     display: flex; flex-direction: column; align-items: center; gap: 0.15rem;
     color: var(--ink-soft); font-size: 0.68rem; font-weight: 600; letter-spacing: 0.04em;
-    padding: 0.3rem 1.1rem; border-radius: 10px;
+    padding: 0.3rem 0.7rem; border-radius: 10px;
   }
   nav.tabs button.active { color: var(--accent); }
   nav.tabs svg { width: 22px; height: 22px; }
@@ -280,7 +334,13 @@
   <div class="screen" id="screen-lesson">
     <button class="back" id="backbtn">‹ Wszystkie lekcje</button>
     <article id="lessonbody"></article>
+    <div class="quiz" id="quizbox"></div>
     <div class="markers" id="markers"></div>
+    <div class="jwrap">
+      <span class="jl">Dziennik treningu</span>
+      <textarea id="jtext" rows="2" placeholder="Co dziś przećwiczyłem i co się stało? Jedno zdanie wystarczy…"></textarea>
+      <button id="jsave">Zapisz notatkę</button>
+    </div>
     <div class="lessonnav">
       <button id="prevbtn">‹ Poprzednia</button>
       <button id="nextbtn">Następna ›</button>
@@ -305,6 +365,14 @@
     </div>
   </div>
 
+  <!-- DZIENNIK -->
+  <div class="screen" id="screen-journal">
+    <p class="tag" style="margin-top:1rem">Dziennik</p>
+    <h2 style="font-size:1.4rem; margin:0.2rem 0 0.2rem">Dziennik treningu</h2>
+    <p class="hint" style="text-align:left">Wieczorem jedno zdanie: co przećwiczyłem, co się stało. Bez tego mózg nie zapisze zmiany. Notatki dodajesz z poziomu każdej lekcji.</p>
+    <ul id="jlist"></ul>
+  </div>
+
   <!-- POSTĘP -->
   <div class="screen" id="screen-progress">
     <p class="tag" style="margin-top:1rem">Postęp</p>
@@ -323,6 +391,10 @@
   <button data-tab="cards" aria-label="Fiszki">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="15" height="13" rx="2"/><path d="M7 6V4a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2h-2"/></svg>
     Fiszki
+  </button>
+  <button data-tab="journal" aria-label="Dziennik">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+    Dziennik
   </button>
   <button data-tab="progress" aria-label="Postęp">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-6 3 3 5-8"/></svg>
@@ -513,6 +585,69 @@ var EXTRA_CARDS = [
 { l:'Technika', q:'Oddech, który wyłącza stres w trakcie rozmowy?', a:'Wydech dłuższy niż wdech: 4 sekundy wdechu, 6 wydechu. Wydłużony wydech aktywuje układ przywspółczulny.' }
 ];
 
+var QUIZ = {
+l0: [
+{ q:'Którego filaru ludzie najczęściej nadużywają — i dziwią się, że nikt ich nie słucha?', o:['Ethos (wiarygodność)','Logos (sama logika)','Pathos (emocje)'], c:1 },
+{ q:'„Czy mogę ci ufać?" to pytanie o który filar?', o:['Ethos','Logos','Pathos'], c:0 }
+],
+l1: [
+{ q:'Co ludzie oceniają w Tobie najpierw (wg badań Amy Cuddy)?', o:['Kompetencję','Status','Ciepło'], c:2 },
+{ q:'Jaki uśmiech odbierany jest jako szczery?', o:['Pojawiający się z półsekundowym opóźnieniem','Szeroki od pierwszej chwili','Utrzymywany przez całą rozmowę'], c:0 }
+],
+l2: [
+{ q:'Co sygnalizuje kończenie twierdzeń intonacją w górę?', o:['Entuzjazm','Niepewność i prośbę o aprobatę','Pewność siebie'], c:1 },
+{ q:'Czym najlepiej zastąpić „yyy"?', o:['Szybszym mówieniem','Słowem „prawda?"','Ciszą'], c:2 }
+],
+l3: [
+{ q:'Co działa lepiej przed występem (badanie A. Wood Brooks)?', o:['Powiedzieć sobie „jestem podekscytowany"','Powiedzieć sobie „muszę się uspokoić"','Nie myśleć o stresie wcale'], c:0 },
+{ q:'Którą część wystąpienia warto znać na pamięć co do słowa?', o:['Całość','Pierwsze 30 sekund','Samo zakończenie'], c:1 }
+],
+l4: [
+{ q:'Od czego zaczyna się wypowiedź w strukturze PREP?', o:['Od kontekstu i tła','Od anegdoty','Od tezy'], c:2 },
+{ q:'Jak najłatwiej wejść do dyskusji, gdy wszyscy mówią?', o:['Nawiązać do słów przedmówcy','Mówić głośniej niż wszyscy','Czekać, aż zapadnie cisza'], c:0 }
+],
+l5: [
+{ q:'Co jest silnikiem każdej dobrej historii?', o:['Szczęśliwe zakończenie','Komplikacja — coś idzie nie tak','Duża liczba szczegółów'], c:1 },
+{ q:'Ile maksymalnie powinna trwać anegdota w rozmowie?', o:['Około 90 sekund','Około 5 minut','Nie ma limitu, byle była ciekawa'], c:0 }
+],
+l6: [
+{ q:'Mit „93% komunikacji to mowa ciała" jest błędny, bo badania Mehrabiana…', o:['dotyczyły tylko wystąpień publicznych','zostały w całości wymyślone','dotyczyły tylko komunikowania emocji'], c:2 },
+{ q:'Co sygnalizują stopy odwrócone od rozmówcy?', o:['Chęć zakończenia rozmowy','Skupienie','Dominację'], c:0 }
+],
+l7: [
+{ q:'Co czytają profesjonaliści zamiast pojedynczych gestów?', o:['Kierunek patrzenia','Zmiany względem linii bazowej','Skrzyżowane ręce'], c:1 },
+{ q:'Ile sygnałów naraz tworzy wiarygodny „klaster"?', o:['Jeden, byle wyraźny','Dwa','Minimum trzy'], c:2 }
+],
+l8: [
+{ q:'Co opisuje „Zachowanie" w modelu SBI?', o:['To, co zarejestrowałaby kamera','Intencje rozmówcy','Cechy jego charakteru'], c:0 },
+{ q:'Dlaczego „kanapka" feedbackowa przestaje działać?', o:['Jest za długa','Pochwała zaczyna zwiastować cios','Brzmi zbyt ostro'], c:1 }
+],
+l9: [
+{ q:'Dlaczego etykietowanie emocji uspokaja rozmówcę?', o:['Zawstydza go','Odwraca jego uwagę','Nazwanie emocji obniża pobudzenie w mózgu'], c:2 },
+{ q:'Na czym polega technika „szarej skały"?', o:['Na krótkich, neutralnych, nudnych odpowiedziach','Na ostrej ripoście','Na całkowitym ignorowaniu rozmówcy'], c:0 }
+],
+l10: [
+{ q:'Ile powodów warto podać przy odmowie?', o:['Im więcej, tym lepiej','Jeden','Żadnego — nigdy się nie tłumaczyć'], c:1 },
+{ q:'Na czym polega „zdarta płyta"?', o:['Na spokojnym powtarzaniu tego samego zdania','Na podnoszeniu głosu','Na wymyślaniu coraz to nowych argumentów'], c:0 }
+],
+l11: [
+{ q:'Dlaczego przerywanie przez parafrazę nie obraża?', o:['Bo zaskakuje rozmówcę','Bo brzmi oficjalnie','Bo rozmówca czuje się wysłuchany'], c:2 },
+{ q:'Jaki gest pomaga płynnie przejąć głos?', o:['Uniesiona otwarta dłoń i wdech','Wskazanie palcem','Skrzyżowanie rąk'], c:0 }
+],
+l12: [
+{ q:'Najsilniejszy pojedynczy predyktor rozpadu relacji wg Gottmana to…', o:['krytyka','pogarda (sarkazm, wyższość)','milczenie'], c:1 },
+{ q:'Miękki start trudnej rozmowy zaczyna się od…', o:['komunikatu „ja" i konkretu','wyliczenia win rozmówcy','żartu na rozluźnienie'], c:0 }
+],
+l13: [
+{ q:'Looping to…', o:['seria szybkich pytań','kiwanie głową w trakcie słuchania','parafraza + sprawdzenie „dobrze złapałem?"'], c:2 },
+{ q:'Co często dzieje się po 2 sekundach ciszy, gdy ktoś skończy mówić?', o:['Pada najważniejsze, nieplanowane zdanie','Rozmowa naturalnie się kończy','Rozmówca czuje się urażony'], c:0 }
+],
+l14: [
+{ q:'Prawidłowa kolejność w metodzie ARE:', o:['zachęta → kotwica → ujawnienie','kotwica → ujawnienie → zachęta','ujawnienie → zachęta → kotwica'], c:1 },
+{ q:'Drabina pytań prowadzi od…', o:['faktów, przez doświadczenia i opinie, do wartości','wartości do faktów','opinii do faktów'], c:0 }
+]
+};
+
 /* ============ STAN ============ */
 var storage = {
   get: function () {
@@ -527,6 +662,7 @@ var storage = {
 var state = storage.get();
 if (!state.lessons) state.lessons = {};
 if (!state.streak) state.streak = { last: '', count: 0 };
+if (!state.journal) state.journal = [];
 
 function save() { storage.set(state); }
 function lstate(id) { return state.lessons[id] || { read: false, ex: false }; }
@@ -547,7 +683,7 @@ function bumpStreak() {
 }
 
 /* ============ EKRANY ============ */
-var screens = { list: 'screen-list', lesson: 'screen-lesson', cards: 'screen-cards', progress: 'screen-progress' };
+var screens = { list: 'screen-list', lesson: 'screen-lesson', cards: 'screen-cards', journal: 'screen-journal', progress: 'screen-progress' };
 var currentIdx = 0;
 
 function show(name) {
@@ -606,10 +742,59 @@ function openLesson(i) {
     '<span class="tag">' + l.n + ' · ok. ' + l.min + ' min</span>' +
     '<h2>' + l.t + '</h2>' + l.html +
     '<div class="box rule"><span class="bl">Złota zasada</span><p>' + l.rule + '</p></div>';
+  renderQuiz(l);
   renderMarkers();
+  document.getElementById('jtext').value = '';
   document.getElementById('prevbtn').disabled = i === 0;
   document.getElementById('nextbtn').disabled = i === LESSONS.length - 1;
   show('lesson');
+}
+
+function renderQuiz(l) {
+  var box = document.getElementById('quizbox');
+  var qs = QUIZ[l.id] || [];
+  box.innerHTML = '';
+  if (!qs.length) return;
+  var head = document.createElement('p');
+  head.className = 'tag';
+  head.textContent = lstate(l.id).quiz ? 'Sprawdź się · zaliczony ✓' : 'Sprawdź się';
+  box.appendChild(head);
+  var answered = 0;
+  qs.forEach(function (q) {
+    var d = document.createElement('div');
+    d.className = 'qq';
+    var p = document.createElement('p');
+    p.className = 'qt';
+    p.textContent = q.q;
+    d.appendChild(p);
+    var solved = false;
+    q.o.forEach(function (opt, oi) {
+      var b = document.createElement('button');
+      b.className = 'qopt';
+      b.textContent = opt;
+      b.addEventListener('click', function () {
+        if (solved) return;
+        if (oi === q.c) {
+          solved = true;
+          answered++;
+          b.classList.add('correct');
+          if (answered === qs.length) {
+            var st = lstate(l.id);
+            st.quiz = true;
+            state.lessons[l.id] = st;
+            bumpStreak();
+            save();
+            head.textContent = 'Sprawdź się · zaliczony ✓';
+          }
+        } else {
+          b.classList.add('wrong');
+          b.disabled = true;
+        }
+      });
+      d.appendChild(b);
+    });
+    box.appendChild(d);
+  });
 }
 
 function renderMarkers() {
@@ -632,6 +817,55 @@ function renderMarkers() {
       renderList();
     });
     box.appendChild(b);
+  });
+}
+
+document.getElementById('jsave').addEventListener('click', function () {
+  var ta = document.getElementById('jtext');
+  var txt = ta.value.trim();
+  if (!txt) { ta.focus(); return; }
+  state.journal.unshift({ d: todayKey(), t: LESSONS[currentIdx].t, x: txt });
+  bumpStreak();
+  save();
+  ta.value = '';
+  var b = this;
+  b.textContent = 'Zapisano ✓';
+  setTimeout(function () { b.textContent = 'Zapisz notatkę'; }, 1400);
+});
+
+function renderJournal() {
+  var ul = document.getElementById('jlist');
+  ul.innerHTML = '';
+  if (!state.journal.length) {
+    var li = document.createElement('li');
+    li.className = 'jempty';
+    li.textContent = 'Jeszcze pusto. Otwórz dowolną lekcję i zapisz pierwszą notatkę pod ćwiczeniem.';
+    ul.appendChild(li);
+    return;
+  }
+  state.journal.forEach(function (e, i) {
+    var li = document.createElement('li');
+    li.className = 'jentry';
+    var jm = document.createElement('div');
+    jm.className = 'jm';
+    var span = document.createElement('span');
+    span.textContent = e.d + ' · ' + e.t;
+    var del = document.createElement('button');
+    del.className = 'jdel';
+    del.setAttribute('aria-label', 'Usuń notatkę');
+    del.textContent = '×';
+    del.addEventListener('click', function () {
+      state.journal.splice(i, 1);
+      save();
+      renderJournal();
+    });
+    jm.appendChild(span);
+    jm.appendChild(del);
+    var tx = document.createElement('div');
+    tx.textContent = e.x;
+    li.appendChild(jm);
+    li.appendChild(tx);
+    ul.appendChild(li);
   });
 }
 
@@ -695,11 +929,14 @@ function renderProgress() {
   var done = doneCount(), total = LESSONS.length;
   var readCount = LESSONS.filter(function (l) { return lstate(l.id).read; }).length;
   var exCount = LESSONS.filter(function (l) { return lstate(l.id).ex; }).length;
+  var quizCount = LESSONS.filter(function (l) { return lstate(l.id).quiz; }).length;
   document.getElementById('statgrid').innerHTML =
     '<div class="stat"><b>' + Math.round(done / total * 100) + '%</b><span>kursu ukończone</span></div>' +
     '<div class="stat"><b>' + state.streak.count + '</b><span>' + (state.streak.count === 1 ? 'dzień serii' : 'dni serii') + '</span></div>' +
     '<div class="stat"><b>' + readCount + '/' + total + '</b><span>przeczytane</span></div>' +
-    '<div class="stat"><b>' + exCount + '/' + total + '</b><span>ćwiczenia zrobione</span></div>';
+    '<div class="stat"><b>' + exCount + '/' + total + '</b><span>ćwiczenia zrobione</span></div>' +
+    '<div class="stat"><b>' + quizCount + '/' + total + '</b><span>quizy zaliczone</span></div>' +
+    '<div class="stat"><b>' + state.journal.length + '</b><span>' + (state.journal.length === 1 ? 'notatka w dzienniku' : 'notatek w dzienniku') + '</span></div>';
   var ul = document.getElementById('plist');
   ul.innerHTML = '';
   LESSONS.forEach(function (l) {
@@ -713,8 +950,8 @@ function renderProgress() {
 }
 
 document.getElementById('resetbtn').addEventListener('click', function () {
-  if (!confirm('Na pewno wyczyścić cały postęp? Tego nie da się cofnąć.')) return;
-  state = { lessons: {}, streak: { last: '', count: 0 } };
+  if (!confirm('Na pewno wyczyścić cały postęp i dziennik? Tego nie da się cofnąć.')) return;
+  state = { lessons: {}, streak: { last: '', count: 0 }, journal: [] };
   save();
   renderProgress();
   renderList();
@@ -726,6 +963,7 @@ document.querySelectorAll('nav.tabs button').forEach(function (b) {
     var t = b.dataset.tab;
     if (t === 'list') { renderList(); show('list'); }
     if (t === 'cards') { if (!deck.length) buildDeck(); renderCard(); show('cards'); }
+    if (t === 'journal') { renderJournal(); show('journal'); }
     if (t === 'progress') { renderProgress(); show('progress'); }
   });
 });
