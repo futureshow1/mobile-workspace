@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#1F6B5E">
-<title>Charyzma — trening komunikacji</title>
+<meta name="apple-mobile-web-app-title" content="FutureTalk">
+<title>FutureTalk</title>
 <style>
   :root {
     --paper: #F5F4EF;
@@ -323,7 +324,7 @@
 <body>
 <div class="shell">
   <div class="appbar">
-    <h1>Charyzma</h1>
+    <h1>FutureTalk</h1>
     <span class="sub">Trening komunikacji</span>
   </div>
 
@@ -613,14 +614,17 @@ var EXTRA_CARDS = [
 ];
 
 /* ================= STAN ================= */
+var STORE_KEY = 'futuretalk';
 var storage = {
   get: function () {
-    try { return JSON.parse(localStorage.getItem('charyzma') || '{}'); }
-    catch (e) { return this._mem || {}; }
+    try {
+      /* 'charyzma' to klucz z wersji sprzed zmiany nazwy — czytamy go, dopóki istnieje */
+      return JSON.parse(localStorage.getItem(STORE_KEY) || localStorage.getItem('charyzma') || '{}');
+    } catch (e) { return this._mem || {}; }
   },
   set: function (s) {
     this._mem = s;
-    try { localStorage.setItem('charyzma', JSON.stringify(s)); } catch (e) {}
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(s)); } catch (e) {}
   }
 };
 var state = storage.get();

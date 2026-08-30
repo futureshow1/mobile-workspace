@@ -2,10 +2,10 @@
 
 Private workspace for mobile Claude Code sessions.
 
-## Charyzma — trening komunikacji
+## FutureTalk — trening komunikacji
 
 `index.html` to samodzielna aplikacja webowa (bez zależności, działa offline):
-14-lekcyjny kurs charyzmy, retoryki i small talku oparty na badaniach
+15-lekcyjny kurs charyzmy, retoryki i small talku oparty na badaniach
 (Arystoteles, Cialdini, Gottman, Voss, Rosenberg i in.).
 
 Interfejs w stylu aplikacji do nauki języków (Duolingo/Brilliant):
