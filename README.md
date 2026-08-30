@@ -22,4 +22,21 @@ Interfejs w stylu aplikacji do nauki języków (Duolingo/Brilliant):
 - **Postęp** — procent ukończenia, seria dni (🔥), status każdej lekcji
 - Postęp zapisywany lokalnie w przeglądarce (localStorage), tryb jasny i ciemny
 
-Uruchomienie: otwórz `index.html` w przeglądarce (albo hostuj przez GitHub Pages).
+Uruchomienie: otwórz `index.html` w przeglądarce.
+
+### Wdrożenie
+
+Docelowy adres: `https://futureshow.pl/futuretalk/`. Aplikacja to jeden plik
+bez zależności, więc wystarczy wgrać na hosting dwa pliki:
+
+| Plik | Miejsce docelowe |
+|---|---|
+| `index.html` | `/futuretalk/index.html` |
+| `og-futuretalk.png` | `/futuretalk/og-futuretalk.png` |
+
+Adres jest zapisany w tagach `canonical`, `og:url` i `og:image` w `index.html`
+— przy zmianie ścieżki lub przeniesieniu na subdomenę trzeba je poprawić,
+inaczej podgląd linku w mediach społecznościowych pokaże zły obrazek.
+
+`og-futuretalk.png` (1200×630) to grafika podglądu linku; jej źródło leży
+w `tools/og-card.html` i renderuje się zrzutem ekranu w przeglądarce.

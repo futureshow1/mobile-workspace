@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    width: 1200px; height: 630px; overflow: hidden;
+    background: #0F231D;
+    font-family: "Liberation Sans", "DejaVu Sans", sans-serif;
+    color: #F2F0E9;
+    position: relative;
+  }
+  .glow {
+    position: absolute; right: -220px; top: -260px;
+    width: 820px; height: 820px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(95,184,164,0.20) 0%, rgba(95,184,164,0.06) 45%, rgba(95,184,164,0) 70%);
+  }
+  .ring {
+    position: absolute; right: -150px; bottom: -230px;
+    width: 620px; height: 620px; border-radius: 50%;
+    border: 2px solid rgba(95,184,164,0.18);
+  }
+  .ring::after {
+    content: ""; position: absolute; inset: 54px; border-radius: 50%;
+    border: 2px solid rgba(95,184,164,0.10);
+  }
+  .wrap { position: relative; padding: 78px 80px; height: 100%; display: flex; flex-direction: column; }
+  .kicker {
+    font-size: 19px; font-weight: 700; letter-spacing: 0.32em;
+    text-transform: uppercase; color: #5FB8A4; margin-bottom: 26px;
+  }
+  h1 {
+    font-family: "Bitstream Charter", Charter, Georgia, serif;
+    font-size: 106px; line-height: 1; font-weight: 700; letter-spacing: -0.015em;
+  }
+  h1 .t { color: #5FB8A4; }
+  p.tag {
+    font-size: 32px; line-height: 1.4; color: #B9C0B6;
+    margin-top: 26px; max-width: 720px;
+  }
+  p.tag b { color: #F2F0E9; font-weight: 700; }
+  .path { margin-top: auto; display: flex; align-items: center; gap: 0; position: relative; }
+  .path .line {
+    position: absolute; left: 34px; width: 384px; top: 50%; height: 3px;
+    background: rgba(95,184,164,0.28); transform: translateY(-50%);
+  }
+  .dot {
+    position: relative; width: 68px; height: 68px; border-radius: 50%;
+    background: #17332B; border: 3px solid rgba(95,184,164,0.55);
+    display: grid; place-items: center; font-size: 32px; margin-right: 28px;
+    font-family: "Noto Color Emoji", sans-serif;
+  }
+  .more {
+    font-size: 24px; color: #7E8A82; letter-spacing: 0.04em; align-self: center;
+  }
+  .brand {
+    position: absolute; right: 80px; bottom: 78px; text-align: right;
+  }
+  .brand .bn {
+    font-size: 22px; font-weight: 700; letter-spacing: 0.3em;
+    text-transform: uppercase; color: #5FB8A4;
+  }
+  .brand .bd { font-size: 19px; color: #7E8A82; margin-top: 8px; letter-spacing: 0.02em; }
+</style>
+</head>
+<body>
+  <div class="glow"></div>
+  <div class="ring"></div>
+  <div class="wrap">
+    <div class="kicker">Darmowy kurs · 15 lekcji</div>
+    <h1>Future<span class="t">Talk</span></h1>
+    <p class="tag">Charyzma, retoryka i small talk — w krótkich lekcjach, <b>opartych na badaniach</b>, nie na sloganach.</p>
+    <div class="path">
+      <div class="line"></div>
+      <div class="dot">🏛️</div>
+      <div class="dot">👋</div>
+      <div class="dot">🎙️</div>
+      <div class="dot">🧗</div>
+      <div class="dot">📖</div>
+      <div class="more">+10 lekcji</div>
+    </div>
+    <div class="brand">
+      <div class="bn">FutureShow</div>
+      <div class="bd">futureshow.pl</div>
+    </div>
+  </div>
+</body>
+</html>
