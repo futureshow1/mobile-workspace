@@ -40,3 +40,17 @@ inaczej podgląd linku w mediach społecznościowych pokaże zły obrazek.
 
 `og-futuretalk.png` (1200×630) to grafika podglądu linku; jej źródło leży
 w `tools/og-card.html` i renderuje się zrzutem ekranu w przeglądarce.
+
+### Treści o studiu
+
+Wszystko, co aplikacja mówi o FutureShow, siedzi w jednym obiekcie `STUDIO`
+na początku skryptu w `index.html`:
+
+- `pitch` — jedno–dwa zdania o studiu na kafelku pod ścieżką lekcji.
+  Puste = kafelek pokazuje samą nazwę i link, bez żadnych obietnic.
+- `finishHead`, `finishText` — nagłówek i tekst zaproszenia na ekranie
+  po ukończeniu **całego** kursu (nie po pojedynczej lekcji)
+- `sister` — druga aplikacja studia; `url: ''` ukrywa cały kafelek
+
+`tools/make-artifact.mjs` generuje wersję dla Artifactu z `index.html`
+(`index.html` jest źródłem, nie na odwrót).

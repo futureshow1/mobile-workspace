@@ -314,6 +314,46 @@
   .plist .pstate { margin-left: auto; font-size: 0.7rem; color: var(--ink-soft); flex: none; }
   .danger { background: none; border: 1px solid var(--line); color: var(--ink-soft); border-radius: 10px; padding: 0.55rem 1rem; font-size: 0.85rem; cursor: pointer; margin-bottom: 2rem; }
 
+  /* ---- studio ---- */
+  .studio {
+    background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+    padding: 1.1rem 1.2rem; margin: 0.4rem 0 1.4rem; box-shadow: var(--shadow);
+  }
+  .studio .sk {
+    font-size: 0.66rem; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 0.14em; color: var(--accent);
+  }
+  .studio .sn { font-size: 1.2rem; font-weight: 800; margin: 0.3rem 0 0.1rem; }
+  .studio .sp { font-size: 0.95rem; color: var(--ink-soft); margin: 0.25rem 0 0; }
+  .studio a.slink {
+    display: inline-block; margin-top: 0.9rem;
+    background: var(--accent); color: var(--accent-ink); text-decoration: none;
+    border-radius: 11px; padding: 0.6rem 1.1rem; font-size: 0.92rem; font-weight: 800;
+  }
+  .sister {
+    display: flex; align-items: center; gap: 0.8rem; text-decoration: none; color: var(--ink);
+    border-top: 1px solid var(--line); margin-top: 1.1rem; padding-top: 1rem;
+  }
+  .sister .se {
+    flex: none; width: 2.9rem; height: 2.9rem; border-radius: 50%;
+    background: var(--accent-soft); display: grid; place-items: center; font-size: 1.3rem;
+  }
+  .sister .st b { display: block; font-size: 0.98rem; }
+  .sister .st span { font-size: 0.82rem; color: var(--ink-soft); }
+  .sister .sc { margin-left: auto; color: var(--ink-soft); flex: none; }
+  .ctablock {
+    background: var(--accent-soft); border-radius: 14px; padding: 1.1rem 1.2rem;
+    margin-top: 1.4rem; text-align: left;
+  }
+  .ctablock .sk { font-size: 0.66rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); }
+  .ctablock h3 { font-size: 1.1rem; margin: 0.35rem 0 0.3rem; }
+  .ctablock p { font-size: 0.95rem; color: var(--ink-soft); margin: 0 0 0.9rem; }
+  .ctablock a {
+    display: inline-block; background: var(--accent); color: var(--accent-ink);
+    text-decoration: none; border-radius: 11px; padding: 0.6rem 1.1rem;
+    font-size: 0.92rem; font-weight: 800;
+  }
+
   /* ---- bottom nav ---- */
   nav.tabs {
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
@@ -348,6 +388,7 @@
       <div class="msg" id="heromsg"></div>
     </div>
     <div class="path" id="pathlist"></div>
+    <div id="studiobox"></div>
   </div>
 
   <!-- FISZKI -->
@@ -420,6 +461,29 @@
 
 /* ================= DANE ================= */
 /* typy kroków: i = plansza, q = pytanie, ex = ćwiczenie (+notatka), r = złota zasada */
+
+/* ---------------------------------------------------------------
+   USTAWIENIA STUDIA — jedyne miejsce, które trzeba edytować,
+   żeby zmienić to, co aplikacja mówi o FutureShow.
+   --------------------------------------------------------------- */
+var STUDIO = {
+  name: 'FutureShow',
+  url: 'https://futureshow.pl/',
+  /* Jedno–dwa zdania o tym, czym zajmuje się studio.
+     Puste = kafelek pokaże samą nazwę i link, bez obietnic. */
+  pitch: '',
+  ctaLabel: 'Poznaj studio',
+  /* Nagłówek i tekst na ekranie po ukończeniu całego kursu. */
+  finishHead: 'Przećwicz to na żywo',
+  finishText: 'Nagranie na telefonie pokaże ci, ile mówisz „yyy". Jak naprawdę wypadasz przed kamerą i przed ludźmi — zobaczysz dopiero w praktyce.',
+  /* Druga aplikacja FutureShow. url: '' ukrywa cały kafelek. */
+  sister: {
+    name: 'FutureForm',
+    emoji: '🤸',
+    desc: 'Kalistenika: progresje, mobilność i plan treningu.',
+    url: ''
+  }
+};
 
 var LESSONS = [
 { id:'l0', emoji:'🏛️', n:'Wstęp', t:'Trzy filary przekonywania',
@@ -703,6 +767,31 @@ function renderPath() {
     box.appendChild(btn);
   });
   renderHero();
+  renderStudio();
+}
+
+function esc(s) {
+  return String(s).replace(/[&<>"]/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+  });
+}
+
+function renderStudio() {
+  var box = document.getElementById('studiobox');
+  var s = STUDIO.sister;
+  box.innerHTML =
+    '<div class="studio">' +
+      '<div class="sk">Aplikacja studia</div>' +
+      '<div class="sn">' + esc(STUDIO.name) + '</div>' +
+      (STUDIO.pitch ? '<p class="sp">' + esc(STUDIO.pitch) + '</p>' : '') +
+      '<a class="slink" href="' + esc(STUDIO.url) + '" target="_blank" rel="noopener">' + esc(STUDIO.ctaLabel) + '</a>' +
+      (s && s.url ?
+        '<a class="sister" href="' + esc(s.url) + '" target="_blank" rel="noopener">' +
+          '<span class="se">' + s.emoji + '</span>' +
+          '<span class="st"><b>' + esc(s.name) + '</b><span>' + esc(s.desc) + '</span></span>' +
+          '<span class="sc">›</span>' +
+        '</a>' : '') +
+    '</div>';
 }
 
 function renderHero() {
@@ -881,6 +970,14 @@ function renderDone() {
     '<div class="ds"><b>🔥 ' + state.streak.count + '</b>' + (state.streak.count === 1 ? 'dzień' : 'dni') + '</div>' +
     '</div>' +
     (first && doneCount() < LESSONS.length ? '<p>Wróć jutro po następną — codzienność bije intensywność.</p>' : '') +
+    (doneCount() === LESSONS.length ?
+      '<p>Cały kurs za Tobą. Teraz zostaje najtrudniejsze: używać tego.</p>' +
+      '<div class="ctablock">' +
+        '<div class="sk">' + esc(STUDIO.name) + '</div>' +
+        '<h3>' + esc(STUDIO.finishHead) + '</h3>' +
+        '<p>' + esc(STUDIO.finishText) + '</p>' +
+        '<a href="' + esc(STUDIO.url) + '" target="_blank" rel="noopener">' + esc(STUDIO.ctaLabel) + '</a>' +
+      '</div>' : '') +
     '</div>';
   nextBtn('Wróć do ścieżki', closePlayer);
 }
