@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mapa zmian klimatu — anomalie temperatury 1901–2025 | FutureShow</title>
-<meta name="description" content="Interaktywna mapa ocieplenia: roczne anomalie temperatury dla 244 krajów (CRU TS 4.07, 1901–2022) i globalna seria NASA GISTEMP 1880–2025, względem średniej 1951–1980.">
+<title>Mapa zmian klimatu — anomalie temperatury 1880–2026 | FutureShow</title>
+<meta name="description" content="Interaktywna mapa ocieplenia: roczne anomalie temperatury dla 239 krajów i globalna seria NASA GISTEMP v4, od 1880 do bieżącego miesiąca, względem średniej 1951–1980. Pełne źródła danych i metoda.">
 <meta property="og:title" content="Mapa zmian klimatu — FutureShow">
-<meta property="og:description" content="Jak ociepla się każdy kraj: anomalie temperatury 1901–2022 na mapie, suwak czasu, paski ocieplenia.">
+<meta property="og:description" content="Jak ociepla się każdy kraj: anomalie temperatury 1880–2026 na mapie, suwak czasu, paski ocieplenia, źródła naukowe.">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
-:root{--bg:#06080d;--bg2:#0b0f18;--panel:rgba(11,15,24,.92);--border:rgba(255,255,255,.08);--text:#e5e7eb;--dim:#8b95a7;--muted:#5b6577;--accent:#63b3ff;--hot:#ff5a3c;--cold:#3b82f6;--white:#fff}
+:root{--bg:#06080d;--bg2:#0b0f18;--panel:rgba(11,15,24,.92);--border:rgba(255,255,255,.08);--text:#e5e7eb;--dim:#8b95a7;--muted:#5b6577;--accent:#63b3ff;--hot:#ff5a3c;--cold:#3b82f6;--white:#fff;--mono:"JetBrains Mono",monospace}
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:Inter,-apple-system,system-ui,sans-serif;overflow:hidden}
 #map{position:absolute;inset:0;background:#06080d}
@@ -24,17 +24,20 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:Inter,-
 .leaflet-control-zoom a{background:var(--panel)!important;color:var(--text)!important;border-color:var(--border)!important}
 [data-lang="pl"]{display:none}html[lang="pl"] [data-lang="pl"]{display:inline}html[lang="pl"] [data-lang="en"]{display:none}
 .basemap-dark{filter:brightness(.55) saturate(.6)}
+a{color:var(--accent)}
 
 /* top bar */
-.top{position:absolute;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;pointer-events:none}
+.top{position:absolute;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;pointer-events:none;gap:10px}
 .top>*{pointer-events:auto}
 .back{display:inline-flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:9px 14px;color:var(--dim);font-size:13px;text-decoration:none;backdrop-filter:blur(12px)}
 .back:hover{color:var(--text);border-color:rgba(99,179,255,.35)}
 .title{text-align:center;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:10px 22px;backdrop-filter:blur(12px)}
 .title h1{font-size:17px;font-weight:800;letter-spacing:-.01em;color:var(--white)}
 .title p{font-size:11.5px;color:var(--dim);margin-top:2px}
-.lang{background:var(--panel);border:1px solid var(--border);color:var(--dim);border-radius:10px;padding:9px 13px;font-size:12px;cursor:pointer;font-family:inherit;backdrop-filter:blur(12px)}
-.lang:hover{color:var(--text)}
+.tr{display:flex;gap:8px}
+.lang,.srcbtn{background:var(--panel);border:1px solid var(--border);color:var(--dim);border-radius:10px;padding:9px 13px;font-size:12px;cursor:pointer;font-family:inherit;backdrop-filter:blur(12px);display:inline-flex;align-items:center;gap:7px}
+.lang:hover,.srcbtn:hover{color:var(--text);border-color:rgba(99,179,255,.35)}
+.srcbtn b{font-family:var(--mono);font-size:10px;background:rgba(99,179,255,.14);color:var(--accent);border-radius:6px;padding:2px 6px;font-weight:700}
 
 /* right panel */
 .panel{position:absolute;top:70px;right:16px;z-index:1000;width:340px;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px;backdrop-filter:blur(14px);box-shadow:0 12px 40px rgba(0,0,0,.45)}
@@ -42,24 +45,27 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:Inter,-
 .country{font-size:22px;font-weight:800;color:var(--white);letter-spacing:-.01em;line-height:1.15}
 .country small{display:block;font-size:12px;color:var(--dim);font-weight:500;margin-top:3px}
 .big{display:flex;align-items:baseline;gap:10px;margin:12px 0 6px}
-.big b{font-family:"JetBrains Mono",monospace;font-size:38px;font-weight:700;line-height:1}
+.big b{font-family:var(--mono);font-size:38px;font-weight:700;line-height:1}
 .big span{font-size:12px;color:var(--dim)}
+.ytd{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.06em;color:#fbbf24;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.35);border-radius:6px;padding:2px 7px;vertical-align:middle;margin-left:6px}
 .hint{font-size:12px;color:var(--dim);line-height:1.5}
 .stripes{display:flex;height:34px;margin-top:12px;border-radius:6px;overflow:hidden;border:1px solid var(--border)}
 .stripes i{flex:1;display:block}
-.stripes-lbl{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:4px;font-family:"JetBrains Mono",monospace}
+.stripes-lbl{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:4px;font-family:var(--mono)}
 .sep{height:1px;background:var(--border);margin:16px 0}
 canvas#chart{width:100%;height:110px;display:block}
-.row{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--dim);margin-top:6px}
-.row b{color:var(--text);font-family:"JetBrains Mono",monospace}
+.row{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--dim);margin-top:6px;gap:8px}
+.row b{color:var(--text);font-family:var(--mono);white-space:nowrap}
 .src{font-size:10.5px;color:var(--muted);line-height:1.55;margin-top:14px}
 .src a{color:var(--dim)}
+.src .prov{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.prov span{font-family:var(--mono);font-size:9.5px;border:1px solid var(--border);border-radius:5px;padding:2px 6px;color:var(--dim)}
 
 /* legend */
 .legend{position:absolute;left:16px;bottom:118px;z-index:1000;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:12px 14px;backdrop-filter:blur(12px);width:230px}
 .legend h3{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-bottom:8px}
 .ramp{height:12px;border-radius:6px;background:linear-gradient(90deg,#1d4ed8,#60a5fa,#e5e7eb,#fb923c,#dc2626,#7f1d1d)}
-.ramp-lbl{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:4px;font-family:"JetBrains Mono",monospace}
+.ramp-lbl{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:4px;font-family:var(--mono)}
 .legend p{font-size:11px;color:var(--dim);margin-top:8px;line-height:1.45}
 
 /* timeline */
@@ -67,7 +73,8 @@ canvas#chart{width:100%;height:110px;display:block}
 .tl-top{display:flex;align-items:center;gap:14px}
 .play{width:38px;height:38px;border-radius:50%;border:1px solid rgba(99,179,255,.4);background:rgba(99,179,255,.12);color:var(--accent);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .play:hover{background:rgba(99,179,255,.22)}
-.year{font-family:"JetBrains Mono",monospace;font-size:26px;font-weight:700;color:var(--white);min-width:74px}
+.year{font-family:var(--mono);font-size:26px;font-weight:700;color:var(--white);min-width:74px}
+.year small{display:block;font-size:9px;letter-spacing:.1em;color:#fbbf24;font-weight:700;line-height:1;margin-top:2px;min-height:9px}
 input[type=range]{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;background:linear-gradient(90deg,#1d4ed8,#60a5fa 35%,#e5e7eb 55%,#fb923c 75%,#dc2626);outline:none}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--white);border:3px solid var(--accent);cursor:pointer;box-shadow:0 0 0 4px rgba(99,179,255,.2)}
 .opts{display:flex;gap:14px;align-items:center;font-size:12px;color:var(--dim)}
@@ -75,22 +82,51 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;heigh
 .opts input{accent-color:var(--accent)}
 .gstrip{display:flex;height:10px;margin-top:10px;border-radius:4px;overflow:hidden;opacity:.9}
 .gstrip i{flex:1;display:block}
-.gstrip-lbl{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:3px;font-family:"JetBrains Mono",monospace}
+.gstrip-lbl{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:3px;font-family:var(--mono)}
 
 .leaflet-tooltip.ct{background:var(--panel);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:6px 10px;font-size:12px;box-shadow:0 6px 20px rgba(0,0,0,.4)}
-.leaflet-tooltip.ct b{font-family:"JetBrains Mono",monospace}
+.leaflet-tooltip.ct b{font-family:var(--mono)}
 .leaflet-tooltip-top.ct:before{border-top-color:var(--border)}
+
+/* sources modal */
+.modal{position:absolute;inset:0;z-index:3000;background:rgba(6,8,13,.72);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:24px}
+.modal.on{display:flex}
+.mbox{width:min(820px,100%);max-height:calc(100% - 48px);overflow:auto;background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:26px 28px;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.mhead{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:6px}
+.mhead h2{font-size:20px;font-weight:800;color:var(--white);letter-spacing:-.01em}
+.mhead p{font-size:12.5px;color:var(--dim);margin-top:4px;line-height:1.5}
+.x{background:none;border:1px solid var(--border);color:var(--dim);border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:16px;flex-shrink:0}
+.x:hover{color:var(--text)}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin:16px 0 6px}
+.kv{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;padding:10px 12px}
+.kv i{display:block;font-style:normal;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.kv b{font-family:var(--mono);font-size:13px;color:var(--text);font-weight:500}
+.card{border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-top:10px;background:rgba(255,255,255,.02)}
+.card h3{font-size:14px;font-weight:700;color:var(--white);line-height:1.3}
+.card .inst{font-size:12px;color:var(--accent);margin-top:2px}
+.card dl{display:grid;grid-template-columns:110px 1fr;gap:3px 12px;font-size:11.5px;margin-top:10px}
+.card dt{color:var(--muted);letter-spacing:.04em}
+.card dd{color:var(--dim);font-family:var(--mono);font-size:11px;word-break:break-all}
+.card dd.txt{font-family:inherit;font-size:11.5px;line-height:1.5;word-break:normal}
+.card .links{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.card .links a{font-size:11px;font-weight:600;text-decoration:none;border:1px solid rgba(99,179,255,.35);border-radius:7px;padding:5px 9px;color:var(--accent)}
+.card .links a:hover{background:rgba(99,179,255,.12)}
+.method{font-size:12.5px;line-height:1.6;color:var(--dim);margin-top:14px;border-left:2px solid var(--accent);padding-left:12px}
+.mfoot{font-size:11px;color:var(--muted);margin-top:16px;line-height:1.6}
 
 #load{position:absolute;inset:0;z-index:2000;display:flex;align-items:center;justify-content:center;background:var(--bg);color:var(--dim);font-size:13px;letter-spacing:.2em;text-transform:uppercase;transition:opacity .5s}
 #load.off{opacity:0;pointer-events:none}
 
 @media(max-width:900px){
   .title h1{font-size:14px}.title p{display:none}
+  .srcbtn span{display:none}
   .panel{width:auto;left:16px;right:16px;top:auto;bottom:150px;padding:14px}
   .panel .sep,.panel canvas,.panel .row,.panel .src,.panel .hint{display:none}
   .legend{display:none}
   .opts{display:none}
   .timeline{padding:10px 12px}
+  .mbox{padding:18px}
+  .card dl{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -102,26 +138,30 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;heigh
   <a class="back" href="../index.html">← FutureShow</a>
   <div class="title">
     <h1><span data-lang="en">Climate Change Map</span><span data-lang="pl">Mapa zmian klimatu</span></h1>
-    <p><span data-lang="en">Annual temperature anomaly by country, 1901–2022 · vs 1951–1980 mean</span><span data-lang="pl">Roczna anomalia temperatury w każdym kraju, 1901–2022 · względem średniej 1951–1980</span></p>
+    <p id="subtitle"></p>
   </div>
-  <button class="lang" id="langBtn" onclick="toggleLang()">EN</button>
+  <div class="tr">
+    <button class="srcbtn" id="srcBtn" onclick="openSources()"><b>NASA</b><span><span data-lang="en">Data sources</span><span data-lang="pl">Źródła danych</span></span></button>
+    <button class="lang" id="langBtn" onclick="toggleLang()">EN</button>
+  </div>
 </div>
 
 <aside class="panel">
   <h2><span data-lang="en">Selected</span><span data-lang="pl">Wybrany kraj</span></h2>
-  <div class="country" id="cName"><span data-lang="en">World</span><span data-lang="pl">Świat</span><small id="cSub"><span data-lang="en">Click a country</span><span data-lang="pl">Kliknij kraj na mapie</span></small></div>
-  <div class="big"><b id="cVal">—</b><span id="cUnit">°C</span></div>
+  <div class="country" id="cName"></div>
+  <div class="big"><b id="cVal">—</b><span id="cUnit">°C</span><span class="ytd" id="cYtd" style="display:none"></span></div>
   <div class="hint" id="cHint"></div>
   <div class="stripes" id="cStripes"></div>
-  <div class="stripes-lbl"><span id="sFrom">1901</span><span id="sTo">2022</span></div>
+  <div class="stripes-lbl"><span id="sFrom"></span><span id="sTo"></span></div>
   <div class="sep"></div>
-  <h2><span data-lang="en">Global · NASA GISTEMP</span><span data-lang="pl">Świat · NASA GISTEMP</span></h2>
+  <h2><span data-lang="en">Global · NASA GISTEMP v4</span><span data-lang="pl">Świat · NASA GISTEMP v4</span></h2>
   <canvas id="chart" width="600" height="220"></canvas>
   <div class="row"><span data-lang="en">Global anomaly this year</span><span data-lang="pl">Anomalia globalna w tym roku</span><b id="gVal">—</b></div>
   <div class="row"><span data-lang="en">Warmest year on record</span><span data-lang="pl">Najcieplejszy rok w serii</span><b id="gMax">—</b></div>
+  <div class="row"><span data-lang="en">Latest month</span><span data-lang="pl">Ostatni miesiąc</span><b id="gLast">—</b></div>
   <div class="src">
-    <span data-lang="en">Countries: World Bank CCKP, CRU TS 4.07 (annual mean, 1901–2022). Global: NASA GISS GISTEMP v4, land–ocean (1880–2025). Anomalies computed here against each series' own 1951–1980 mean. Borders: Natural Earth.</span>
-    <span data-lang="pl">Kraje: World Bank CCKP, CRU TS 4.07 (średnia roczna, 1901–2022). Świat: NASA GISS GISTEMP v4, ląd–ocean (1880–2025). Anomalie liczone tu względem średniej 1951–1980 każdej serii. Granice: Natural Earth.</span>
+    <span id="srcLine"></span>
+    <div class="prov" id="prov"></div>
   </div>
 </aside>
 
@@ -135,22 +175,31 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;heigh
 <div class="timeline">
   <div class="tl-top">
     <button class="play" id="play" title="Play">▶</button>
-    <div class="year" id="year">2022</div>
-    <input type="range" id="slider" min="1901" max="2022" value="2022" step="1">
+    <div class="year"><span id="year"></span><small id="yearTag"></small></div>
+    <input type="range" id="slider" min="1880" max="2026" value="2025" step="1">
     <div class="opts">
       <label><input type="checkbox" id="smooth" checked> <span data-lang="en">5-year mean</span><span data-lang="pl">średnia 5-letnia</span></label>
     </div>
   </div>
-  <div class="gstrip" id="gStripes" title="Warming stripes — global, 1880–2025"></div>
-  <div class="gstrip-lbl"><span>1880</span><span data-lang="en">global warming stripes · NASA GISTEMP</span><span data-lang="pl">paski ocieplenia · świat · NASA GISTEMP</span><span>2025</span></div>
+  <div class="gstrip" id="gStripes"></div>
+  <div class="gstrip-lbl"><span id="gsFrom"></span><span data-lang="en">global warming stripes · NASA GISTEMP</span><span data-lang="pl">paski ocieplenia · świat · NASA GISTEMP</span><span id="gsTo"></span></div>
+</div>
+
+<div class="modal" id="modal" onclick="if(event.target===this)closeSources()">
+  <div class="mbox" id="mbox"></div>
 </div>
 
 <script>
 // ---------- i18n ----------
-const NAMES_PL = {"World":"Świat"};
-function toggleLang(){const h=document.documentElement;h.lang=h.lang==='pl'?'en':'pl';document.getElementById('langBtn').textContent=h.lang==='pl'?'EN':'PL';try{localStorage.setItem('lang',h.lang)}catch(e){}render();}
+function toggleLang(){const h=document.documentElement;h.lang=h.lang==='pl'?'en':'pl';document.getElementById('langBtn').textContent=h.lang==='pl'?'EN':'PL';try{localStorage.setItem('lang',h.lang)}catch(e){}render();if($('modal').classList.contains('on'))openSources();}
 (function(){let l='pl';try{l=localStorage.getItem('lang')||'pl'}catch(e){}document.documentElement.lang=l;document.getElementById('langBtn').textContent=l==='pl'?'EN':'PL';})();
 const pl=()=>document.documentElement.lang==='pl';
+const T=(p,e)=>pl()?p:e;
+const MONTHS_PL=['stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','września','października','listopada','grudnia'];
+const MONTHS_EN=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const MONTHS_PL_N=['styczeń','luty','marzec','kwiecień','maj','czerwiec','lipiec','sierpień','wrzesień','październik','listopad','grudzień'];
+function monthLabel(ym){const [y,m]=ym.split('-').map(Number);return pl()?`${MONTHS_PL_N[m-1]} ${y}`:`${MONTHS_EN[m-1]} ${y}`;}
+function ytdLabel(n){return pl()?`${n} ${n===1?'miesiąc':n<5?'miesiące':'miesięcy'}`:`${n} month${n===1?'':'s'}`;}
 
 // ---------- colour scale (diverging, clamped −2…+3) ----------
 const STOPS=[[-2,[29,78,216]],[-1,[96,165,250]],[0,[229,231,235]],[1,[251,146,60]],[2,[220,38,38]],[3,[127,29,29]]];
@@ -161,30 +210,37 @@ function color(v){
   return `rgb(${STOPS[STOPS.length-1][1].join(',')})`;
 }
 const fmt=v=>v==null?'—':(v>0?'+':'')+v.toFixed(2);
+const vcol=v=>v==null?'#8b95a7':color(Math.max(-2,Math.min(3,v)));
 
 // ---------- state ----------
-let DATA,GEO,layer,year=2022,selected=null,playing=false,timer=null;
+let DATA,GEO,META,layer,year,selected=null,playing=false,timer=null;
+let Y0,Y1,YTD;   // first full year, last full year, partial-year record {year,months}
 const $=id=>document.getElementById(id);
 
-function seriesFor(iso){const c=DATA.countries[iso];if(!c)return null;const s={};for(const y in c.anom)s[+y]=c.anom[y];return s;}
+function seriesFor(iso){const c=DATA.countries[iso];if(!c)return null;const s={};for(const y in c.anom)s[+y]=c.anom[y];if(c.ytd)s[c.ytd.year]=c.ytd.anom;return s;}
+function isYtd(y){return YTD&&y===YTD.year;}
 function valueAt(series,y){
   if(!series)return null;
-  if(!$('smooth').checked)return series[y]??null;
-  let sum=0,n=0;for(let k=y-2;k<=y+2;k++){if(series[k]!=null){sum+=series[k];n++;}}
+  if(!$('smooth').checked||isYtd(y))return series[y]??null;
+  let sum=0,n=0;for(let k=y-2;k<=y+2;k++){if(series[k]!=null&&!isYtd(k)){sum+=series[k];n++;}}
   return n>=3?sum/n:null;
 }
+const cname=f=>pl()?(f.properties.name_pl||f.properties.name):f.properties.name;
 
 // ---------- map ----------
 const map=L.map('map',{center:[28,12],zoom:2,minZoom:2,maxZoom:7,zoomControl:false,worldCopyJump:true,attributionControl:true});
 L.control.zoom({position:'topleft'}).addTo(map);
 map.getContainer().querySelector('.leaflet-top.leaflet-left').style.marginTop='60px';
-L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',{attribution:'&copy; Esri, HERE, Garmin, &copy; OpenStreetMap contributors',maxZoom:16,className:'basemap-dark'}).addTo(map);
+L.tileLayer('https://server.arcgisonline.com/ArcGis/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',{attribution:'&copy; Esri, HERE, Garmin, &copy; OpenStreetMap contributors · NASA GISTEMP v4 · Natural Earth',maxZoom:16,className:'basemap-dark'}).addTo(map);
 
 function style(f){const v=valueAt(seriesFor(f.id),year);const sel=selected===f.id;return{fillColor:color(v),fillOpacity:v==null?.25:.78,color:sel?'#fff':'rgba(255,255,255,.18)',weight:sel?2:.6};}
-function tip(f){const v=valueAt(seriesFor(f.id),year);const name=pl()&&NAMES_PL[f.properties.name]||f.properties.name;return `${name} · ${year}<br><b style="color:${v==null?'#8b95a7':color(Math.max(-2,Math.min(3,v)))}">${v==null?'—':fmt(v)+' °C'}</b>`;}
+function tip(f){const v=valueAt(seriesFor(f.id),year);return `${cname(f)} · ${year}${isYtd(year)?' *':''}<br><b style="color:${vcol(v)}">${v==null?'—':fmt(v)+' °C'}</b>`;}
 
 Promise.all([fetch('data/climate-data.json').then(r=>r.json()),fetch('data/countries.min.json').then(r=>r.json())]).then(([d,g])=>{
-  DATA=d;GEO=g;
+  DATA=d;GEO=g;META=d.meta;
+  Y0=META.country_years[0];Y1=META.country_years[1];YTD=d.global_ytd||null;
+  const ymax=YTD?YTD.year:Y1;
+  const sl=$('slider');sl.min=Y0;sl.max=ymax;year=Y1;sl.value=year;
   layer=L.geoJSON(GEO,{style,onEachFeature:(f,l)=>{
     l.bindTooltip(()=>tip(f),{sticky:true,className:'ct',direction:'top',offset:[0,-6]});
     l.on('click',()=>{selected=selected===f.id?null:f.id;render();});
@@ -192,60 +248,100 @@ Promise.all([fetch('data/climate-data.json').then(r=>r.json()),fetch('data/count
   buildGlobalStripes();
   render();
   $('load').classList.add('off');
-});
+}).catch(e=>{$('load').innerHTML='<span style="color:#ff5a3c;letter-spacing:0;text-transform:none">'+T('Nie udało się wczytać danych: ','Could not load data: ')+e+'</span>';});
 
 // ---------- render ----------
 function render(){
   $('year').textContent=year;$('slider').value=year;
+  $('yearTag').textContent=isYtd(year)?T(`w toku · ${ytdLabel(YTD.months)}`,`in progress · ${ytdLabel(YTD.months)}`):'';
+  $('subtitle').innerHTML=T(`Roczna anomalia temperatury w każdym kraju, ${Y0}–${year} · względem średniej 1951–1980 · NASA GISTEMP v4`,`Annual temperature anomaly by country, ${Y0}–${year} · vs 1951–1980 mean · NASA GISTEMP v4`);
   if(layer)layer.setStyle(style);
-  // country panel
   const f=selected&&GEO.features.find(x=>x.id===selected);
+  const gyrs=Object.keys(DATA.global).map(Number),gy0=gyrs[0],gy1=gyrs[gyrs.length-1];
+  const ytdSuffix=isYtd(year)?T(` · ${MONTHS_PL_N[0]}–${MONTHS_PL_N[YTD.months-1]}`,` · ${MONTHS_EN[0]}–${MONTHS_EN[YTD.months-1]}`):'';
   if(f){
-    const s=seriesFor(f.id),v=valueAt(s,year);
-    $('cName').firstChild.nodeValue='';$('cName').innerHTML=`${pl()&&NAMES_PL[f.properties.name]||f.properties.name}<small id="cSub">${pl()?'anomalia w roku':'anomaly in'} ${year}${$('smooth').checked?(pl()?' · średnia 5-letnia':' · 5-year mean'):''}</small>`;
-    $('cVal').textContent=fmt(v);$('cVal').style.color=v==null?'#8b95a7':color(Math.max(-2,Math.min(3,v)));
-    const last=s?valueAt(s,2022):null,first=s?valueAt(s,1903):null;
-    $('cHint').textContent=s?(pl()?`Zmiana 1901→2022 (średnie 5-letnie): ${fmt(last-first)} °C. Najcieplejszy rok: ${warmest(s)}.`:`Change 1901→2022 (5-year means): ${fmt(last-first)} °C. Warmest year: ${warmest(s)}.`):(pl()?'Brak serii dla tego kraju.':'No series for this country.');
-    buildStripes($('cStripes'),s,1901,2022);
+    const c=DATA.countries[f.id],s=seriesFor(f.id),v=valueAt(s,year);
+    $('cName').innerHTML=`${cname(f)}<small>${T('anomalia w roku','anomaly in')} ${year}${$('smooth').checked&&!isYtd(year)?T(' · średnia 5-letnia',' · 5-year mean'):''}${ytdSuffix}</small>`;
+    $('cVal').textContent=fmt(v);$('cVal').style.color=vcol(v);
+    const ytdEl=$('cYtd');if(isYtd(year)&&c&&c.ytd){ytdEl.style.display='';ytdEl.textContent=T('ROK W TOKU','YEAR TO DATE');}else ytdEl.style.display='none';
+    if(s){
+      const last=valueAt(s,Y1),first=firstValid(s);
+      $('cHint').textContent=first?T(`Zmiana ${first.y}→${Y1} (średnie 5-letnie): ${fmt(last-first.v)} °C. Najcieplejszy pełny rok: ${warmest(s)}. Seria z ${c.cells} komórek siatki 2°×2°.`,`Change ${first.y}→${Y1} (5-year means): ${fmt(last-first.v)} °C. Warmest full year: ${warmest(s)}. Series from ${c.cells} 2°×2° grid cells.`):T('Za mało danych, by policzyć trend.','Not enough data to compute a trend.');
+    }else $('cHint').textContent=T('Brak serii dla tego kraju.','No series for this country.');
+    buildStripes($('cStripes'),s,Y0,Y1);$('sFrom').textContent=Y0;$('sTo').textContent=Y1;
   }else{
-    $('cName').innerHTML=`${pl()?'Świat':'World'}<small id="cSub">${pl()?'Kliknij kraj na mapie':'Click a country'}</small>`;
-    const gv=DATA.global[year]??null;$('cVal').textContent=fmt(gv);$('cVal').style.color=gv==null?'#8b95a7':color(gv);
-    $('cHint').textContent=pl()?'Anomalia globalna (ląd + ocean) w wybranym roku.':'Global land–ocean anomaly in the selected year.';
-    buildStripes($('cStripes'),DATA.global,1880,2025);$('sFrom').textContent=1880;$('sTo').textContent=2025;
+    $('cName').innerHTML=`${T('Świat','World')}<small>${T('Kliknij kraj na mapie','Click a country')}${ytdSuffix}</small>`;
+    const gv=isYtd(year)?YTD.anom:(DATA.global[year]??null);$('cVal').textContent=fmt(gv);$('cVal').style.color=vcol(gv);
+    const ytdEl=$('cYtd');if(isYtd(year)){ytdEl.style.display='';ytdEl.textContent=T('ROK W TOKU','YEAR TO DATE');}else ytdEl.style.display='none';
+    $('cHint').textContent=T('Anomalia globalna (ląd + ocean) w wybranym roku.','Global land–ocean anomaly in the selected year.');
+    buildStripes($('cStripes'),DATA.global,gy0,gy1);$('sFrom').textContent=gy0;$('sTo').textContent=gy1;
   }
-  if(f){$('sFrom').textContent=1901;$('sTo').textContent=2022;}
-  // global
-  const gv=DATA.global[year];$('gVal').textContent=gv==null?'—':fmt(gv)+' °C';
-  const yrs=Object.keys(DATA.global).map(Number);const mx=yrs.reduce((a,b)=>DATA.global[b]>DATA.global[a]?b:a);$('gMax').textContent=`${mx} · ${fmt(DATA.global[mx])} °C`;
+  // global rows
+  const gv=isYtd(year)?YTD.anom:DATA.global[year];$('gVal').textContent=gv==null?'—':fmt(gv)+' °C'+(isYtd(year)?' *':'');
+  const mx=gyrs.reduce((a,b)=>DATA.global[b]>DATA.global[a]?b:a);$('gMax').textContent=`${mx} · ${fmt(DATA.global[mx])} °C`;
+  const lm=META.latest_month;$('gLast').textContent=`${monthLabel(lm)} · ${fmt(DATA.global_monthly[lm])} °C`;
+  $('srcLine').innerHTML=T(`Kraje i świat: NASA GISS GISTEMP v4 (siatka 1200 km i seria ląd–ocean), ${Y0}–${lm}. Anomalie względem średniej 1951–1980. Granice: Natural Earth 1:50m. <a href="#" onclick="openSources();return false">Pełne źródła i metoda →</a>`,`Countries and world: NASA GISS GISTEMP v4 (1200 km grid and land–ocean series), ${Y0}–${lm}. Anomalies vs the 1951–1980 mean. Borders: Natural Earth 1:50m. <a href="#" onclick="openSources();return false">Full sources and method →</a>`);
+  $('prov').innerHTML=`<span>${T('pobrano','fetched')} ${META.generated_utc.slice(0,10)}</span><span>${META.countries} ${T('krajów','countries')}</span><span>${T('baza','baseline')} ${META.baseline}</span>`;
   drawChart();
 }
-function warmest(s){let best=null;for(const y in s){if(best==null||s[y]>s[best])best=y;}return best;}
+function firstValid(s){for(let y=Y0;y<=Y1;y++){const v=valueAt(s,y);if(v!=null)return{y,v};}return null;}
+function warmest(s){let best=null;for(const y in s){if(isYtd(+y))continue;if(best==null||s[y]>s[best])best=y;}return best;}
 function buildStripes(el,s,from,to){let h='';for(let y=from;y<=to;y++){const v=s?s[y]:null;h+=`<i style="background:${color(v==null?null:v)}" title="${y}: ${v==null?'—':fmt(v)}"></i>`;}el.innerHTML=h;}
-function buildGlobalStripes(){buildStripes($('gStripes'),DATA.global,1880,2025);}
+function buildGlobalStripes(){const ys=Object.keys(DATA.global).map(Number);buildStripes($('gStripes'),DATA.global,ys[0],ys[ys.length-1]);$('gsFrom').textContent=ys[0];$('gsTo').textContent=ys[ys.length-1];}
 
 function drawChart(){
   const c=$('chart'),ctx=c.getContext('2d'),W=c.width,H=c.height;ctx.clearRect(0,0,W,H);
   const g=DATA.global,ys=Object.keys(g).map(Number),y0=ys[0],y1=ys[ys.length-1];
-  const vmin=-0.6,vmax=1.4,X=y=>10+(y-y0)/(y1-y0)*(W-20),Y=v=>H-14-(v-vmin)/(vmax-vmin)*(H-28);
+  const vmax=Math.max(1.4,Math.ceil(Math.max(...ys.map(y=>g[y]))*10)/10+0.1),vmin=-0.6,X=y=>10+(y-y0)/(y1-y0)*(W-20),Y=v=>H-14-(v-vmin)/(vmax-vmin)*(H-28);
   ctx.strokeStyle='rgba(255,255,255,.12)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(10,Y(0));ctx.lineTo(W-10,Y(0));ctx.stroke();
   ctx.fillStyle='#5b6577';ctx.font='18px JetBrains Mono, monospace';ctx.fillText('0',W-22,Y(0)-4);ctx.fillText('+1°',W-40,Y(1)-4);
   ctx.beginPath();ys.forEach((y,i)=>{const p=[X(y),Y(g[y])];i?ctx.lineTo(...p):ctx.moveTo(...p);});ctx.strokeStyle='rgba(255,255,255,.35)';ctx.lineWidth=2;ctx.stroke();
-  // 5-year running mean, coloured by value
   const mean=ys.map((y,i)=>{if(i<2||i>ys.length-3)return null;let m=0;for(let k=-2;k<=2;k++)m+=g[ys[i+k]];return m/5;});
   for(let i=3;i<ys.length-2;i++){ctx.strokeStyle=color(mean[i]);ctx.lineWidth=3.5;ctx.beginPath();ctx.moveTo(X(ys[i-1]),Y(mean[i-1]));ctx.lineTo(X(ys[i]),Y(mean[i]));ctx.stroke();}
-  if(g[year]!=null){ctx.strokeStyle='#63b3ff';ctx.lineWidth=2;ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(X(year),14);ctx.lineTo(X(year),H-14);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(X(year),Y(g[year]),5,0,Math.PI*2);ctx.fill();}
+  const yy=Math.min(year,y1);
+  if(g[yy]!=null){ctx.strokeStyle='#63b3ff';ctx.lineWidth=2;ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(X(yy),14);ctx.lineTo(X(yy),H-14);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(X(yy),Y(g[yy]),5,0,Math.PI*2);ctx.fill();}
   ctx.fillStyle='#5b6577';ctx.fillText(y0,10,H-1);ctx.fillText(y1,W-52,H-1);
 }
+
+// ---------- sources modal ----------
+function openSources(){
+  const m=META,srcs=m.sources||[];
+  const kv=(k,v)=>`<div class="kv"><i>${k}</i><b>${v}</b></div>`;
+  let h=`<div class="mhead"><div><h2>${T('Źródła danych i metoda','Data sources and method')}</h2><p>${T('Każda liczba na tej mapie pochodzi z publicznych zbiorów NASA. Poniżej: skąd, w jakiej wersji, kiedy pobrano i jak policzono.','Every number on this map comes from public NASA datasets. Below: where from, which version, when fetched and how computed.')}</p></div><button class="x" onclick="closeSources()">✕</button></div>`;
+  h+=`<div class="mgrid">${kv(T('Kraje','Countries'),m.countries)}${kv(T('Lata (kraje)','Years (countries)'),m.country_years.join('–'))}${kv(T('Lata (świat)','Years (world)'),m.global_years.join('–'))}${kv(T('Ostatni miesiąc','Latest month'),m.latest_month)}${kv(T('Baza odniesienia','Baseline'),m.baseline)}${kv(T('Dane pobrano (UTC)','Fetched (UTC)'),m.generated_utc.replace('T',' ').replace('Z',''))}</div>`;
+  for(const s of srcs){
+    h+=`<div class="card"><h3>${s.name}</h3><div class="inst">${s.institution}</div><dl>`;
+    if(s.coverage)h+=`<dt>${T('Zakres','Coverage')}</dt><dd>${s.coverage}</dd>`;
+    if(s.cadence)h+=`<dt>${T('Aktualizacja','Update cadence')}</dt><dd class="txt">${pl()?s.cadence.pl:s.cadence.en}</dd>`;
+    if(s.license)h+=`<dt>${T('Licencja','License')}</dt><dd class="txt">${s.license}</dd>`;
+    if(s.citation)h+=`<dt>${T('Cytowanie','Citation')}</dt><dd class="txt">${s.citation}</dd>`;
+    if(s.sha256)h+=`<dt>SHA-256</dt><dd>${s.sha256}…</dd>`;
+    h+=`</dl><div class="links">`;
+    if(s.url)h+=`<a href="${s.url}" target="_blank" rel="noopener">${T('Strona zbioru','Dataset page')} ↗</a>`;
+    if(s.file)h+=`<a href="${s.file}" target="_blank" rel="noopener">${T('Plik źródłowy','Source file')} ↗</a>`;
+    if(s.doi)h+=`<a href="https://doi.org/${s.doi}" target="_blank" rel="noopener">DOI ${s.doi} ↗</a>`;
+    h+=`</div></div>`;
+  }
+  h+=`<div class="method"><b style="color:var(--text)">${T('Metoda','Method')}.</b> ${pl()?m.method.pl:m.method.en}</div>`;
+  h+=`<div class="mfoot">${T('Rurociąg danych działa automatycznie co miesiąc (GitHub Actions) i zapisuje wynik jako otwarty JSON.','The data pipeline runs automatically every month (GitHub Actions) and writes the result as open JSON.')} <a href="${m.pipeline}" target="_blank" rel="noopener">${T('Kod rurociągu','Pipeline code')} ↗</a> · <a href="data/climate-data.json" target="_blank">${T('Pobierz dane mapy (JSON)','Download map data (JSON)')} ↗</a> · <a href="data/countries.min.json" target="_blank">${T('Granice (GeoJSON)','Borders (GeoJSON)')} ↗</a></div>`;
+  $('mbox').innerHTML=h;$('modal').classList.add('on');
+}
+function closeSources(){$('modal').classList.remove('on');}
 
 // ---------- controls ----------
 $('slider').addEventListener('input',e=>{year=+e.target.value;render();});
 $('smooth').addEventListener('change',render);
 $('play').addEventListener('click',()=>{
+  const ymax=+$('slider').max;
   playing=!playing;$('play').textContent=playing?'❚❚':'▶';
-  if(playing){if(year>=2022)year=1901;timer=setInterval(()=>{year++;if(year>2022){year=2022;playing=false;$('play').textContent='▶';clearInterval(timer);}render();},140);}
+  if(playing){if(year>=ymax)year=Y0;timer=setInterval(()=>{year++;if(year>ymax){year=ymax;playing=false;$('play').textContent='▶';clearInterval(timer);}render();},140);}
   else clearInterval(timer);
 });
-document.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'){year=Math.max(1901,year-1);render();}if(e.key==='ArrowRight'){year=Math.min(2022,year+1);render();}if(e.key===' '){e.preventDefault();$('play').click();}});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')closeSources();
+  if(!DATA)return;const ymax=+$('slider').max;
+  if(e.key==='ArrowLeft'){year=Math.max(Y0,year-1);render();}if(e.key==='ArrowRight'){year=Math.min(ymax,year+1);render();}if(e.key===' '){e.preventDefault();$('play').click();}
+});
 </script>
 <script data-goatcounter="https://futureshow.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
