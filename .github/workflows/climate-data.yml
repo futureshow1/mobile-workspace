@@ -6,6 +6,8 @@ on:
     branches: [claude/virtual-animated-maps-DT130]
     paths:
       - scripts/build_climate_data.py
+      - scripts/build_indicators.py
+      - scripts/build_emissions.py
       - .github/workflows/climate-data.yml
   schedule:
     - cron: "0 6 16 * *"   # monthly, after GISTEMP's mid-month update
@@ -23,10 +25,12 @@ jobs:
           python-version: "3.12"
       - run: pip install numpy shapely netCDF4
       - run: python scripts/build_climate_data.py
+      - run: python scripts/build_indicators.py
+      - run: python scripts/build_emissions.py
       - name: Commit refreshed data
         run: |
           git config user.name "climate-data-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add klimat/data/climate-data.json
-          git commit -m "data: refresh NASA GISTEMP series ($(date -u +%Y-%m-%d))" || echo "no changes"
+          git add klimat/data/climate-data.json klimat/data/indicators.json klimat/data/emissions.json
+          git commit -m "data: refresh NASA/NOAA/NSIDC/OWID series ($(date -u +%Y-%m-%d))" || echo "no changes"
           git push
