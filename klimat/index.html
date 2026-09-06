@@ -3,345 +3,154 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mapa zmian klimatu — anomalie temperatury 1880–2026 | FutureShow</title>
-<meta name="description" content="Interaktywna mapa ocieplenia: roczne anomalie temperatury dla 239 krajów i globalna seria NASA GISTEMP v4, od 1880 do bieżącego miesiąca, względem średniej 1951–1980. Pełne źródła danych i metoda.">
-<meta property="og:title" content="Mapa zmian klimatu — FutureShow">
-<meta property="og:description" content="Jak ociepla się każdy kraj: anomalie temperatury 1880–2026 na mapie, suwak czasu, paski ocieplenia, źródła naukowe.">
+<title>Klimat — portal edukacyjny o zmianach klimatu | FutureShow</title>
+<meta name="description" content="Co się dzieje z klimatem, dlaczego, gdzie i co dalej. Portal edukacyjny FutureShow: żywe wskaźniki NASA/NOAA, mapa 239 krajów, paliwa kopalne, energia, scenariusze IPCC. Każda liczba ma źródło.">
+<meta property="og:title" content="Klimat — portal edukacyjny FutureShow">
+<meta property="og:description" content="Globalne ocieplenie wyjaśnione na danych: co się dzieje, dlaczego, gdzie, co dalej. Każda liczba ma źródło.">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="portal.css">
 <style>
-:root{--bg:#06080d;--bg2:#0b0f18;--panel:rgba(11,15,24,.92);--border:rgba(255,255,255,.08);--text:#e5e7eb;--dim:#8b95a7;--muted:#5b6577;--accent:#63b3ff;--hot:#ff5a3c;--cold:#3b82f6;--white:#fff;--mono:"JetBrains Mono",monospace}
-*{margin:0;padding:0;box-sizing:border-box}
-html,body{height:100%;background:var(--bg);color:var(--text);font-family:Inter,-apple-system,system-ui,sans-serif;overflow:hidden}
-#map{position:absolute;inset:0;background:#06080d}
-.leaflet-container{background:#06080d;font-family:inherit}
-.leaflet-control-attribution{background:rgba(6,8,13,.75)!important;color:var(--muted)!important;font-size:10px}
-.leaflet-control-attribution a{color:var(--dim)!important}
-.leaflet-control-zoom a{background:var(--panel)!important;color:var(--text)!important;border-color:var(--border)!important}
-[data-lang="pl"]{display:none}html[lang="pl"] [data-lang="pl"]{display:inline}html[lang="pl"] [data-lang="en"]{display:none}
-.basemap-dark{filter:brightness(.55) saturate(.6)}
-a{color:var(--accent)}
-
-/* top bar */
-.top{position:absolute;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;pointer-events:none;gap:10px}
-.top>*{pointer-events:auto}
-.back{display:inline-flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:9px 14px;color:var(--dim);font-size:13px;text-decoration:none;backdrop-filter:blur(12px)}
-.back:hover{color:var(--text);border-color:rgba(99,179,255,.35)}
-.title{text-align:center;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:10px 22px;backdrop-filter:blur(12px)}
-.title h1{font-size:17px;font-weight:800;letter-spacing:-.01em;color:var(--white)}
-.title p{font-size:11.5px;color:var(--dim);margin-top:2px}
-.tr{display:flex;gap:8px}
-.lang,.srcbtn{background:var(--panel);border:1px solid var(--border);color:var(--dim);border-radius:10px;padding:9px 13px;font-size:12px;cursor:pointer;font-family:inherit;backdrop-filter:blur(12px);display:inline-flex;align-items:center;gap:7px}
-.lang:hover,.srcbtn:hover{color:var(--text);border-color:rgba(99,179,255,.35)}
-.srcbtn b{font-family:var(--mono);font-size:10px;background:rgba(99,179,255,.14);color:var(--accent);border-radius:6px;padding:2px 6px;font-weight:700}
-
-/* right panel */
-.panel{position:absolute;top:70px;right:16px;z-index:1000;width:340px;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px;backdrop-filter:blur(14px);box-shadow:0 12px 40px rgba(0,0,0,.45)}
-.panel h2{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:10px}
-.country{font-size:22px;font-weight:800;color:var(--white);letter-spacing:-.01em;line-height:1.15}
-.country small{display:block;font-size:12px;color:var(--dim);font-weight:500;margin-top:3px}
-.big{display:flex;align-items:baseline;gap:10px;margin:12px 0 6px}
-.big b{font-family:var(--mono);font-size:38px;font-weight:700;line-height:1}
-.big span{font-size:12px;color:var(--dim)}
-.ytd{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.06em;color:#fbbf24;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.35);border-radius:6px;padding:2px 7px;vertical-align:middle;margin-left:6px}
-.hint{font-size:12px;color:var(--dim);line-height:1.5}
-.stripes{display:flex;height:34px;margin-top:12px;border-radius:6px;overflow:hidden;border:1px solid var(--border)}
-.stripes i{flex:1;display:block}
-.stripes-lbl{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:4px;font-family:var(--mono)}
-.sep{height:1px;background:var(--border);margin:16px 0}
-canvas#chart{width:100%;height:110px;display:block}
-.row{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--dim);margin-top:6px;gap:8px}
-.row b{color:var(--text);font-family:var(--mono);white-space:nowrap}
-.src{font-size:10.5px;color:var(--muted);line-height:1.55;margin-top:14px}
-.src a{color:var(--dim)}
-.src .prov{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
-.prov span{font-family:var(--mono);font-size:9.5px;border:1px solid var(--border);border-radius:5px;padding:2px 6px;color:var(--dim)}
-
-/* legend */
-.legend{position:absolute;left:16px;bottom:118px;z-index:1000;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:12px 14px;backdrop-filter:blur(12px);width:230px}
-.legend h3{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-bottom:8px}
-.ramp{height:12px;border-radius:6px;background:linear-gradient(90deg,#1d4ed8,#60a5fa,#e5e7eb,#fb923c,#dc2626,#7f1d1d)}
-.ramp-lbl{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:4px;font-family:var(--mono)}
-.legend p{font-size:11px;color:var(--dim);margin-top:8px;line-height:1.45}
-
-/* timeline */
-.timeline{position:absolute;left:16px;right:16px;bottom:16px;z-index:1000;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:12px 16px 10px;backdrop-filter:blur(14px)}
-.tl-top{display:flex;align-items:center;gap:14px}
-.play{width:38px;height:38px;border-radius:50%;border:1px solid rgba(99,179,255,.4);background:rgba(99,179,255,.12);color:var(--accent);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.play:hover{background:rgba(99,179,255,.22)}
-.year{font-family:var(--mono);font-size:26px;font-weight:700;color:var(--white);min-width:74px}
-.year small{display:block;font-size:9px;letter-spacing:.1em;color:#fbbf24;font-weight:700;line-height:1;margin-top:2px;min-height:9px}
-input[type=range]{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;background:linear-gradient(90deg,#1d4ed8,#60a5fa 35%,#e5e7eb 55%,#fb923c 75%,#dc2626);outline:none}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--white);border:3px solid var(--accent);cursor:pointer;box-shadow:0 0 0 4px rgba(99,179,255,.2)}
-.opts{display:flex;gap:14px;align-items:center;font-size:12px;color:var(--dim)}
-.opts label{display:flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap}
-.opts input{accent-color:var(--accent)}
-.gstrip{display:flex;height:10px;margin-top:10px;border-radius:4px;overflow:hidden;opacity:.9}
-.gstrip i{flex:1;display:block}
-.gstrip-lbl{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:3px;font-family:var(--mono)}
-
-.leaflet-tooltip.ct{background:var(--panel);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:6px 10px;font-size:12px;box-shadow:0 6px 20px rgba(0,0,0,.4)}
-.leaflet-tooltip.ct b{font-family:var(--mono)}
-.leaflet-tooltip-top.ct:before{border-top-color:var(--border)}
-
-/* sources modal */
-.modal{position:absolute;inset:0;z-index:3000;background:rgba(6,8,13,.72);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:24px}
-.modal.on{display:flex}
-.mbox{width:min(820px,100%);max-height:calc(100% - 48px);overflow:auto;background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:26px 28px;box-shadow:0 30px 80px rgba(0,0,0,.6)}
-.mhead{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:6px}
-.mhead h2{font-size:20px;font-weight:800;color:var(--white);letter-spacing:-.01em}
-.mhead p{font-size:12.5px;color:var(--dim);margin-top:4px;line-height:1.5}
-.x{background:none;border:1px solid var(--border);color:var(--dim);border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:16px;flex-shrink:0}
-.x:hover{color:var(--text)}
-.mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin:16px 0 6px}
-.kv{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;padding:10px 12px}
-.kv i{display:block;font-style:normal;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
-.kv b{font-family:var(--mono);font-size:13px;color:var(--text);font-weight:500}
-.card{border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-top:10px;background:rgba(255,255,255,.02)}
-.card h3{font-size:14px;font-weight:700;color:var(--white);line-height:1.3}
-.card .inst{font-size:12px;color:var(--accent);margin-top:2px}
-.card dl{display:grid;grid-template-columns:110px 1fr;gap:3px 12px;font-size:11.5px;margin-top:10px}
-.card dt{color:var(--muted);letter-spacing:.04em}
-.card dd{color:var(--dim);font-family:var(--mono);font-size:11px;word-break:break-all}
-.card dd.txt{font-family:inherit;font-size:11.5px;line-height:1.5;word-break:normal}
-.card .links{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-.card .links a{font-size:11px;font-weight:600;text-decoration:none;border:1px solid rgba(99,179,255,.35);border-radius:7px;padding:5px 9px;color:var(--accent)}
-.card .links a:hover{background:rgba(99,179,255,.12)}
-.method{font-size:12.5px;line-height:1.6;color:var(--dim);margin-top:14px;border-left:2px solid var(--accent);padding-left:12px}
-.mfoot{font-size:11px;color:var(--muted);margin-top:16px;line-height:1.6}
-
-#load{position:absolute;inset:0;z-index:2000;display:flex;align-items:center;justify-content:center;background:var(--bg);color:var(--dim);font-size:13px;letter-spacing:.2em;text-transform:uppercase;transition:opacity .5s}
-#load.off{opacity:0;pointer-events:none}
-
-@media(max-width:900px){
-  .title h1{font-size:14px}.title p{display:none}
-  .srcbtn span{display:none}
-  .panel{width:auto;left:16px;right:16px;top:auto;bottom:150px;padding:14px}
-  .panel .sep,.panel canvas,.panel .row,.panel .src,.panel .hint{display:none}
-  .legend{display:none}
-  .opts{display:none}
-  .timeline{padding:10px 12px}
-  .mbox{padding:18px}
-  .card dl{grid-template-columns:1fr}
-}
+.hero.home{padding:70px 0 40px;border:0;position:relative}
+.hero.home::before{content:"";position:absolute;inset:0;background:radial-gradient(900px 400px at 20% 0%,rgba(29,78,216,.18),transparent 60%),radial-gradient(700px 400px at 90% 20%,rgba(220,38,38,.14),transparent 60%);pointer-events:none}
+.hero.home h1{max-width:900px}
+.hero .cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:8px 0 10px}
+@media(max-width:1000px){.tiles{grid-template-columns:repeat(3,1fr)}}@media(max-width:700px){.tiles{grid-template-columns:repeat(2,1fr)}}@media(max-width:420px){.tiles{grid-template-columns:1fr}}
+.tiles .kn .v{font-size:clamp(22px,2.4vw,30px)}
+.sechead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:56px 0 12px}
+.sechead h2{margin:0}.sechead .meta{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.08em}
+.mini{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:800px){.mini{grid-template-columns:1fr}}
+.mini .fig{margin:0}.mini .fig canvas{height:230px}
+.by{background:linear-gradient(180deg,rgba(251,146,60,.08),rgba(251,146,60,.02));border:1px solid rgba(251,146,60,.3);border-radius:18px;padding:26px 28px;margin:24px 0}
+.by .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:14px 0 18px}
+.by .out{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:10px}@media(max-width:760px){.by .out{grid-template-columns:1fr}}
+.by .out .kn{background:rgba(6,8,13,.5)}
+.by p.expl{font-size:14.5px;color:#c9d1dc;margin:12px 0 0}
+.path{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:10px 0}@media(max-width:800px){.path{grid-template-columns:1fr}}
+.path a{display:flex;gap:12px;align-items:flex-start;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px;color:var(--text)}
+.path a:hover{border-color:rgba(99,179,255,.4);text-decoration:none}
+.path a b{font-family:var(--mono);font-size:22px;color:var(--accent);line-height:1}
+.path a span{font-size:13.5px;color:var(--dim)}.path a span strong{display:block;color:var(--white);font-size:15px;margin-bottom:2px}
 </style>
 </head>
 <body>
-<div id="load"><span data-lang="en">Loading climate data…</span><span data-lang="pl">Wczytywanie danych klimatycznych…</span></div>
-<div id="map"></div>
+<main class="wrap">
+  <section class="hero home">
+    <div class="kick"><span class="n">FutureShow</span><span data-lang="pl">Portal edukacyjny · dane na żywo</span><span data-lang="en">Education portal · live data</span></div>
+    <h1><span data-lang="pl">Klimat. Co się dzieje, <em>dlaczego</em> i co dalej.</span><span data-lang="en">Climate. What is happening, <em>why</em>, and what comes next.</span></h1>
+    <p class="lead"><span data-lang="pl">Globalne ocieplenie wyjaśnione na danych, dla każdego obywatela: obserwacje, fizyka, mapa świata, paliwa kopalne, energia, inne czynniki i scenariusze. <b>Każda liczba na tej stronie ma źródło</b> — kliknij dowolną plakietkę, żeby zobaczyć, skąd pochodzi, kiedy ją pobrano i jak ją policzono.</span><span data-lang="en">Global warming explained with data, for every citizen: observations, physics, a world map, fossil fuels, energy, other factors and scenarios. <b>Every number on this site has a source</b> — click any badge to see where it comes from, when it was fetched and how it was computed.</span></p>
+    <div class="cta"><a class="btn" href="01-co-sie-dzieje.html"><span data-lang="pl">Zacznij od rozdziału 01 →</span><span data-lang="en">Start with chapter 01 →</span></a><a class="btn ghost" href="mapa.html"><span data-lang="pl">Otwórz mapę</span><span data-lang="en">Open the map</span></a><a class="btn ghost" href="#urodziny"><span data-lang="pl">Twój rok urodzenia</span><span data-lang="en">Your birth year</span></a></div>
+  </section>
 
-<div class="top">
-  <a class="back" href="../index.html">← FutureShow</a>
-  <div class="title">
-    <h1><span data-lang="en">Climate Change Map</span><span data-lang="pl">Mapa zmian klimatu</span></h1>
-    <p id="subtitle"></p>
+  <div class="sechead"><h2><span data-lang="pl">Stan klimatu — dziś</span><span data-lang="en">State of the climate — today</span></h2><span class="meta" id="tilesMeta"></span></div>
+  <p style="max-width:800px"><span data-lang="pl">Wskaźniki poniżej są generowane automatycznie z plików NASA, NOAA, NSIDC i Global Carbon Project, odświeżanych co miesiąc. Wartości temperatury to anomalie względem średniej 1951–1980; „przedprzemysłowy” oznacza 1850–1900.</span><span data-lang="en">The indicators below are generated automatically from NASA, NOAA, NSIDC and Global Carbon Project files, refreshed monthly. Temperature values are anomalies vs the 1951–1980 mean; “pre-industrial” means 1850–1900.</span></p>
+  <div class="tiles" id="tiles"></div>
+
+  <div class="mini">
+    <div class="fig"><h4><span data-lang="pl">Temperatura Ziemi, 1880–dziś</span><span data-lang="en">Earth’s temperature, 1880–today</span></h4><div class="sub"><span data-lang="pl">Roczna anomalia globalna (ląd + ocean) wzgl. 1951–1980, °C</span><span data-lang="en">Annual global anomaly (land + ocean) vs 1951–1980, °C</span></div><canvas id="cTemp"></canvas><div class="cap"><span><span data-lang="pl">Słupki: lata; kolor = wartość. Ostatni słupek: rok bieżący (styczeń–ostatni miesiąc).</span><span data-lang="en">Bars: years; colour = value. Last bar: current year to date.</span></span><span class="src" data-src="gistemp-global">NASA GISTEMP v4</span></div></div>
+    <div class="fig"><h4><span data-lang="pl">Krzywa Keelinga: CO₂ w atmosferze</span><span data-lang="en">The Keeling curve: atmospheric CO₂</span></h4><div class="sub"><span data-lang="pl">Średnia miesięczna, Mauna Loa, ppm (części na milion)</span><span data-lang="en">Monthly mean, Mauna Loa, ppm (parts per million)</span></div><canvas id="cCO2"></canvas><div class="cap"><span><span data-lang="pl">Ząbki to oddech biosfery północnej półkuli; trend to spalanie paliw kopalnych.</span><span data-lang="en">The saw-tooth is the northern biosphere breathing; the trend is fossil-fuel burning.</span></span><span class="src" data-src="noaa-co2">NOAA GML / Scripps</span></div></div>
   </div>
-  <div class="tr">
-    <button class="srcbtn" id="srcBtn" onclick="openSources()"><b>NASA</b><span><span data-lang="en">Data sources</span><span data-lang="pl">Źródła danych</span></span></button>
-    <button class="lang" id="langBtn" onclick="toggleLang()">EN</button>
-  </div>
-</div>
 
-<aside class="panel">
-  <h2><span data-lang="en">Selected</span><span data-lang="pl">Wybrany kraj</span></h2>
-  <div class="country" id="cName"></div>
-  <div class="big"><b id="cVal">—</b><span id="cUnit">°C</span><span class="ytd" id="cYtd" style="display:none"></span></div>
-  <div class="hint" id="cHint"></div>
-  <div class="stripes" id="cStripes"></div>
-  <div class="stripes-lbl"><span id="sFrom"></span><span id="sTo"></span></div>
-  <div class="sep"></div>
-  <h2><span data-lang="en">Global · NASA GISTEMP v4</span><span data-lang="pl">Świat · NASA GISTEMP v4</span></h2>
-  <canvas id="chart" width="600" height="220"></canvas>
-  <div class="row"><span data-lang="en">Global anomaly this year</span><span data-lang="pl">Anomalia globalna w tym roku</span><b id="gVal">—</b></div>
-  <div class="row"><span data-lang="en">Warmest year on record</span><span data-lang="pl">Najcieplejszy rok w serii</span><b id="gMax">—</b></div>
-  <div class="row"><span data-lang="en">Latest month</span><span data-lang="pl">Ostatni miesiąc</span><b id="gLast">—</b></div>
-  <div class="src">
-    <span id="srcLine"></span>
-    <div class="prov" id="prov"></div>
-  </div>
-</aside>
+  <div class="sechead"><h2><span data-lang="pl">Ścieżka: dziewięć rozdziałów</span><span data-lang="en">The path: nine chapters</span></h2><span class="meta">~45 min</span></div>
+  <p style="max-width:800px"><span data-lang="pl">Rozdziały czyta się po kolei jak książkę, ale każdy działa też osobno. Na końcu każdego są trzy rzeczy do zapamiętania.</span><span data-lang="en">The chapters read in order like a book, but each also stands alone. Each ends with three things to remember.</span></p>
+  <div class="path" id="path"></div>
 
-<div class="legend">
-  <h3><span data-lang="en">Anomaly vs 1951–1980</span><span data-lang="pl">Anomalia wzgl. 1951–1980</span></h3>
-  <div class="ramp"></div>
-  <div class="ramp-lbl"><span>−2°</span><span>−1°</span><span>0</span><span>+1°</span><span>+2°</span><span>+3°</span></div>
-  <p><span data-lang="en">Grey: no data for that country/year.</span><span data-lang="pl">Szary: brak danych dla kraju/roku.</span></p>
-</div>
-
-<div class="timeline">
-  <div class="tl-top">
-    <button class="play" id="play" title="Play">▶</button>
-    <div class="year"><span id="year"></span><small id="yearTag"></small></div>
-    <input type="range" id="slider" min="1880" max="2026" value="2025" step="1">
-    <div class="opts">
-      <label><input type="checkbox" id="smooth" checked> <span data-lang="en">5-year mean</span><span data-lang="pl">średnia 5-letnia</span></label>
+  <div class="sechead" id="urodziny"><h2><span data-lang="pl">Twój rok urodzenia</span><span data-lang="en">Your birth year</span></h2><span class="meta"><span data-lang="pl">personalny kontekst</span><span data-lang="en">personal context</span></span></div>
+  <div class="by">
+    <p style="margin:0;max-width:760px"><span data-lang="pl">Zmiana klimatu to nie abstrakcja „do 2100 roku”. Wpisz rok urodzenia i wybierz kraj — zobaczysz, jak zmienił się klimat w ciągu Twojego życia, na podstawie tych samych danych, co mapa.</span><span data-lang="en">Climate change is not an abstraction “by 2100”. Enter your birth year and pick a country — you will see how the climate changed during your lifetime, from the same data as the map.</span></p>
+    <div class="row">
+      <label><span data-lang="pl">Rok urodzenia</span><span data-lang="en">Birth year</span> <input class="input" id="byYear" type="number" min="1900" max="2020" value="1985" style="width:110px"></label>
+      <label><span data-lang="pl">Kraj</span><span data-lang="en">Country</span> <select class="input" id="byCountry"></select></label>
+      <button class="btn" id="byGo"><span data-lang="pl">Pokaż</span><span data-lang="en">Show</span></button>
     </div>
+    <div class="out" id="byOut"></div>
+    <div style="margin-top:14px"><div class="stripes" id="byStripes"></div><div class="stripes-lbl"><span id="bsFrom"></span><span id="bsMid"></span><span id="bsTo"></span></div></div>
+    <p class="expl" id="byExpl"></p>
   </div>
-  <div class="gstrip" id="gStripes"></div>
-  <div class="gstrip-lbl"><span id="gsFrom"></span><span data-lang="en">global warming stripes · NASA GISTEMP</span><span data-lang="pl">paski ocieplenia · świat · NASA GISTEMP</span><span id="gsTo"></span></div>
-</div>
 
-<div class="modal" id="modal" onclick="if(event.target===this)closeSources()">
-  <div class="mbox" id="mbox"></div>
-</div>
+  <div class="sechead"><h2><span data-lang="pl">Pięć pytań, które zadaje każdy</span><span data-lang="en">Five questions everyone asks</span></h2></div>
+  <details><summary><span data-lang="pl">Skąd wiadomo, że to człowiek, a nie naturalne cykle?</span><span data-lang="en">How do we know it is humans, not natural cycles?</span></summary><div class="body">
+    <p><span data-lang="pl">Bo policzono wszystkie czynniki osobno. IPCC ocenia, że z obserwowanego ocieplenia 1,06 °C (2010–2019 wzgl. 1850–1900) człowiek odpowiada za <strong>1,07 °C</strong> (przedział 0,8–1,3), a czynniki naturalne — Słońce i wulkany — za <strong>od −0,1 do +0,1 °C</strong>. Słońce od lat 80. świeci wręcz odrobinę słabiej, a Ziemia się ociepla; górne warstwy atmosfery się ochładzają, dolne ocieplają — dokładnie tak, jak działa efekt cieplarniany, a nie ogrzewanie z zewnątrz. Węgiel w atmosferze ma też „podpis” izotopowy paliw kopalnych.</span><span data-lang="en">Because every factor has been quantified separately. The IPCC assesses that of the observed 1.06 °C of warming (2010–2019 vs 1850–1900), humans caused <strong>1.07 °C</strong> (range 0.8–1.3), while natural factors — the Sun and volcanoes — contributed <strong>−0.1 to +0.1 °C</strong>. Solar output has slightly declined since the 1980s while Earth warmed; the upper atmosphere is cooling while the lower atmosphere warms — the fingerprint of a greenhouse effect, not external heating. Atmospheric carbon also carries the isotopic signature of fossil fuels.</span> <span class="src" data-src="ipcc-ar6-wg1-spm">IPCC AR6 SPM A.1.3</span> → <a href="02-dlaczego.html">02 · <span data-lang="pl">Dlaczego</span><span data-lang="en">Why</span></a></p></div></details>
+  <details><summary><span data-lang="pl">Czy 1,5 stopnia to naprawdę dużo?</span><span data-lang="en">Is 1.5 degrees really a lot?</span></summary><div class="body">
+    <p><span data-lang="pl">Dla pogody za oknem — mało. Dla systemu — bardzo dużo, bo to średnia z całej planety, oceanów i wszystkich pór roku. Różnica między epoką lodowcową a dzisiejszym klimatem to zaledwie ok. 5–6 °C średniej globalnej. Lądy ocieplają się szybciej niż średnia (Polska: już ponad +2 °C), Arktyka 3–4 razy szybciej. Każda dziesiąta stopnia zwiększa częstość fal upałów, nawalnych opadów i susz — nieliniowo.</span><span data-lang="en">For the weather outside — not much. For the system — a great deal, because it is an average over the whole planet, the oceans and all seasons. The difference between an ice age and today’s climate is only about 5–6 °C of global mean. Land warms faster than the average (Poland: already above +2 °C), the Arctic 3–4 times faster. Every tenth of a degree increases the frequency of heatwaves, downpours and droughts — non-linearly.</span> <span class="src" data-src="ipcc-ar6-wg1-spm">IPCC AR6</span> <span class="src" data-src="rantanen-2022">Rantanen 2022</span> → <a href="07-wspolzaleznosci.html">07 · <span data-lang="pl">Współzależności</span><span data-lang="en">Interdependencies</span></a></p></div></details>
+  <details><summary><span data-lang="pl">Czy Polska ma jakiekolwiek znaczenie?</span><span data-lang="en">Does Poland matter at all?</span></summary><div class="body">
+    <p id="faqPL"></p></div></details>
+  <details><summary><span data-lang="pl">Czy jest już za późno?</span><span data-lang="en">Is it already too late?</span></summary><div class="body">
+    <p><span data-lang="pl">Nie ma progu „za późno” — jest skala szkód. Każda tona CO₂, której nie wyemitujemy, obniża końcowe ocieplenie; związek jest niemal liniowy. IPCC: scenariusz szybkiej redukcji daje ok. <strong>1,4 °C</strong> pod koniec wieku, kontynuacja obecnych polityk ok. <strong>2,7 °C</strong>, najgorszy przypadek <strong>4,4 °C</strong>. Różnica między tymi światami to setki milionów ludzi, którym da się (lub nie) zapewnić wodę, żywność i mieszkanie.</span><span data-lang="en">There is no “too late” threshold — there is a scale of damage. Every tonne of CO₂ not emitted lowers the final warming; the relationship is almost linear. IPCC: a rapid-reduction scenario gives about <strong>1.4 °C</strong> by the end of the century, current policies about <strong>2.7 °C</strong>, the worst case <strong>4.4 °C</strong>. The difference between those worlds is hundreds of millions of people who can (or cannot) be provided with water, food and shelter.</span> <span class="src" data-src="ipcc-ar6-wg1-ch4">IPCC AR6 Table SPM.1</span> → <a href="08-co-dalej.html">08 · <span data-lang="pl">Co dalej</span><span data-lang="en">What next</span></a></p></div></details>
+  <details><summary><span data-lang="pl">Skąd mam wiedzieć, że te dane są prawdziwe?</span><span data-lang="en">How do I know this data is real?</span></summary><div class="body">
+    <p><span data-lang="pl">Możesz to sprawdzić samodzielnie. Każdy wykres ma plakietkę źródła z linkiem do oryginalnego pliku instytucji naukowej (NASA, NOAA, NSIDC, Global Carbon Project), datą pobrania i sumą kontrolną. Kod, który przetwarza dane, jest publiczny i uruchamia się automatycznie co miesiąc. Nie ma tu ani jednej liczby wpisanej ręcznie z pamięci — jeśli znajdziesz błąd, będzie go widać w kodzie.</span><span data-lang="en">You can check it yourself. Every chart carries a source badge linking to the original file of a scientific institution (NASA, NOAA, NSIDC, Global Carbon Project), the fetch date and a checksum. The code that processes the data is public and runs automatically every month. There is not a single number typed in from memory — if you find a mistake, it will be visible in the code.</span> → <a href="zrodla.html"><span data-lang="pl">Źródła i metoda</span><span data-lang="en">Sources & method</span></a></p></div></details>
+</main>
 
+<script src="portal.js"></script>
 <script>
-// ---------- i18n ----------
-function toggleLang(){const h=document.documentElement;h.lang=h.lang==='pl'?'en':'pl';document.getElementById('langBtn').textContent=h.lang==='pl'?'EN':'PL';try{localStorage.setItem('lang',h.lang)}catch(e){}render();if($('modal').classList.contains('on'))openSources();}
-(function(){let l='pl';try{l=localStorage.getItem('lang')||'pl'}catch(e){}document.documentElement.lang=l;document.getElementById('langBtn').textContent=l==='pl'?'EN':'PL';})();
-const pl=()=>document.documentElement.lang==='pl';
-const T=(p,e)=>pl()?p:e;
-const MONTHS_PL=['stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','września','października','listopada','grudnia'];
-const MONTHS_EN=['January','February','March','April','May','June','July','August','September','October','November','December'];
-const MONTHS_PL_N=['styczeń','luty','marzec','kwiecień','maj','czerwiec','lipiec','sierpień','wrzesień','październik','listopad','grudzień'];
-function monthLabel(ym){const [y,m]=ym.split('-').map(Number);return pl()?`${MONTHS_PL_N[m-1]} ${y}`:`${MONTHS_EN[m-1]} ${y}`;}
-function ytdLabel(n){return pl()?`${n} ${n===1?'miesiąc':n<5?'miesiące':'miesięcy'}`:`${n} month${n===1?'':'s'}`;}
-
-// ---------- colour scale (diverging, clamped −2…+3) ----------
-const STOPS=[[-2,[29,78,216]],[-1,[96,165,250]],[0,[229,231,235]],[1,[251,146,60]],[2,[220,38,38]],[3,[127,29,29]]];
-function color(v){
-  if(v==null||isNaN(v))return '#2a3140';
-  v=Math.max(-2,Math.min(3,v));
-  for(let i=0;i<STOPS.length-1;i++){const [a,ca]=STOPS[i],[b,cb]=STOPS[i+1];if(v<=b){const t=(v-a)/(b-a);return `rgb(${ca.map((c,k)=>Math.round(c+(cb[k]-c)*t)).join(',')})`;}}
-  return `rgb(${STOPS[STOPS.length-1][1].join(',')})`;
+const K = KLIMAT, { $, T, fmt, pl } = K;
+K.chrome();
+const COUNTRIES = [['POL','Polska','Poland'],['DEU','Niemcy','Germany'],['CZE','Czechy','Czechia'],['SVK','Słowacja','Slovakia'],['UKR','Ukraina','Ukraine'],['LTU','Litwa','Lithuania'],['GBR','Wielka Brytania','United Kingdom'],['FRA','Francja','France'],['ESP','Hiszpania','Spain'],['ITA','Włochy','Italy'],['NLD','Holandia','Netherlands'],['SWE','Szwecja','Sweden'],['NOR','Norwegia','Norway'],['FIN','Finlandia','Finland'],['GRC','Grecja','Greece'],['TUR','Turcja','Türkiye'],['RUS','Rosja','Russia'],['USA','Stany Zjednoczone','United States'],['CAN','Kanada','Canada'],['MEX','Meksyk','Mexico'],['BRA','Brazylia','Brazil'],['ARG','Argentyna','Argentina'],['CHN','Chiny','China'],['IND','Indie','India'],['JPN','Japonia','Japan'],['KOR','Korea Południowa','South Korea'],['IDN','Indonezja','Indonesia'],['VNM','Wietnam','Vietnam'],['IRN','Iran','Iran'],['SAU','Arabia Saudyjska','Saudi Arabia'],['ARE','Emiraty Arabskie','United Arab Emirates'],['EGY','Egipt','Egypt'],['NGA','Nigeria','Nigeria'],['KEN','Kenia','Kenya'],['ZAF','RPA','South Africa'],['AUS','Australia','Australia'],['NZL','Nowa Zelandia','New Zealand'],['ISL','Islandia','Iceland'],['GRL','Grenlandia','Greenland'],['MDV','Malediwy','Maldives']];
+let D;
+function tile(cls, v, unit, l, d, src) { return `<div class="kn ${cls}"><div class="v">${v}<small>${unit || ''}</small></div><div class="l">${l}</div>${d ? `<div class="d">${d}</div>` : ''}<span class="src" data-src="${src}">${srcName(src)}</span></div>`; }
+function srcName(id) { return { 'gistemp-global': 'NASA', 'gistemp-grid': 'NASA', 'noaa-co2': 'NOAA', 'noaa-ch4': 'NOAA', 'gistemp-zonal': 'NASA', 'sea-level': 'NOAA', 'nsidc': 'NSIDC', 'ncei-ohc': 'NCEI', 'oni': 'NOAA', 'owid-co2': 'GCB', 'owid-energy': 'EI/Ember' }[id] || id; }
+function render() {
+  const { climate: c, indicators: i, emissions: e } = D;
+  const lm = c.meta.latest_month, gm = c.global_monthly[lm], gy = c.meta.global_years[1], g = c.global;
+  const rec = Object.keys(g).reduce((a, b) => g[b] > g[a] ? b : a);
+  const co2 = i.co2, ch4 = i.ch4, z = i.temperature_zones, sl = i.sea_level, si = i.sea_ice, oh = i.ocean_heat, oni = i.enso_oni;
+  const star = sl.satellite_noaa_star_mm || sl.satellite_annual_mm, [slY, slV] = K.last(star), slV10 = star[String(+slY - 10)];
+  const ice = si.arctic_september, [iceY, iceV] = K.last(ice), iceBase = K.mean(Object.keys(ice).filter(y => y >= 1979 && y <= 1990).map(y => ice[y]));
+  const [ohY, ohV] = K.last(oh.world_0_2000m_1e22J), [oniM, oniV] = K.last(oni.monthly);
+  const w = e.countries.WLD, wi = w.co2.years.indexOf(e.meta.co2_latest_year), we = w.energy.years.indexOf(e.meta.energy_latest_year);
+  const p = e.countries.POL, pe = p.energy.years.indexOf(e.meta.energy_latest_year);
+  const arcY = K.last(z.arctic)[0];
+  $('#tiles').innerHTML = [
+    tile('hot', fmt(gm, 2, { sign: true }), '°C', T(`Świat, ${K.monthLabel(lm)}`, `World, ${K.monthLabel(lm)}`), T('anomalia miesięczna wzgl. 1951–1980', 'monthly anomaly vs 1951–1980'), 'gistemp-global'),
+    tile('hot', fmt(g[rec], 2, { sign: true }), '°C', T(`Rekordowy rok: ${rec}`, `Record year: ${rec}`), T(`ostatni pełny rok ${gy}: ${fmt(g[String(gy)], 2, { sign: true })} °C`, `last full year ${gy}: ${fmt(g[String(gy)], 2, { sign: true })} °C`), 'gistemp-global'),
+    tile('warm', fmt(co2.latest.ppm, 1), 'ppm', T(`CO₂, ${K.monthLabel(co2.latest.month)}`, `CO₂, ${K.monthLabel(co2.latest.month)}`), T(`+${fmt((co2.latest.ppm / co2.preindustrial_ppm - 1) * 100, 0)} % wzgl. epoki przedprzemysłowej (278 ppm)`, `+${fmt((co2.latest.ppm / co2.preindustrial_ppm - 1) * 100, 0)} % vs pre-industrial (278 ppm)`), 'noaa-co2'),
+    tile('warm', fmt(ch4.latest.ppb, 0), 'ppb', T(`Metan, ${K.monthLabel(ch4.latest.month)}`, `Methane, ${K.monthLabel(ch4.latest.month)}`), T(`×${fmt(ch4.latest.ppb / ch4.preindustrial_ppb, 1)} wzgl. epoki przedprzemysłowej`, `×${fmt(ch4.latest.ppb / ch4.preindustrial_ppb, 1)} vs pre-industrial`), 'noaa-ch4'),
+    tile('hot', fmt(z.arctic[arcY], 2, { sign: true }), '°C', T(`Arktyka (64–90°N), ${arcY}`, `Arctic (64–90°N), ${arcY}`), T(`świat w tym roku: ${fmt(z.global[arcY], 2, { sign: true })} °C`, `world that year: ${fmt(z.global[arcY], 2, { sign: true })} °C`), 'gistemp-zonal'),
+    tile('cold', fmt(slV / 10, 1, { sign: true }), 'cm', T(`Poziom morza, ${slY}`, `Sea level, ${slY}`), T(`wzgl. 1880–1900 · ostatnie 10 lat: ${fmt((slV - slV10) / 10, 1)} mm/rok`, `vs 1880–1900 · last 10 years: ${fmt((slV - slV10) / 10, 1)} mm/yr`), 'sea-level'),
+    tile('cold', fmt(iceV, 2), T(' mln km²', ' M km²'), T(`Lód Arktyki, wrzesień ${iceY}`, `Arctic sea ice, September ${iceY}`), T(`${fmt((iceV / iceBase - 1) * 100, 0)} % wzgl. 1979–1990 (${fmt(iceBase, 2)})`, `${fmt((iceV / iceBase - 1) * 100, 0)} % vs 1979–1990 (${fmt(iceBase, 2)})`), 'nsidc'),
+    tile('hot', fmt(ohV, 1), ' ×10²² J', T(`Ciepło oceanu 0–2000 m, ${ohY}`, `Ocean heat 0–2000 m, ${ohY}`), T('≈ 90 % nadwyżki energii trafia do oceanu', '≈ 90 % of the excess energy goes into the ocean'), 'ncei-ohc'),
+    tile('warm', fmt(w.co2.co2[wi] / 1000, 1), ' Gt', T(`Emisje CO₂ z paliw, ${e.meta.co2_latest_year}`, `Fossil CO₂ emissions, ${e.meta.co2_latest_year}`), T(`+ zmiany użytkowania ziemi: ${fmt(w.co2.co2_including_luc[wi] / 1000, 1)} Gt · skumulowane od 1750: ${fmt(w.co2.cumulative_co2[wi] / 1000, 0)} Gt`, `+ land-use change: ${fmt(w.co2.co2_including_luc[wi] / 1000, 1)} Gt · cumulative since 1750: ${fmt(w.co2.cumulative_co2[wi] / 1000, 0)} Gt`), 'owid-co2'),
+    tile('ok', fmt(w.energy.low_carbon_share_elec[we], 1), '%', T(`Prąd niskoemisyjny na świecie, ${e.meta.energy_latest_year}`, `Low-carbon electricity worldwide, ${e.meta.energy_latest_year}`), T(`słońce + wiatr: ${fmt(w.energy.solar_share_elec[we] + w.energy.wind_share_elec[we], 1)} % · węgiel: ${fmt(w.energy.coal_share_elec[we], 1)} %`, `solar + wind: ${fmt(w.energy.solar_share_elec[we] + w.energy.wind_share_elec[we], 1)} % · coal: ${fmt(w.energy.coal_share_elec[we], 1)} %`), 'owid-energy'),
+    tile(oniV >= 0.5 ? 'warm' : oniV <= -0.5 ? 'cold' : '', fmt(oniV, 1, { sign: true }), '', T(`El Niño (ONI), ${K.monthLabel(oniM)}`, `El Niño (ONI), ${K.monthLabel(oniM)}`), oniV >= 0.5 ? T('warunki El Niño — dodatkowo podgrzewa globalną średnią', 'El Niño conditions — adds extra heat to the global mean') : oniV <= -0.5 ? T('warunki La Niña — chwilowo chłodzi', 'La Niña conditions — temporarily cools') : T('faza neutralna', 'neutral phase'), 'oni'),
+    tile('hot', fmt(c.countries.POL.anom[String(gy)], 2, { sign: true }), '°C', T(`Polska, ${gy}`, `Poland, ${gy}`), T(`węgiel w polskim prądzie ${e.meta.energy_latest_year}: ${fmt(p.energy.coal_share_elec[pe], 1)} %`, `coal in Polish electricity ${e.meta.energy_latest_year}: ${fmt(p.energy.coal_share_elec[pe], 1)} %`), 'gistemp-grid'),
+  ].join('');
+  $('#tilesMeta').textContent = T('odświeżono ', 'refreshed ') + i.meta.generated_utc.slice(0, 10);
+  // charts
+  const ytd = c.global_ytd, pts = Object.keys(g).map(y => [+y, g[y]]); if (ytd) pts.push([ytd.year, ytd.anom]);
+  K.chart('#cTemp', { series: [{ name: T('anomalia', 'anomaly'), points: pts, bars: true, colorFn: K.tcolor }], y: { d: 1, fmt: v => fmt(v, 1, { sign: true }) }, x: { ticks: [1880, 1900, 1920, 1940, 1960, 1980, 2000, 2020] }, tipFmt: v => fmt(v, 2, { sign: true }) + ' °C', hlines: [{ y: 0, color: 'rgba(255,255,255,.25)' }] });
+  K.chart('#cCO2', { series: [{ name: 'CO₂', points: K.obj2pts(co2.monthly), color: '#fb923c', width: 1.5, fill: true }], y: { min: 300, zero: false, d: 0 }, x: { ticks: [1960, 1980, 2000, 2020] }, tipFmt: v => fmt(v, 2) + ' ppm', hlines: [{ y: 350, label: '350 ppm', color: 'rgba(255,255,255,.3)' }] });
+  // path
+  $('#path').innerHTML = K.CH.filter(x => x.n).map(x => `<a href="${x.f}"><b>${x.n}</b><span><strong>${pl() ? x.pl : x.en}</strong>${PATH_DESC[x.n][pl() ? 0 : 1]}</span></a>`).join('');
+  // FAQ Poland (data-driven)
+  const pl24 = e.latest.POL, wl = e.countries.WLD.co2;
+  $('#faqPL').innerHTML = `<span>${T(`Polska emituje ok. <strong>${fmt(pl24.co2 / 1000, 2)} Gt CO₂</strong> rocznie z paliw kopalnych — <strong>${fmt(pl24.share_global_co2, 1)} %</strong> światowych emisji, przy ok. 0,5 % ludności świata; na osobę to <strong>${fmt(pl24.co2_per_capita, 1)} t</strong>, więcej niż średnia światowa (${fmt(wl.co2_per_capita[wi], 1)} t). Historycznie (od 1750) polskie emisje to ${fmt(pl24.share_global_cumulative_co2, 1)} % sumy światowej. Argument „my jesteśmy mali” działa w obie strony: każdy z ~200 krajów może go użyć i wtedy nikt nie robi nic. Polska ma też jeden z najbardziej węglowych systemów elektroenergetycznych w UE (${fmt(p.energy.coal_share_elec[pe], 0)} % prądu z węgla w ${e.meta.energy_latest_year}) — czyli największy potencjał redukcji na wyciągnięcie ręki.`, `Poland emits about <strong>${fmt(pl24.co2 / 1000, 2)} Gt CO₂</strong> a year from fossil fuels — <strong>${fmt(pl24.share_global_co2, 1)} %</strong> of the world total, with about 0.5 % of the world population; per person that is <strong>${fmt(pl24.co2_per_capita, 1)} t</strong>, above the world average (${fmt(wl.co2_per_capita[wi], 1)} t). Historically (since 1750) Polish emissions are ${fmt(pl24.share_global_cumulative_co2, 1)} % of the world total. The “we are small” argument works both ways: any of ~200 countries can use it, and then nobody does anything. Poland also has one of the most coal-heavy power systems in the EU (${fmt(p.energy.coal_share_elec[pe], 0)} % of electricity from coal in ${e.meta.energy_latest_year}) — i.e. the largest reduction potential within reach.`)}</span> <span class="src" data-src="owid-co2">GCB 2025</span> <span class="src" data-src="owid-energy">Ember</span> → <a href="04-paliwa-kopalne.html">04</a> · <a href="05-energia.html">05</a>`;
+  // birth-year select
+  const sel = $('#byCountry'); const cur = sel.value || 'POL';
+  sel.innerHTML = COUNTRIES.filter(x => c.countries[x[0]]).map(x => `<option value="${x[0]}" ${x[0] === cur ? 'selected' : ''}>${pl() ? x[1] : x[2]}</option>`).join('');
+  birth();
+  K.bindSources(document); K.stamp([c.meta, i.meta, e.meta]);
 }
-const fmt=v=>v==null?'—':(v>0?'+':'')+v.toFixed(2);
-const vcol=v=>v==null?'#8b95a7':color(Math.max(-2,Math.min(3,v)));
-
-// ---------- state ----------
-let DATA,GEO,META,layer,year,selected=null,playing=false,timer=null;
-let Y0,Y1,YTD;   // first full year, last full year, partial-year record {year,months}
-const $=id=>document.getElementById(id);
-
-function seriesFor(iso){const c=DATA.countries[iso];if(!c)return null;const s={};for(const y in c.anom)s[+y]=c.anom[y];if(c.ytd)s[c.ytd.year]=c.ytd.anom;return s;}
-function isYtd(y){return YTD&&y===YTD.year;}
-function valueAt(series,y){
-  if(!series)return null;
-  if(!$('smooth').checked||isYtd(y))return series[y]??null;
-  let sum=0,n=0;for(let k=y-2;k<=y+2;k++){if(series[k]!=null&&!isYtd(k)){sum+=series[k];n++;}}
-  return n>=3?sum/n:null;
+const PATH_DESC = { '01': ['Termometry, satelity, ocean, lód: co mierzymy i co widać.', 'Thermometers, satellites, ocean, ice: what we measure and what we see.'], '02': ['Fizyka efektu cieplarnianego i dowody, że to my.', 'The physics of the greenhouse effect and the evidence it is us.'], '03': ['Mapa 239 krajów: kto ociepla się najszybciej i dlaczego.', 'A map of 239 countries: who warms fastest and why.'], '04': ['Węgiel, ropa, gaz: kto, ile, od kiedy — i budżet, który się kończy.', 'Coal, oil, gas: who, how much, since when — and a budget running out.'], '05': ['Transformacja energetyczna w liczbach, ze światem i Polską.', 'The energy transition in numbers, for the world and Poland.'], '06': ['Aerozole, wulkany, Słońce, El Niño, testy jądrowe — co robi, a co nie.', 'Aerosols, volcanoes, the Sun, El Niño, nuclear tests — what matters and what does not.'], '07': ['Pogoda ekstremalna, sprzężenia zwrotne, punkty krytyczne.', 'Extreme weather, feedbacks, tipping points.'], '08': ['Scenariusze IPCC, budżet węglowy, co mogą państwa i ludzie.', 'IPCC scenarios, the carbon budget, what states and people can do.'], '09': ['Dwanaście pytań ze źródłami. Sprawdź, co zostało.', 'Twelve questions with sources. See what stuck.'] };
+function birth() {
+  const c = D.climate, i = D.indicators, y = Math.max(1880, Math.min(2020, +$('#byYear').value || 1985)), iso = $('#byCountry').value || 'POL', name = $('#byCountry').selectedOptions[0]?.textContent || iso;
+  const gy = c.meta.global_years[1], s = c.countries[iso]?.anom || {}, g = c.global;
+  const d = K.smooth5(s, gy) - K.smooth5(s, y), dg = K.smooth5(g, gy) - K.smooth5(g, y);
+  const co2a = i.co2.annual, co2b = co2a[String(y)], co2n = i.co2.latest.ppm;
+  const top10 = Object.keys(g).sort((a, b) => g[b] - g[a]).slice(0, 10), inLife = top10.filter(t => +t >= y).length;
+  const kn = (cls, v, u, l) => `<div class="kn ${cls}"><div class="v">${v}<small>${u}</small></div><div class="l">${l}</div></div>`;
+  $('#byOut').innerHTML = kn(d > 0 ? 'hot' : 'cold', fmt(d, 1, { sign: true }), '°C', T(`${name}: ocieplenie od ${y} do ${gy} (średnie 5-letnie)`, `${name}: warming from ${y} to ${gy} (5-year means)`)) +
+    kn('warm', fmt(dg, 1, { sign: true }), '°C', T(`Świat: ocieplenie od ${y} do ${gy}`, `World: warming from ${y} to ${gy}`)) +
+    (co2b ? kn('warm', `${fmt(co2b, 0)} → ${fmt(co2n, 0)}`, ' ppm', T(`CO₂ w atmosferze: rok ${y} → dziś (+${fmt((co2n / co2b - 1) * 100, 0)} %)`, `Atmospheric CO₂: ${y} → today (+${fmt((co2n / co2b - 1) * 100, 0)} %)`)) : kn('', '—', '', T('Pomiary CO₂ na Mauna Loa zaczynają się w 1959 r.', 'Mauna Loa CO₂ measurements start in 1959')));
+  K.stripes($('#byStripes'), s, y, gy); $('#bsFrom').textContent = y; $('#bsTo').textContent = gy; $('#bsMid').textContent = T('paski ocieplenia · ', 'warming stripes · ') + name;
+  $('#byExpl').innerHTML = T(`Z dziesięciu najcieplejszych lat w historii pomiarów (od 1880) <strong>${inLife}</strong> przypada na Twoje życie${inLife === 10 ? ' — wszystkie' : ''}. Wszystkie dziesięć to lata ${Math.min(...top10.map(Number))}–${Math.max(...top10.map(Number))}. Ocieplenie liczone jako różnica średnich 5-letnich, żeby pojedynczy gorący lub zimny rok nie zafałszował wyniku.`, `Of the ten warmest years on record (since 1880), <strong>${inLife}</strong> fall within your lifetime${inLife === 10 ? ' — all of them' : ''}. All ten are the years ${Math.min(...top10.map(Number))}–${Math.max(...top10.map(Number))}. Warming is computed as the difference of 5-year means so that a single hot or cold year does not distort the result.`) + ` <span class="src" data-src="gistemp-grid">NASA GISTEMP</span>`;
+  K.bindSources($('#byExpl'));
 }
-const cname=f=>pl()?(f.properties.name_pl||f.properties.name):f.properties.name;
-
-// ---------- map ----------
-const map=L.map('map',{center:[28,12],zoom:2,minZoom:2,maxZoom:7,zoomControl:false,worldCopyJump:true,attributionControl:true});
-L.control.zoom({position:'topleft'}).addTo(map);
-map.getContainer().querySelector('.leaflet-top.leaflet-left').style.marginTop='60px';
-L.tileLayer('https://server.arcgisonline.com/ArcGis/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',{attribution:'&copy; Esri, HERE, Garmin, &copy; OpenStreetMap contributors · NASA GISTEMP v4 · Natural Earth',maxZoom:16,className:'basemap-dark'}).addTo(map);
-
-function style(f){const v=valueAt(seriesFor(f.id),year);const sel=selected===f.id;return{fillColor:color(v),fillOpacity:v==null?.25:.78,color:sel?'#fff':'rgba(255,255,255,.18)',weight:sel?2:.6};}
-function tip(f){const v=valueAt(seriesFor(f.id),year);return `${cname(f)} · ${year}${isYtd(year)?' *':''}<br><b style="color:${vcol(v)}">${v==null?'—':fmt(v)+' °C'}</b>`;}
-
-Promise.all([fetch('data/climate-data.json').then(r=>r.json()),fetch('data/countries.min.json').then(r=>r.json())]).then(([d,g])=>{
-  DATA=d;GEO=g;META=d.meta;
-  Y0=META.country_years[0];Y1=META.country_years[1];YTD=d.global_ytd||null;
-  const ymax=YTD?YTD.year:Y1;
-  const sl=$('slider');sl.min=Y0;sl.max=ymax;year=Y1;sl.value=year;
-  layer=L.geoJSON(GEO,{style,onEachFeature:(f,l)=>{
-    l.bindTooltip(()=>tip(f),{sticky:true,className:'ct',direction:'top',offset:[0,-6]});
-    l.on('click',()=>{selected=selected===f.id?null:f.id;render();});
-  }}).addTo(map);
-  buildGlobalStripes();
-  render();
-  $('load').classList.add('off');
-}).catch(e=>{$('load').innerHTML='<span style="color:#ff5a3c;letter-spacing:0;text-transform:none">'+T('Nie udało się wczytać danych: ','Could not load data: ')+e+'</span>';});
-
-// ---------- render ----------
-function render(){
-  $('year').textContent=year;$('slider').value=year;
-  $('yearTag').textContent=isYtd(year)?T(`w toku · ${ytdLabel(YTD.months)}`,`in progress · ${ytdLabel(YTD.months)}`):'';
-  $('subtitle').innerHTML=T(`Roczna anomalia temperatury w każdym kraju, ${Y0}–${year} · względem średniej 1951–1980 · NASA GISTEMP v4`,`Annual temperature anomaly by country, ${Y0}–${year} · vs 1951–1980 mean · NASA GISTEMP v4`);
-  if(layer)layer.setStyle(style);
-  const f=selected&&GEO.features.find(x=>x.id===selected);
-  const gyrs=Object.keys(DATA.global).map(Number),gy0=gyrs[0],gy1=gyrs[gyrs.length-1];
-  const ytdSuffix=isYtd(year)?T(` · ${MONTHS_PL_N[0]}–${MONTHS_PL_N[YTD.months-1]}`,` · ${MONTHS_EN[0]}–${MONTHS_EN[YTD.months-1]}`):'';
-  if(f){
-    const c=DATA.countries[f.id],s=seriesFor(f.id),v=valueAt(s,year);
-    $('cName').innerHTML=`${cname(f)}<small>${T('anomalia w roku','anomaly in')} ${year}${$('smooth').checked&&!isYtd(year)?T(' · średnia 5-letnia',' · 5-year mean'):''}${ytdSuffix}</small>`;
-    $('cVal').textContent=fmt(v);$('cVal').style.color=vcol(v);
-    const ytdEl=$('cYtd');if(isYtd(year)&&c&&c.ytd){ytdEl.style.display='';ytdEl.textContent=T('ROK W TOKU','YEAR TO DATE');}else ytdEl.style.display='none';
-    if(s){
-      const last=valueAt(s,Y1),first=firstValid(s);
-      $('cHint').textContent=first?T(`Zmiana ${first.y}→${Y1} (średnie 5-letnie): ${fmt(last-first.v)} °C. Najcieplejszy pełny rok: ${warmest(s)}. Seria z ${c.cells} komórek siatki 2°×2°.`,`Change ${first.y}→${Y1} (5-year means): ${fmt(last-first.v)} °C. Warmest full year: ${warmest(s)}. Series from ${c.cells} 2°×2° grid cells.`):T('Za mało danych, by policzyć trend.','Not enough data to compute a trend.');
-    }else $('cHint').textContent=T('Brak serii dla tego kraju.','No series for this country.');
-    buildStripes($('cStripes'),s,Y0,Y1);$('sFrom').textContent=Y0;$('sTo').textContent=Y1;
-  }else{
-    $('cName').innerHTML=`${T('Świat','World')}<small>${T('Kliknij kraj na mapie','Click a country')}${ytdSuffix}</small>`;
-    const gv=isYtd(year)?YTD.anom:(DATA.global[year]??null);$('cVal').textContent=fmt(gv);$('cVal').style.color=vcol(gv);
-    const ytdEl=$('cYtd');if(isYtd(year)){ytdEl.style.display='';ytdEl.textContent=T('ROK W TOKU','YEAR TO DATE');}else ytdEl.style.display='none';
-    $('cHint').textContent=T('Anomalia globalna (ląd + ocean) w wybranym roku.','Global land–ocean anomaly in the selected year.');
-    buildStripes($('cStripes'),DATA.global,gy0,gy1);$('sFrom').textContent=gy0;$('sTo').textContent=gy1;
-  }
-  // global rows
-  const gv=isYtd(year)?YTD.anom:DATA.global[year];$('gVal').textContent=gv==null?'—':fmt(gv)+' °C'+(isYtd(year)?' *':'');
-  const mx=gyrs.reduce((a,b)=>DATA.global[b]>DATA.global[a]?b:a);$('gMax').textContent=`${mx} · ${fmt(DATA.global[mx])} °C`;
-  const lm=META.latest_month;$('gLast').textContent=`${monthLabel(lm)} · ${fmt(DATA.global_monthly[lm])} °C`;
-  $('srcLine').innerHTML=T(`Kraje i świat: NASA GISS GISTEMP v4 (siatka 1200 km i seria ląd–ocean), ${Y0}–${lm}. Anomalie względem średniej 1951–1980. Granice: Natural Earth 1:50m. <a href="#" onclick="openSources();return false">Pełne źródła i metoda →</a>`,`Countries and world: NASA GISS GISTEMP v4 (1200 km grid and land–ocean series), ${Y0}–${lm}. Anomalies vs the 1951–1980 mean. Borders: Natural Earth 1:50m. <a href="#" onclick="openSources();return false">Full sources and method →</a>`);
-  $('prov').innerHTML=`<span>${T('pobrano','fetched')} ${META.generated_utc.slice(0,10)}</span><span>${META.countries} ${T('krajów','countries')}</span><span>${T('baza','baseline')} ${META.baseline}</span>`;
-  drawChart();
-}
-function firstValid(s){for(let y=Y0;y<=Y1;y++){const v=valueAt(s,y);if(v!=null)return{y,v};}return null;}
-function warmest(s){let best=null;for(const y in s){if(isYtd(+y))continue;if(best==null||s[y]>s[best])best=y;}return best;}
-function buildStripes(el,s,from,to){let h='';for(let y=from;y<=to;y++){const v=s?s[y]:null;h+=`<i style="background:${color(v==null?null:v)}" title="${y}: ${v==null?'—':fmt(v)}"></i>`;}el.innerHTML=h;}
-function buildGlobalStripes(){const ys=Object.keys(DATA.global).map(Number);buildStripes($('gStripes'),DATA.global,ys[0],ys[ys.length-1]);$('gsFrom').textContent=ys[0];$('gsTo').textContent=ys[ys.length-1];}
-
-function drawChart(){
-  const c=$('chart'),ctx=c.getContext('2d'),W=c.width,H=c.height;ctx.clearRect(0,0,W,H);
-  const g=DATA.global,ys=Object.keys(g).map(Number),y0=ys[0],y1=ys[ys.length-1];
-  const vmax=Math.max(1.4,Math.ceil(Math.max(...ys.map(y=>g[y]))*10)/10+0.1),vmin=-0.6,X=y=>10+(y-y0)/(y1-y0)*(W-20),Y=v=>H-14-(v-vmin)/(vmax-vmin)*(H-28);
-  ctx.strokeStyle='rgba(255,255,255,.12)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(10,Y(0));ctx.lineTo(W-10,Y(0));ctx.stroke();
-  ctx.fillStyle='#5b6577';ctx.font='18px JetBrains Mono, monospace';ctx.fillText('0',W-22,Y(0)-4);ctx.fillText('+1°',W-40,Y(1)-4);
-  ctx.beginPath();ys.forEach((y,i)=>{const p=[X(y),Y(g[y])];i?ctx.lineTo(...p):ctx.moveTo(...p);});ctx.strokeStyle='rgba(255,255,255,.35)';ctx.lineWidth=2;ctx.stroke();
-  const mean=ys.map((y,i)=>{if(i<2||i>ys.length-3)return null;let m=0;for(let k=-2;k<=2;k++)m+=g[ys[i+k]];return m/5;});
-  for(let i=3;i<ys.length-2;i++){ctx.strokeStyle=color(mean[i]);ctx.lineWidth=3.5;ctx.beginPath();ctx.moveTo(X(ys[i-1]),Y(mean[i-1]));ctx.lineTo(X(ys[i]),Y(mean[i]));ctx.stroke();}
-  const yy=Math.min(year,y1);
-  if(g[yy]!=null){ctx.strokeStyle='#63b3ff';ctx.lineWidth=2;ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(X(yy),14);ctx.lineTo(X(yy),H-14);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(X(yy),Y(g[yy]),5,0,Math.PI*2);ctx.fill();}
-  ctx.fillStyle='#5b6577';ctx.fillText(y0,10,H-1);ctx.fillText(y1,W-52,H-1);
-}
-
-// ---------- sources modal ----------
-function openSources(){
-  const m=META,srcs=m.sources||[];
-  const kv=(k,v)=>`<div class="kv"><i>${k}</i><b>${v}</b></div>`;
-  let h=`<div class="mhead"><div><h2>${T('Źródła danych i metoda','Data sources and method')}</h2><p>${T('Każda liczba na tej mapie pochodzi z publicznych zbiorów NASA. Poniżej: skąd, w jakiej wersji, kiedy pobrano i jak policzono.','Every number on this map comes from public NASA datasets. Below: where from, which version, when fetched and how computed.')}</p></div><button class="x" onclick="closeSources()">✕</button></div>`;
-  h+=`<div class="mgrid">${kv(T('Kraje','Countries'),m.countries)}${kv(T('Lata (kraje)','Years (countries)'),m.country_years.join('–'))}${kv(T('Lata (świat)','Years (world)'),m.global_years.join('–'))}${kv(T('Ostatni miesiąc','Latest month'),m.latest_month)}${kv(T('Baza odniesienia','Baseline'),m.baseline)}${kv(T('Dane pobrano (UTC)','Fetched (UTC)'),m.generated_utc.replace('T',' ').replace('Z',''))}</div>`;
-  for(const s of srcs){
-    h+=`<div class="card"><h3>${s.name}</h3><div class="inst">${s.institution}</div><dl>`;
-    if(s.coverage)h+=`<dt>${T('Zakres','Coverage')}</dt><dd>${s.coverage}</dd>`;
-    if(s.cadence)h+=`<dt>${T('Aktualizacja','Update cadence')}</dt><dd class="txt">${pl()?s.cadence.pl:s.cadence.en}</dd>`;
-    if(s.license)h+=`<dt>${T('Licencja','License')}</dt><dd class="txt">${s.license}</dd>`;
-    if(s.citation)h+=`<dt>${T('Cytowanie','Citation')}</dt><dd class="txt">${s.citation}</dd>`;
-    if(s.sha256)h+=`<dt>SHA-256</dt><dd>${s.sha256}…</dd>`;
-    h+=`</dl><div class="links">`;
-    if(s.url)h+=`<a href="${s.url}" target="_blank" rel="noopener">${T('Strona zbioru','Dataset page')} ↗</a>`;
-    if(s.file)h+=`<a href="${s.file}" target="_blank" rel="noopener">${T('Plik źródłowy','Source file')} ↗</a>`;
-    if(s.doi)h+=`<a href="https://doi.org/${s.doi}" target="_blank" rel="noopener">DOI ${s.doi} ↗</a>`;
-    h+=`</div></div>`;
-  }
-  h+=`<div class="method"><b style="color:var(--text)">${T('Metoda','Method')}.</b> ${pl()?m.method.pl:m.method.en}</div>`;
-  h+=`<div class="mfoot">${T('Rurociąg danych działa automatycznie co miesiąc (GitHub Actions) i zapisuje wynik jako otwarty JSON.','The data pipeline runs automatically every month (GitHub Actions) and writes the result as open JSON.')} <a href="${m.pipeline}" target="_blank" rel="noopener">${T('Kod rurociągu','Pipeline code')} ↗</a> · <a href="data/climate-data.json" target="_blank">${T('Pobierz dane mapy (JSON)','Download map data (JSON)')} ↗</a> · <a href="data/countries.min.json" target="_blank">${T('Granice (GeoJSON)','Borders (GeoJSON)')} ↗</a></div>`;
-  $('mbox').innerHTML=h;$('modal').classList.add('on');
-}
-function closeSources(){$('modal').classList.remove('on');}
-
-// ---------- controls ----------
-$('slider').addEventListener('input',e=>{year=+e.target.value;render();});
-$('smooth').addEventListener('change',render);
-$('play').addEventListener('click',()=>{
-  const ymax=+$('slider').max;
-  playing=!playing;$('play').textContent=playing?'❚❚':'▶';
-  if(playing){if(year>=ymax)year=Y0;timer=setInterval(()=>{year++;if(year>ymax){year=ymax;playing=false;$('play').textContent='▶';clearInterval(timer);}render();},140);}
-  else clearInterval(timer);
-});
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape')closeSources();
-  if(!DATA)return;const ymax=+$('slider').max;
-  if(e.key==='ArrowLeft'){year=Math.max(Y0,year-1);render();}if(e.key==='ArrowRight'){year=Math.min(ymax,year+1);render();}if(e.key===' '){e.preventDefault();$('play').click();}
-});
+$('#byGo').onclick = birth; $('#byYear').addEventListener('change', birth); $('#byCountry').addEventListener('change', birth);
+K.load('climate', 'indicators', 'emissions').then(d => { D = d; K.registerMeta(d.climate.meta); K.registerMeta(d.indicators.meta); K.registerMeta(d.emissions.meta); render(); K.onRender(render); })
+  .catch(e => { $('#tiles').innerHTML = `<div class="note warn"><b>${T('Nie udało się wczytać danych', 'Could not load data')}</b>: ${e.message}</div>`; console.error(e); });
 </script>
 <script data-goatcounter="https://futureshow.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
