@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>03 · Gdzie — Klimat | FutureShow</title>
+<meta name="description" content="Mapa 239 krajów: gdzie ociepla się najszybciej i dlaczego. Arktyka, kontynenty, oceany, Europa i Polska w danych NASA GISTEMP.">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="portal.css">
+<style>
+.mapframe{position:relative;border:1px solid var(--border2);border-radius:16px;overflow:hidden;background:#06080d;margin:22px 0}
+.mapframe iframe{width:100%;height:600px;border:0;display:block}
+.mapframe .open{position:absolute;top:12px;right:12px;z-index:2}
+@media(max-width:700px){.mapframe iframe{height:520px}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <section class="hero">
+    <div class="kick"><span class="n">03</span><span data-lang="pl">Geografia ocieplenia</span><span data-lang="en">The geography of warming</span></div>
+    <h1><span data-lang="pl">Gdzie. Ocieplenie <em>nie jest równe</em>.</span><span data-lang="en">Where. Warming <em>is not uniform</em>.</span></h1>
+    <p class="lead"><span data-lang="pl">„Świat ocieplił się o 1,3 °C” to średnia, która nikogo nie dotyczy bezpośrednio. Arktyka ma już +3 °C, wnętrza kontynentów +2 °C, tropikalne oceany niecały stopień. Ta mapa pokazuje każdy z 239 krajów rok po roku od 1880 r. — z jednego, spójnego źródła danych, żeby porównania były uczciwe.</span><span data-lang="en">“The world has warmed by 1.3 °C” is an average that applies to nobody directly. The Arctic is already at +3 °C, continental interiors at +2 °C, tropical oceans under a degree. This map shows each of 239 countries year by year since 1880 — from one consistent data source, so that comparisons are fair.</span></p>
+  </section>
+
+  <div class="mapframe"><a class="btn open" href="mapa.html"><span data-lang="pl">Otwórz mapę na całym ekranie →</span><span data-lang="en">Open the map full screen →</span></a><iframe src="mapa.html" title="Mapa zmian klimatu" loading="lazy"></iframe></div>
+  <p class="muted" style="font-size:13px;text-align:center"><span data-lang="pl">Suwak u dołu przewija lata; ▶ odtwarza animację; kliknięcie kraju otwiera jego serię. Kolor = anomalia względem średniej 1951–1980.</span><span data-lang="en">The slider at the bottom scrolls years; ▶ plays the animation; clicking a country opens its series. Colour = anomaly vs the 1951–1980 mean.</span></p>
+
+  <div class="read">
+    <h2><span data-lang="pl">1. Ranking: kto ociepla się najszybciej</span><span data-lang="en">1. Ranking: who warms fastest</span></h2>
+    <p><span data-lang="pl">Poniżej średnia anomalia z ostatnich dziesięciu pełnych lat dla każdego kraju — im wyżej, tym bardziej klimat kraju odjechał od stanu z lat 1951–1980. Na szczycie są kraje arktyczne i subarktyczne: Svalbard, Grenlandia, Rosja, Kanada, kraje nordyckie. Na dole — wyspy na chłodnych oceanach południowych. Polska jest wysoko: Europa Środkowa, jako wnętrze kontynentu na umiarkowanych szerokościach, ociepla się szybciej niż średnia globalna.</span><span data-lang="en">Below is the mean anomaly of the last ten full years for each country — the higher, the further the country’s climate has drifted from its 1951–1980 state. At the top are Arctic and sub-Arctic countries: Svalbard, Greenland, Russia, Canada, the Nordics. At the bottom — islands in the cool southern oceans. Poland ranks high: Central Europe, as a continental interior at mid-latitudes, warms faster than the global mean.</span></p>
+    <div class="grid g2">
+      <div class="fig tall"><h4 id="hTop"></h4><div class="sub" id="sTop"></div><canvas id="cTop" style="height:520px"></canvas><div class="cap"><span class="src" data-src="gistemp-grid">NASA GISTEMP v4 · 1200 km</span></div></div>
+      <div class="fig tall"><h4 id="hBot"></h4><div class="sub" id="sBot"></div><canvas id="cBot" style="height:520px"></canvas><div class="cap"><span class="src" data-src="gistemp-grid">NASA GISTEMP v4 · 1200 km</span></div></div>
+    </div>
+    <div class="grid g3" id="knRank"></div>
+
+    <h2><span data-lang="pl">2. Dlaczego akurat tam</span><span data-lang="en">2. Why there</span></h2>
+    <h3><span data-lang="pl">Arktyka: sprzężenie lodu i albedo</span><span data-lang="en">The Arctic: the ice–albedo feedback</span></h3>
+    <p><span data-lang="pl">Śnieg i lód odbijają 80–90 % światła; ciemna woda i tundra pochłaniają 90 %. Gdy lód topnieje, odsłania powierzchnię, która grzeje się mocniej i topi więcej lodu. Do tego dochodzi cienka, stabilna atmosfera polarna, która zatrzymuje ciepło przy powierzchni, oraz ciepło i wilgoć transportowane z południa. Efekt: Arktyka ociepliła się od 1979 r. prawie cztery razy szybciej niż świat.</span><span data-lang="en">Snow and ice reflect 80–90 % of sunlight; dark water and tundra absorb 90 %. As ice melts it exposes a surface that heats more and melts more ice. Add a thin, stable polar atmosphere that traps heat near the surface, and heat and moisture transported from the south. The result: the Arctic has warmed almost four times faster than the world since 1979.</span> <span class="src" data-src="rantanen-2022">Rantanen 2022</span></p>
+    <h3><span data-lang="pl">Ląd szybciej niż ocean</span><span data-lang="en">Land faster than ocean</span></h3>
+    <p><span data-lang="pl">Woda ma ogromną pojemność cieplną i miesza się w głąb — ogrzewa się wolno. Ląd ma małą pojemność, a gdy wysycha, traci chłodzenie przez parowanie. Dlatego półkula północna (39 % lądu) ociepla się szybciej niż południowa (19 % lądu), a wnętrza kontynentów — Syberia, Kanada, Azja Środkowa, Europa Wschodnia — szybciej niż wybrzeża.</span><span data-lang="en">Water has a huge heat capacity and mixes downward — it warms slowly. Land has a small capacity and, as it dries, loses evaporative cooling. That is why the northern hemisphere (39 % land) warms faster than the southern (19 % land), and continental interiors — Siberia, Canada, Central Asia, Eastern Europe — faster than coasts.</span></p>
+    <div class="fig"><h4><span data-lang="pl">Półkule i strefy</span><span data-lang="en">Hemispheres and zones</span></h4><div class="sub"><span data-lang="pl">Roczna anomalia, średnia 5-letnia, °C wzgl. 1951–1980</span><span data-lang="en">Annual anomaly, 5-year mean, °C vs 1951–1980</span></div><div class="legend" id="lgZ"></div><canvas id="cZ"></canvas><div class="cap"><span><span data-lang="pl">Antarktyda ocieplała się wolniej: dziura ozonowa wzmocniła wiatry, które izolowały kontynent.</span><span data-lang="en">Antarctica warmed more slowly: the ozone hole strengthened winds that insulated the continent.</span></span><span class="src" data-src="gistemp-zonal">NASA GISTEMP v4</span></div></div>
+    <h3><span data-lang="pl">Europa: najszybciej ocieplający się kontynent</span><span data-lang="en">Europe: the fastest-warming continent</span></h3>
+    <p><span data-lang="pl">Europa ociepla się około dwa razy szybciej niż średnia globalna. Powody: duży udział lądu na wysokich szerokościach, bliskość szybko ocieplającej się Arktyki, spadek zanieczyszczeń aerozolowych od lat 80. (czyste powietrze = mniej odbitego słońca) oraz zmiany cyrkulacji sprzyjające upałom latem. Rok 2024 był najcieplejszy w historii pomiarów zarówno w Europie, jak i w Polsce.</span><span data-lang="en">Europe is warming about twice as fast as the global mean. Reasons: a large share of land at high latitudes, proximity to the rapidly warming Arctic, the decline of aerosol pollution since the 1980s (cleaner air = less reflected sunlight) and circulation changes favouring summer heat. 2024 was the warmest year on record both in Europe and in Poland.</span> <span class="src" data-src="c3s-esotc-2024">C3S/WMO ESOTC 2024</span> <span class="src" data-src="imgw-2024">IMGW 2025</span></p>
+
+    <h2><span data-lang="pl">3. Polska i sąsiedzi</span><span data-lang="en">3. Poland and its neighbours</span></h2>
+    <p id="plText"></p>
+    <div class="tblwrap"><table class="tbl" id="tblPL"></table></div>
+    <div class="fig"><h4><span data-lang="pl">Polska rok po roku, 1880 – dziś</span><span data-lang="en">Poland year by year, 1880 – today</span></h4><div class="sub"><span data-lang="pl">Roczna anomalia (słupki) i średnia 5-letnia (linia), °C wzgl. 1951–1980</span><span data-lang="en">Annual anomaly (bars) and 5-year mean (line), °C vs 1951–1980</span></div><canvas id="cPL"></canvas><div class="cap"><span id="capPL"></span><span class="src" data-src="gistemp-grid">NASA GISTEMP v4 · 1200 km</span></div></div>
+    <div class="note"><b><span data-lang="pl">Anomalia to nie temperatura.</span><span data-lang="en">An anomaly is not a temperature.</span></b> <span data-lang="pl">Mapa nie pokazuje, że w Polsce jest cieplej niż w Egipcie — pokazuje, że Polska <em>odjechała</em> od swojego dawnego klimatu bardziej niż Egipt. To ma sens praktyczny: rolnictwo, lasy, infrastruktura i ludzie są dostosowani do klimatu lokalnego, więc liczy się zmiana, nie poziom. Wartości dla bardzo małych państw (np. Singapur, Malediwy) opierają się na 1–2 komórkach siatki 2°×2° i są mniej precyzyjne.</span><span data-lang="en">The map does not show that Poland is warmer than Egypt — it shows that Poland has <em>drifted</em> further from its former climate than Egypt has. That makes practical sense: agriculture, forests, infrastructure and people are adapted to the local climate, so the change matters, not the level. Values for very small states (e.g. Singapore, Maldives) rest on 1–2 grid cells of 2°×2° and are less precise.</span></div>
+
+    <div class="take"><h3><span data-lang="pl">Do zapamiętania</span><span data-lang="en">To remember</span></h3><ol id="take"></ol></div>
+    <div class="pn" id="pn"></div>
+  </div>
+</main>
+<script src="portal.js"></script>
+<script>
+const K = KLIMAT, { $, T, fmt } = K; K.chrome();
+K.addRefs({ 'c3s-esotc-2024': { name: 'European State of the Climate 2024', institution: 'Copernicus Climate Change Service (C3S) & World Meteorological Organization', url: 'https://climate.copernicus.eu/esotc/2024', citation: 'C3S/WMO (2025): European State of the Climate 2024 — Europa najszybciej ocieplającym się kontynentem; 2024 najcieplejszym rokiem w Europie.' } });
+let D;
+function render() {
+  const { climate: c, indicators: i, geo } = D;
+  const names = {}; geo.features.forEach(f => names[f.id] = K.pl() ? (f.properties.name_pl || f.properties.name) : f.properties.name);
+  const y1 = c.meta.country_years[1], y0 = y1 - 9;
+  const rows = Object.entries(c.countries).map(([iso, v]) => { const vals = []; for (let y = y0; y <= y1; y++) if (v.anom[y] != null) vals.push(v.anom[y]); return vals.length >= 8 ? { iso, m: K.mean(vals), name: names[iso] || iso } : null; }).filter(Boolean).sort((a, b) => b.m - a.m);
+  const rankPL = rows.findIndex(r => r.iso === 'POL') + 1, pl = rows.find(r => r.iso === 'POL');
+  $('#hTop').textContent = T(`15 krajów o największym ociepleniu`, `15 countries with the most warming`); $('#sTop').textContent = T(`Średnia anomalia ${y0}–${y1} wzgl. 1951–1980, °C`, `Mean anomaly ${y0}–${y1} vs 1951–1980, °C`);
+  $('#hBot').textContent = T(`15 krajów o najmniejszym ociepleniu`, `15 countries with the least warming`); $('#sBot').textContent = $('#sTop').textContent;
+  const bar = r => ({ label: r.name.length > 22 ? r.name.slice(0, 21) + '…' : r.name, value: r.m, color: K.tcolor(r.m), hl: r.iso === 'POL' });
+  K.chart('#cTop', { type: 'hbar', padL: 150, items: rows.slice(0, 15).map(bar), max: rows[0].m, fmt: v => fmt(v, 2, { sign: true }) });
+  K.chart('#cBot', { type: 'hbar', padL: 150, items: rows.slice(-15).reverse().map(bar), max: rows[0].m, fmt: v => fmt(v, 2, { sign: true }) });
+  const g = c.global, gm = K.mean(Object.keys(g).filter(y => y >= y0 && y <= y1).map(y => g[y]));
+  const kn = (cls, v, u, l) => `<div class="kn ${cls}"><div class="v">${v}<small>${u}</small></div><div class="l">${l}</div><span class="src" data-src="gistemp-grid">NASA</span></div>`;
+  $('#knRank').innerHTML = kn('hot', fmt(pl.m, 2, { sign: true }), '°C', T(`Polska, średnia ${y0}–${y1} — miejsce ${rankPL} z ${rows.length}`, `Poland, mean ${y0}–${y1} — rank ${rankPL} of ${rows.length}`)) + kn('warm', fmt(gm, 2, { sign: true }), '°C', T(`Świat (ląd + ocean), ta sama dekada`, `World (land + ocean), same decade`)) + kn('hot', fmt(rows[0].m, 2, { sign: true }), '°C', `${rows[0].name} — ${T('najwięcej', 'the most')}`);
+  const z = i.temperature_zones, Z = [['arctic', T('Arktyka', 'Arctic'), '#ff5a3c'], ['midlat_n', T('44–64°N (Polska)', '44–64°N (Poland)'), '#fb923c'], ['nhem', T('półkula N', 'N hemisphere'), '#fbbf24'], ['global', T('świat', 'world'), '#e5e7eb'], ['shem', T('półkula S', 'S hemisphere'), '#63b3ff'], ['antarctic', T('Antarktyda', 'Antarctica'), '#a78bfa']];
+  $('#lgZ').innerHTML = Z.map(([, n, col]) => `<span><i style="background:${col}"></i>${n}</span>`).join('');
+  K.chart('#cZ', { series: Z.map(([k, n, col]) => ({ name: n, color: col, width: k === 'global' ? 2.5 : 1.6, points: Object.keys(z[k]).map(Number).map(y => [y, K.smooth5(z[k], y)]).filter(p => p[1] != null) })), y: { d: 1, fmt: v => fmt(v, 1, { sign: true }) }, x: { ticks: [1880, 1900, 1920, 1940, 1960, 1980, 2000, 2020] }, tipFmt: v => fmt(v, 2, { sign: true }) + ' °C', hlines: [{ y: 0, color: 'rgba(255,255,255,.25)' }] });
+  // Poland + neighbours table
+  const NB = ['POL', 'DEU', 'CZE', 'SVK', 'UKR', 'BLR', 'LTU', 'RUS', 'SWE', 'FIN', 'NOR', 'FRA', 'GBR', 'ESP', 'ITA'];
+  const per = (iso, a, b) => K.mean(Object.keys(c.countries[iso].anom).filter(y => y >= a && y <= b).map(y => c.countries[iso].anom[y]));
+  const warmest = iso => { const s = c.countries[iso].anom; return Object.keys(s).reduce((x, y) => s[y] > s[x] ? y : x); };
+  $('#tblPL').innerHTML = `<thead><tr><th>${T('Kraj', 'Country')}</th><th class="n">1961–1990</th><th class="n">${y0}–${y1}</th><th class="n">${T('zmiana', 'change')}</th><th class="n">${T('najcieplejszy rok', 'warmest year')}</th><th class="n">${T('miejsce /', 'rank /')} ${rows.length}</th></tr></thead><tbody>` + NB.filter(iso => c.countries[iso]).map(iso => { const a = per(iso, 1961, 1990), b = per(iso, y0, y1), w = warmest(iso); return `<tr${iso === 'POL' ? ' style="background:rgba(251,146,60,.08)"' : ''}><td>${names[iso] || iso}</td><td class="n">${fmt(a, 2, { sign: true })}</td><td class="n" style="color:${K.tcolor(b)}">${fmt(b, 2, { sign: true })}</td><td class="n">${fmt(b - a, 2, { sign: true })}</td><td class="n">${w} (${fmt(c.countries[iso].anom[w], 2, { sign: true })})</td><td class="n">${rows.findIndex(r => r.iso === iso) + 1}</td></tr>`; }).join('') + '</tbody>';
+  const ps = c.countries.POL.anom, pw = warmest('POL');
+  $('#plText').innerHTML = T(`Polska w dekadzie ${y0}–${y1} była średnio o <strong>${fmt(pl.m, 2, { sign: true })} °C</strong> cieplejsza niż w latach 1951–1980 — przy średniej globalnej ${fmt(gm, 2, { sign: true })} °C. Najcieplejszy rok w polskiej serii to <strong>${pw}</strong> (${fmt(ps[pw], 2, { sign: true })} °C). Tabela porównuje sąsiadów: zmiana między okresem 1961–1990 (klasyczna „norma klimatyczna” meteorologów) a ostatnią dekadą. Widać, że cała Europa Środkowo-Wschodnia i Skandynawia ocieplają się szybciej niż Europa Zachodnia i Południowa — im dalej od Atlantyku, tym mocniej.`, `In the decade ${y0}–${y1} Poland was on average <strong>${fmt(pl.m, 2, { sign: true })} °C</strong> warmer than in 1951–1980 — against a global mean of ${fmt(gm, 2, { sign: true })} °C. The warmest year in the Polish series is <strong>${pw}</strong> (${fmt(ps[pw], 2, { sign: true })} °C). The table compares neighbours: the change between 1961–1990 (the meteorologists’ classic “climate normal”) and the last decade. All of Central-Eastern Europe and Scandinavia warm faster than Western and Southern Europe — the further from the Atlantic, the stronger.`);
+  const pys = Object.keys(ps).map(Number);
+  K.chart('#cPL', { series: [{ name: T('rocznie', 'annual'), points: pys.map(y => [y, ps[y]]), bars: true, colorFn: K.tcolor }, { name: T('średnia 5-letnia', '5-year mean'), points: pys.map(y => [y, K.smooth5(ps, y)]).filter(p => p[1] != null), color: '#fff', width: 2.5, endDot: false }], y: { d: 1, fmt: v => fmt(v, 1, { sign: true }) }, x: { ticks: [1880, 1900, 1920, 1940, 1960, 1980, 2000, 2020] }, tipFmt: v => fmt(v, 2, { sign: true }) + ' °C', hlines: [{ y: 0, color: 'rgba(255,255,255,.25)' }] });
+  const ytd = c.countries.POL.ytd;
+  $('#capPL').textContent = T(`Zmiana 1880→${y1} (średnie 5-letnie): ${fmt(K.smooth5(ps, y1) - K.smooth5(ps, 1882), 2, { sign: true })} °C. Rok ${ytd ? ytd.year + ' (' + ytd.months + ' mies.): ' + fmt(ytd.anom, 2, { sign: true }) + ' °C.' : ''}`, `Change 1880→${y1} (5-year means): ${fmt(K.smooth5(ps, y1) - K.smooth5(ps, 1882), 2, { sign: true })} °C. ${ytd ? ytd.year + ' (' + ytd.months + ' months): ' + fmt(ytd.anom, 2, { sign: true }) + ' °C.' : ''}`);
+  $('#take').innerHTML = [T(`Średnia globalna ${fmt(gm, 2, { sign: true })} °C kryje rozrzut od ${fmt(rows[rows.length - 1].m, 2, { sign: true })} do ${fmt(rows[0].m, 2, { sign: true })} °C między krajami. Arktyka, Syberia i Kanada ocieplają się najszybciej — przez sprzężenie lodu i albedo.`, `The global mean of ${fmt(gm, 2, { sign: true })} °C hides a spread from ${fmt(rows[rows.length - 1].m, 2, { sign: true })} to ${fmt(rows[0].m, 2, { sign: true })} °C between countries. The Arctic, Siberia and Canada warm fastest — through the ice–albedo feedback.`), T('Ląd ociepla się szybciej niż ocean, wnętrza kontynentów szybciej niż wybrzeża, Europa około dwa razy szybciej niż świat.', 'Land warms faster than ocean, continental interiors faster than coasts, Europe about twice as fast as the world.'), T(`Polska: ${fmt(pl.m, 2, { sign: true })} °C w ostatniej dekadzie, miejsce ${rankPL} na ${rows.length} krajów; rekordowy rok ${pw}.`, `Poland: ${fmt(pl.m, 2, { sign: true })} °C in the last decade, rank ${rankPL} of ${rows.length} countries; record year ${pw}.`)].map(x => `<li>${x}</li>`).join('');
+  K.bindSources(document); K.stamp([c.meta, i.meta]);
+}
+K.load('climate', 'indicators', 'geo').then(d => { D = d; K.registerMeta(d.climate.meta); K.registerMeta(d.indicators.meta); render(); K.onRender(render); });
+</script>
+<script data-goatcounter="https://futureshow.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

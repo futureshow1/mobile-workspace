@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ATLAS / Virtual Animated Maps</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Space+Grotesk:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="src/styles.css" />
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png"><link rel="apple-touch-icon" href="apple-touch-icon.png"></head>
+<body>
+  <div id="app">
+    <header id="header">
+      <div class="brand">
+        <span class="brand-mark">N° 01</span>
+        <h1>Atlas<span class="brand-sub">&mdash; Virtual Animated Maps</span></h1>
+        <div class="brand-right">
+          <button id="about-btn" class="about-btn" title="About this atlas">? About</button>
+          <span class="brand-meta">VOL. I &middot; ISSUE IV</span>
+        </div>
+      </div>
+      <nav id="controls">
+        <button class="ctrl-btn active" data-action="markers"><span class="btn-num">01</span>Markers</button>
+        <button class="ctrl-btn" data-action="route"><span class="btn-num">02</span>Route</button>
+        <button class="ctrl-btn" data-action="heatpulse"><span class="btn-num">03</span>Pulse</button>
+        <button class="ctrl-btn" data-action="tour"><span class="btn-num">04</span>Tour</button>
+        <button class="ctrl-btn" data-action="weather"><span class="btn-num">05</span>Weather</button>
+        <button class="ctrl-btn climate" data-action="climate"><span class="btn-num">06</span>Climate</button>
+        <button class="ctrl-btn danger" data-action="reset"><span class="btn-num">&times;</span>Reset</button>
+      </nav>
+    </header>
+    <div id="map"></div>
+    <div id="info-panel">
+      <div class="panel-header">
+        <span class="panel-tag">Dispatch</span>
+        <span class="panel-rule"></span>
+      </div>
+      <div id="info-content">
+        <p>Select a feature above to explore animated map capabilities.</p>
+      </div>
+      <div class="panel-footer">Atlas / 2026</div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="src/map.js"></script>
+</body>
+</html>
