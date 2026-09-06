@@ -4,7 +4,7 @@
 Each dataset is fetched independently; a failure is recorded in meta.errors and does not stop the others.
 Runs in GitHub Actions (open internet).
 """
-import hashlib, io, json, os, re, urllib.request, datetime as dt
+import hashlib, io, json, os, re, urllib.request, urllib.parse, datetime as dt
 
 OUT = "klimat/data/indicators.json"
 UA = {"User-Agent": "futureshow-klimat-pipeline/1.0 (+https://futureshow.pl/klimat/)"}
@@ -17,22 +17,35 @@ SRC = {
   "n2o_ann": "https://gml.noaa.gov/webdata/ccgg/trends/n2o/n2o_annmean_gl.csv",
   "zonal":   "https://data.giss.nasa.gov/gistemp/tabledata_v4/ZonAnn.Ts+dSST.csv",
   "sl_recon":"https://raw.githubusercontent.com/datasets/sea-level-rise/main/data/epa-sea-level.csv",
-  "sl_sat":  "https://www.star.nesdis.noaa.gov/socd/lsa/SeaLevelRise/slr/slr_sla_gbl_free_txj1j2_90.csv",
-  "ice_n09": "https://noaadata.apps.nsidc.org/NOAA/G02135/north/monthly/data/N_09_extent_v3.0.csv",
-  "ice_n03": "https://noaadata.apps.nsidc.org/NOAA/G02135/north/monthly/data/N_03_extent_v3.0.csv",
-  "ice_s02": "https://noaadata.apps.nsidc.org/NOAA/G02135/south/monthly/data/S_02_extent_v3.0.csv",
+  "sl_sat":  "https://www.star.nesdis.noaa.gov/socd/lsa/SeaLevelRise/LSA_SLR_timeseries_global.php",
+  "ice_n09": "https://noaadata.apps.nsidc.org/NOAA/G02135/north/monthly/data/",
+  "ice_n03": "https://noaadata.apps.nsidc.org/NOAA/G02135/north/monthly/data/",
+  "ice_s02": "https://noaadata.apps.nsidc.org/NOAA/G02135/south/monthly/data/",
   "ohc":     "https://www.ncei.noaa.gov/data/oceans/woa/DATA_ANALYSIS/3M_HEAT_CONTENT/DATA/basin/yearly/h22-w0-2000m.dat",
   "oni":     "https://psl.noaa.gov/data/correlation/oni.data",
 }
 errors, shas = {}, {}
 
-def fetch(key):
-    url = SRC[key]
+def get(url):
     with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=300) as r:
-        b = r.read()
+        return r.read()
+
+def fetch(key, url=None):
+    url = url or SRC[key]
+    b = get(url)
     shas[key] = hashlib.sha256(b).hexdigest()[:16]
-    print(f"fetched {key} ({len(b)/1e3:.0f} kB)", flush=True)
+    print(f"fetched {key} ({len(b)/1e3:.0f} kB) {url if url != SRC.get(key) else ''}", flush=True)
     return b.decode("utf-8", "replace")
+
+def find_link(index_url, pattern):
+    """Return the first href in an HTML index/page matching regex `pattern` (highest version last -> sorted)."""
+    html = get(index_url).decode("utf-8", "replace")
+    links = sorted(set(re.findall(r'href="([^"]+)"', html)))
+    cands = [l for l in links if re.search(pattern, l)]
+    if not cands:
+        raise FileNotFoundError(f"no link matching {pattern} at {index_url}")
+    href = cands[-1]
+    return href if href.startswith("http") else urllib.parse.urljoin(index_url, href)
 
 def rows(txt, sep=","):
     for l in txt.splitlines():
@@ -97,7 +110,8 @@ def sea_level():
         sat_epa = {y: round(v + off, 1) for y, v in sat_epa.items()}
     out = {"reconstruction_mm": rec, "satellite_annual_mm": sat_epa, "baseline": "1880–1900 = 0 (CSIRO), NOAA series aligned on 1993–2013"}
     def sat():
-        txt = fetch("sl_sat"); pts = {}
+        url = find_link(SRC["sl_sat"], r"slr_sla_gbl_free_(txj1j2|all)_(90|66)\.csv$")
+        txt = fetch("sl_sat", url); pts = {}
         for r in rows(txt):
             vals = [float(x) for x in r[1:] if x not in ("", "nan")]
             if vals: pts[r[0]] = round(sum(vals) / len(vals), 1)
@@ -115,10 +129,11 @@ def sea_level():
 
 def sea_ice():
     out = {}
-    for key, name in (("ice_n09", "arctic_september"), ("ice_n03", "arctic_march"), ("ice_s02", "antarctic_february")):
-        def one(key=key):
+    for key, name, pat in (("ice_n09", "arctic_september", r"N_09_extent_v[\d.]+\.csv$"), ("ice_n03", "arctic_march", r"N_03_extent_v[\d.]+\.csv$"), ("ice_s02", "antarctic_february", r"S_02_extent_v[\d.]+\.csv$")):
+        def one(key=key, pat=pat):
             d = {}
-            for r in rows(fetch(key)):
+            url = find_link(SRC[key], pat)
+            for r in rows(fetch(key, url)):
                 if len(r) >= 5 and float(r[4]) > 0: d[r[0]] = round(float(r[4]), 2)
             return d
         v = guarded(key, one)

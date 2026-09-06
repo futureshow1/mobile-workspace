@@ -142,9 +142,11 @@ def main():
         json.dump(out, fh, ensure_ascii=False, separators=(",", ":"))
     w = countries["WLD"]
     print(f"wrote {OUT}: {len(countries)} series, {len(latest)} in latest table, {os.path.getsize(OUT)/1e3:.0f} kB")
-    print("World", last_co2, w["co2"][str(last_co2)])
-    print("World elec", last_ene, {k: w["energy"][str(last_ene)][k] for k in ("electricity_generation","solar_electricity","wind_electricity","coal_electricity","low_carbon_share_elec")})
-    print("POL", last_ene, {k: countries["POL"]["energy"][str(last_ene)][k] for k in ("coal_share_elec","renewables_share_elec")})
+    i = w["co2"]["years"].index(last_co2); j = w["energy"]["years"].index(last_ene)
+    print("World", last_co2, {k: w["co2"][k][i] for k in ("co2","coal_co2","oil_co2","gas_co2","cumulative_co2","total_ghg")})
+    print("World elec", last_ene, {k: w["energy"][k][j] for k in ("electricity_generation","solar_electricity","wind_electricity","coal_electricity","low_carbon_share_elec")})
+    pe = countries["POL"]["energy"]; k = pe["years"].index(last_ene)
+    print("POL", last_ene, {c: pe[c][k] for c in ("coal_share_elec","renewables_share_elec")})
 
 if __name__ == "__main__":
     main()
