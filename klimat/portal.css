@@ -178,6 +178,7 @@ select.input{font-family:var(--sans);font-size:14px}
 .muted{color:var(--muted)}.mono{font-family:var(--mono)}
 .sr{position:absolute;left:-9999px}
 .loading{opacity:.5}
+@media(max-width:600px){.src{white-space:normal;text-align:left}p .src,li .src{display:inline}}
 @media(max-width:900px){
   .nav{display:none;position:absolute;top:58px;left:0;right:0;background:var(--bg2);border-bottom:1px solid var(--border);flex-direction:column;padding:10px;gap:4px}
   .nav.open{display:flex}.nav a{padding:10px 12px;font-size:14px}

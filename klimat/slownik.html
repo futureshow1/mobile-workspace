@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Słownik — Klimat | FutureShow</title>
+<meta name="description" content="Słownik pojęć klimatycznych: anomalia, wymuszenie radiacyjne, czułość klimatu, budżet węglowy, zero netto, SSP, ETS, AMOC, El Niño, punkt krytyczny i inne — po polsku i angielsku.">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="portal.css">
+<style>
+.gl{display:grid;grid-template-columns:1fr;gap:10px;margin-top:20px}
+.gl .t{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px 18px}
+.gl .t h3{margin:0 0 4px;font-size:16px}.gl .t h3 small{font-family:var(--mono);font-size:11px;color:var(--dim);font-weight:500;margin-left:8px;letter-spacing:.04em}
+.gl .t p{margin:0;font-size:14.5px;color:#c9d1dc}
+.gl .t a.ch{font-family:var(--mono);font-size:11px;margin-left:6px}
+.search{width:100%;max-width:420px;margin-top:18px}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <section class="hero">
+    <div class="kick"><span class="n">A–Z</span><span data-lang="pl">Pojęcia</span><span data-lang="en">Terms</span></div>
+    <h1><span data-lang="pl">Słownik. <em>Czterdzieści słów</em>, które trzeba znać.</span><span data-lang="en">Glossary. <em>Forty words</em> you need to know.</span></h1>
+    <p class="lead"><span data-lang="pl">Krótkie definicje pojęć używanych w portalu i w debacie publicznej. Przy każdym — rozdział, w którym pojęcie jest wyjaśnione szerzej.</span><span data-lang="en">Short definitions of terms used in the portal and in public debate. Next to each — the chapter where it is explained in more depth.</span></p>
+    <input class="input search" id="q" placeholder="Szukaj… / Search…">
+  </section>
+  <div class="read">
+    <div class="gl" id="gl"></div>
+    <div class="pn" id="pn"></div>
+  </div>
+</main>
+<script src="portal.js"></script>
+<script>
+const K = KLIMAT, { $, T } = K; K.chrome();
+const G = [
+['Adaptacja', 'Adaptation', 'Dostosowanie się do skutków zmiany klimatu, które już nadchodzą: retencja wody, zieleń w miastach, systemy ostrzegania, odporne uprawy. Uzupełnia mitygację, nie zastępuje jej.', 'Adjusting to the impacts of climate change that are already coming: water retention, urban greenery, warning systems, resilient crops. Complements mitigation, does not replace it.', '08'],
+['Aerozole', 'Aerosols', 'Drobne cząstki i kropelki w powietrzu (siarczany, sadza, pył). Siarczany odbijają światło i chłodzą (ok. −1,1 W/m²), maskując część ocieplenia; żyją w atmosferze dni–tygodnie.', 'Fine particles and droplets in the air (sulphates, soot, dust). Sulphates reflect light and cool (about −1.1 W/m²), masking part of the warming; they last days to weeks.', '06'],
+['Albedo', 'Albedo', 'Udział światła odbijanego przez powierzchnię. Śnieg ok. 0,8–0,9, ocean ok. 0,06. Topnienie lodu obniża albedo i wzmacnia ocieplenie (sprzężenie lód–albedo).', 'The fraction of light a surface reflects. Snow about 0.8–0.9, ocean about 0.06. Melting ice lowers albedo and amplifies warming (the ice–albedo feedback).', '03'],
+['Altimetria satelitarna', 'Satellite altimetry', 'Pomiar wysokości powierzchni morza z satelity (radar), od 1992 r. (TOPEX/Poseidon, Jason, Sentinel-6). Dokładność globalnej średniej rzędu milimetrów.', 'Measuring sea-surface height from a satellite (radar), since 1992 (TOPEX/Poseidon, Jason, Sentinel-6). Global-mean accuracy of the order of millimetres.', '01'],
+['AMOC', 'AMOC', 'Atlantycka cyrkulacja południkowa — system prądów (w tym Golfsztrom) przenoszący ciepło na północny Atlantyk. Jej osłabienie/załamanie to punkt krytyczny o dużych skutkach dla Europy.', 'Atlantic Meridional Overturning Circulation — the system of currents (incl. the Gulf Stream) carrying heat to the North Atlantic. Its weakening/collapse is a tipping point with major consequences for Europe.', '07'],
+['Anomalia temperatury', 'Temperature anomaly', 'Różnica między temperaturą a średnią z okresu odniesienia (u nas 1951–1980). Anomalie są porównywalne między miejscami, temperatury bezwzględne — nie.', 'The difference between a temperature and the mean of a reference period (here 1951–1980). Anomalies are comparable between places; absolute temperatures are not.', '01'],
+['Argo', 'Argo', 'Sieć ok. 4 000 automatycznych pływaków mierzących temperaturę i zasolenie oceanu do 2 000 m głębokości (od 2005 r. pełne pokrycie). Podstawa pomiaru ciepła oceanu.', 'A network of about 4,000 autonomous floats measuring ocean temperature and salinity to 2,000 m depth (full coverage since 2005). The basis of ocean-heat measurement.', '01'],
+['Atrybucja', 'Attribution', 'Ustalanie, o ile zmiana klimatu zmieniła prawdopodobieństwo lub siłę konkretnego zjawiska (fali upałów, powodzi) — przez porównanie symulacji klimatu z człowiekiem i bez niego.', 'Determining how much climate change altered the probability or intensity of a specific event (heatwave, flood) — by comparing climate simulations with and without humans.', '07'],
+['Budżet węglowy', 'Carbon budget', 'Ilość CO₂, którą można jeszcze wyemitować, by z danym prawdopodobieństwem nie przekroczyć danego ocieplenia. Dla 1,5 °C (50 %): ok. 130 Gt od początku 2025 r.', 'The amount of CO₂ that can still be emitted to stay below a given warming with a given probability. For 1.5 °C (50 %): about 130 Gt from the start of 2025.', '04'],
+['CBAM', 'CBAM', 'Unijny mechanizm dostosowania cen na granicach z uwzględnieniem emisji CO₂ („cło węglowe”): import stali, cementu, nawozów itd. obciążony kosztem emisji jak produkcja w UE. Od 2026 r.', 'The EU Carbon Border Adjustment Mechanism (“carbon tariff”): imports of steel, cement, fertilisers etc. charged for their emissions like EU production. From 2026.', '08'],
+['CO₂e (ekwiwalent CO₂)', 'CO₂e (CO₂ equivalent)', 'Wspólna jednostka dla różnych gazów cieplarnianych: ilość CO₂, która dałaby to samo ocieplenie w danym horyzoncie (zwykle 100 lat). 1 t metanu ≈ 28–30 t CO₂e.', 'A common unit for different greenhouse gases: the amount of CO₂ that would cause the same warming over a given horizon (usually 100 years). 1 t of methane ≈ 28–30 t CO₂e.', '06'],
+['COP', 'COP', 'Konferencja Stron konwencji klimatycznej ONZ (UNFCCC) — coroczny szczyt, na którym państwa negocjują (COP21 Paryż 2015, COP30 Belém 2025).', 'The Conference of the Parties to the UN climate convention (UNFCCC) — the annual summit where states negotiate (COP21 Paris 2015, COP30 Belém 2025).', '08'],
+['Czułość klimatu (ECS)', 'Climate sensitivity (ECS)', 'Ocieplenie po podwojeniu CO₂, gdy klimat osiągnie równowagę. IPCC AR6: najprawdopodobniej 3 °C, przedział prawdopodobny 2,5–4 °C.', 'The warming after a doubling of CO₂ once the climate reaches equilibrium. IPCC AR6: most likely 3 °C, likely range 2.5–4 °C.', '02'],
+['Efekt cieplarniany', 'Greenhouse effect', 'Zatrzymywanie ciepła przez gazy pochłaniające podczerwień (para wodna, CO₂, metan). Naturalny — dodaje ok. 33 °C; wzmocniony przez człowieka — powoduje obecne ocieplenie.', 'Heat retention by gases that absorb infrared (water vapour, CO₂, methane). The natural one adds about 33 °C; the human-enhanced one causes present warming.', '02'],
+['El Niño / La Niña (ENSO)', 'El Niño / La Niña (ENSO)', 'Naturalne wahanie temperatury Pacyfiku równikowego co 2–7 lat. El Niño podnosi globalną średnią o 0,1–0,2 °C na rok–dwa, La Niña obniża. Nie tworzy trendu.', 'A natural oscillation of the equatorial Pacific every 2–7 years. El Niño raises the global mean by 0.1–0.2 °C for a year or two, La Niña lowers it. It creates no trend.', '06'],
+['Energia pierwotna / końcowa', 'Primary / final energy', 'Pierwotna: energia zawarta w surowcach (węgiel, ropa, wiatr) przed przetworzeniem. Końcowa: to, co dociera do użytkownika (prąd, benzyna, ciepło). Prąd to ok. 20 % energii końcowej.', 'Primary: energy contained in resources (coal, oil, wind) before conversion. Final: what reaches the user (electricity, petrol, heat). Electricity is about 20 % of final energy.', '05'],
+['Epoka przedprzemysłowa', 'Pre-industrial', 'W IPCC: średnia z lat 1850–1900 — najwcześniejszy okres z wiarygodnymi pomiarami globalnymi. Względem niej liczy się cel 1,5 °C.', 'In the IPCC: the 1850–1900 mean — the earliest period with reliable global measurements. The 1.5 °C goal is measured against it.', '01'],
+['ETS', 'ETS', 'Unijny system handlu emisjami: elektrownie, przemysł i lotnictwo muszą kupować uprawnienia na każdą tonę CO₂; ich pula co roku maleje. Od 2027 r. ETS2 obejmie paliwa w transporcie i budynkach.', 'The EU Emissions Trading System: power plants, industry and aviation must buy allowances for every tonne of CO₂; the pool shrinks yearly. From 2027, ETS2 covers transport and building fuels.', '08'],
+['GISTEMP', 'GISTEMP', 'Analiza temperatury powierzchni Ziemi prowadzona przez NASA GISS od lat 80.: łączy ok. 26 000 stacji i pomiary oceanu w siatkę 2°×2°. Źródło mapy i serii globalnej w tym portalu.', 'NASA GISS’s surface-temperature analysis, run since the 1980s: combines about 26,000 stations and ocean measurements into a 2°×2° grid. The source of the map and global series in this portal.', '01'],
+['GWP', 'GWP', 'Współczynnik ocieplenia globalnego: ile razy dany gaz ogrzewa silniej niż CO₂ w danym horyzoncie. Metan: ok. 80 (20 lat), ok. 28–30 (100 lat); N₂O: ok. 270.', 'Global Warming Potential: how many times more strongly a gas warms than CO₂ over a given horizon. Methane: about 80 (20 yr), about 28–30 (100 yr); N₂O: about 270.', '06'],
+['IPCC', 'IPCC', 'Międzyrządowy Zespół ds. Zmian Klimatu (ONZ, od 1988): co 6–7 lat podsumowuje całą wiedzę naukową w raportach ocenianych przez tysiące recenzentów. AR6: 2021–2023.', 'The Intergovernmental Panel on Climate Change (UN, since 1988): every 6–7 years summarises all scientific knowledge in reports reviewed by thousands of experts. AR6: 2021–2023.', '02'],
+['Krzywa Keelinga', 'Keeling curve', 'Zapis stężenia CO₂ na Mauna Loa od 1958 r. (315 → ponad 425 ppm). Nazwa od Charlesa Keelinga; najsłynniejszy wykres w naukach o klimacie.', 'The record of CO₂ concentration at Mauna Loa since 1958 (315 → over 425 ppm). Named after Charles Keeling; the most famous chart in climate science.', '01'],
+['LCOE', 'LCOE', 'Uśredniony koszt energii: łączny koszt budowy i eksploatacji źródła podzielony przez energię wyprodukowaną w całym okresie życia. Pozwala porównać słońce, wiatr, gaz, atom.', 'Levelised cost of energy: total cost of building and running a source divided by the energy produced over its lifetime. Allows comparing solar, wind, gas, nuclear.', '05'],
+['Metan (CH₄)', 'Methane (CH₄)', 'Drugi najważniejszy gaz cieplarniany: wydobycie paliw, bydło, ryż, wysypiska. Silny, ale krótkotrwały (ok. 12 lat) — jego redukcja szybko chłodzi.', 'The second most important greenhouse gas: fuel extraction, cattle, rice, landfills. Strong but short-lived (about 12 years) — reducing it cools quickly.', '06'],
+['Mitygacja', 'Mitigation', 'Ograniczanie zmiany klimatu przez cięcie emisji i zwiększanie pochłaniania (lasy, technologie). Uzupełnienie adaptacji.', 'Limiting climate change by cutting emissions and increasing removals (forests, technologies). The counterpart of adaptation.', '08'],
+['NDC', 'NDC', 'Wkład ustalony na poziomie krajowym: plan redukcji, który każde państwo zgłasza w ramach porozumienia paryskiego i co 5 lat zaostrza.', 'Nationally Determined Contribution: the reduction plan each state submits under the Paris Agreement and tightens every 5 years.', '08'],
+['Nierównowaga energetyczna Ziemi', 'Earth’s energy imbalance', 'Różnica między energią, którą Ziemia dostaje od Słońca, a tą, którą oddaje w kosmos: ok. +0,8–1,0 W/m². Ta nadwyżka ogrzewa ocean, ląd, powietrze i topi lód.', 'The difference between the energy Earth receives from the Sun and what it radiates to space: about +0.8–1.0 W/m². This surplus heats the ocean, land and air and melts ice.', '02'],
+['ONI', 'ONI', 'Oceanic Niño Index: 3-miesięczna średnia anomalii temperatury wody w rejonie Niño 3.4 Pacyfiku. ≥ +0,5 °C = El Niño, ≤ −0,5 °C = La Niña.', 'Oceanic Niño Index: the 3-month mean sea-surface temperature anomaly in the Niño 3.4 region of the Pacific. ≥ +0.5 °C = El Niño, ≤ −0.5 °C = La Niña.', '06'],
+['Porozumienie paryskie', 'Paris Agreement', 'Umowa z 2015 r. (195 państw): utrzymać ocieplenie znacznie poniżej 2 °C i dążyć do 1,5 °C; każde państwo zgłasza NDC. Weszła w życie w 2016 r.', 'The 2015 agreement (195 states): keep warming well below 2 °C and pursue 1.5 °C; each state submits an NDC. In force since 2016.', '08'],
+['ppm / ppb', 'ppm / ppb', 'Części na milion / na miliard — jednostki stężenia gazów w powietrzu. CO₂: ponad 425 ppm (0,0425 %); metan: ok. 1 930 ppb.', 'Parts per million / per billion — units of gas concentration in air. CO₂: over 425 ppm (0.0425 %); methane: about 1,930 ppb.', '01'],
+['Punkt krytyczny', 'Tipping point', 'Próg, po którego przekroczeniu zmiana elementu systemu (lądolodu, lasu, prądu morskiego) staje się samonapędzająca i nieodwracalna w skali ludzkiego życia.', 'A threshold beyond which change in a system element (ice sheet, forest, ocean current) becomes self-propelling and irreversible on a human timescale.', '07'],
+['Sprzężenie zwrotne', 'Feedback', 'Proces, w którym skutek ocieplenia wzmacnia je (dodatnie: para wodna, lód–albedo, zmarzlina) lub osłabia (ujemne: promieniowanie Plancka). Sprzężenia potrajają efekt samego CO₂.', 'A process in which an effect of warming amplifies it (positive: water vapour, ice–albedo, permafrost) or dampens it (negative: Planck radiation). Feedbacks triple the effect of CO₂ alone.', '07'],
+['SSP', 'SSP', 'Wspólne ścieżki społeczno-ekonomiczne — scenariusze IPCC AR6 (SSP1-1.9 … SSP5-8.5) opisujące różne przyszłości emisji; liczba po myślniku to wymuszenie w 2100 r. w W/m².', 'Shared Socioeconomic Pathways — IPCC AR6 scenarios (SSP1-1.9 … SSP5-8.5) describing different emission futures; the number after the dash is the forcing in 2100 in W/m².', '08'],
+['TCRE', 'TCRE', 'Przejściowa reakcja klimatu na skumulowane emisje: ocieplenie na każdy bilion ton CO₂ — ok. 0,45 °C (0,27–0,63). Podstawa budżetu węglowego.', 'Transient Climate Response to cumulative Emissions: warming per trillion tonnes of CO₂ — about 0.45 °C (0.27–0.63). The basis of the carbon budget.', '02'],
+['TWh', 'TWh', 'Terawatogodzina = miliard kilowatogodzin. Polska zużywa ok. 170 TWh prądu rocznie; świat ok. 31 000 TWh.', 'Terawatt-hour = one billion kilowatt-hours. Poland uses about 170 TWh of electricity a year; the world about 31,000 TWh.', '05'],
+['Użytkowanie ziemi (LUC)', 'Land-use change (LUC)', 'Emisje z wylesiania, osuszania torfowisk, zmiany upraw — dziś ok. 4–5 Gt CO₂ rocznie, ok. jedna dziesiąta całości.', 'Emissions from deforestation, peatland drainage, cropland change — today about 4–5 Gt CO₂ a year, about a tenth of the total.', '04'],
+['Wymuszenie radiacyjne', 'Radiative forcing', 'Zmiana bilansu energii Ziemi wywołana przez dany czynnik, w W/m². Dodatnie ogrzewa (CO₂: +2,16), ujemne chłodzi (aerozole: −1,1). Suma ludzka od 1750 r.: +2,72 W/m².', 'The change in Earth’s energy balance caused by a factor, in W/m². Positive warms (CO₂: +2.16), negative cools (aerosols: −1.1). Human total since 1750: +2.72 W/m².', '02'],
+['Zero netto', 'Net zero', 'Stan, w którym emisje gazów cieplarnianych są równoważone przez ich pochłanianie (lasy, technologie). Dla 1,5 °C: CO₂ ok. 2050 r. Nie oznacza „zero emisji”, ale bliskie zeru.', 'A state in which greenhouse-gas emissions are balanced by removals (forests, technologies). For 1.5 °C: CO₂ around 2050. It does not mean “zero emissions”, but close to zero.', '08'],
+['Relacja Clausiusa–Clapeyrona (7 %/°C)', 'Clausius–Clapeyron relation (7 %/°C)', 'Prawo fizyczne: pojemność powietrza na parę wodną rośnie o ok. 7 % na każdy stopień. Skutek: intensywniejsze opady i głębsze susze jednocześnie.', 'A physical law: the air’s capacity for water vapour rises about 7 % per degree. The result: more intense rain and deeper droughts at once.', '07'],
+['Zmienność wewnętrzna', 'Internal variability', 'Naturalne wahania klimatu bez zewnętrznej przyczyny (ENSO, cyrkulacja oceanu): ±0,2 °C w skali dekad. Nakłada się na trend, nie tworzy go.', 'Natural climate fluctuations without external cause (ENSO, ocean circulation): ±0.2 °C on decadal scales. Superimposed on the trend, does not create it.', '02'],
+];
+const CHF = { '01': '01-co-sie-dzieje.html', '02': '02-dlaczego.html', '03': '03-gdzie.html', '04': '04-paliwa-kopalne.html', '05': '05-energia.html', '06': '06-inne-czynniki.html', '07': '07-wspolzaleznosci.html', '08': '08-co-dalej.html' };
+function render() {
+  const q = ($('#q').value || '').toLowerCase();
+  const items = G.map(g => ({ t: K.pl() ? g[0] : g[1], o: K.pl() ? g[1] : g[0], d: K.pl() ? g[2] : g[3], ch: g[4] })).sort((a, b) => a.t.localeCompare(b.t, K.pl() ? 'pl' : 'en'));
+  $('#gl').innerHTML = items.filter(x => !q || (x.t + ' ' + x.o + ' ' + x.d).toLowerCase().includes(q)).map(x => `<div class="t"><h3>${x.t}<small>${x.o}</small><a class="ch" href="${CHF[x.ch]}">→ ${x.ch}</a></h3><p>${x.d}</p></div>`).join('') || `<p class="muted">${T('Brak wyników.', 'No results.')}</p>`;
+}
+$('#q').addEventListener('input', render); render(); K.onRender(render);
+</script>
+<script data-goatcounter="https://futureshow.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

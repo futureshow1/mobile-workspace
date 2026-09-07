@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Źródła i metoda — Klimat | FutureShow</title>
+<meta name="description" content="Wszystkie zbiory danych portalu Klimat: NASA GISTEMP, NOAA, NSIDC, NCEI, Global Carbon Budget, Energy Institute/Ember, IPCC. Wersje, daty pobrania, sumy kontrolne, metoda obliczeń, jak zweryfikować.">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="portal.css">
+<style>.pipe{font-family:var(--mono);font-size:12px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px 16px;overflow-x:auto;color:#cfd6df;line-height:1.7}.pipe b{color:var(--accent)}</style>
+</head>
+<body>
+<main class="wrap">
+  <section class="hero">
+    <div class="kick"><span class="n">≡</span><span data-lang="pl">Proweniencja</span><span data-lang="en">Provenance</span></div>
+    <h1><span data-lang="pl">Źródła i metoda. <em>Sprawdź nas.</em></span><span data-lang="en">Sources and method. <em>Check us.</em></span></h1>
+    <p class="lead"><span data-lang="pl">Ta strona jest generowana automatycznie z tych samych plików, z których powstają wykresy. Każdy zbiór ma instytucję, adres pliku źródłowego, datę pobrania i sumę kontrolną SHA-256 pierwszych 16 znaków — możesz pobrać plik z serwera NASA lub NOAA i porównać. Liczby, które nie pochodzą z plików (oceny IPCC, artykuły naukowe), mają osobną listę z DOI.</span><span data-lang="en">This page is generated automatically from the same files the charts are built from. Every dataset has an institution, the source-file address, the fetch date and the first 16 characters of its SHA-256 checksum — you can download the file from the NASA or NOAA server and compare. Numbers that do not come from files (IPCC assessments, scientific papers) have a separate list with DOIs.</span></p>
+  </section>
+  <div class="read">
+    <div class="grid g3" id="knSrc" style="margin-top:28px"></div>
+    <h2><span data-lang="pl">1. Zbiory danych (odświeżane automatycznie)</span><span data-lang="en">1. Datasets (refreshed automatically)</span></h2>
+    <div id="datasets"></div>
+    <h2><span data-lang="pl">2. Jak liczymy</span><span data-lang="en">2. How we compute</span></h2>
+    <h3><span data-lang="pl">Anomalie temperatury dla krajów</span><span data-lang="en">Country temperature anomalies</span></h3>
+    <p id="method"></p>
+    <h3><span data-lang="pl">Pozostałe wskaźniki</span><span data-lang="en">Other indicators</span></h3>
+    <ul>
+      <li><span data-lang="pl"><strong>Średnie 5-letnie</strong> (mapa, wykresy, moduł „Twój rok urodzenia”): średnia z pięciu kolejnych lat wyśrodkowana na danym roku, wymaga ≥3 lat; rok bieżący (niepełny) jest wyłączony z wygładzania i oznaczony jako „w toku”.</span><span data-lang="en"><strong>5-year means</strong> (map, charts, “your birth year” module): the mean of five consecutive years centred on a given year, requires ≥3 years; the current (partial) year is excluded from smoothing and marked “in progress”.</span></li>
+      <li><span data-lang="pl"><strong>Poziom morza</strong>: rekonstrukcja CSIRO przeliczona z cali na mm i przesunięta tak, by średnia 1880–1900 = 0; seria satelitarna NOAA dopasowana do rekonstrukcji na wspólnym okresie 1993–2013 (przesunięcie stałe). Tempo = różnica wartości rocznych na 10 lat / 10.</span><span data-lang="en"><strong>Sea level</strong>: CSIRO reconstruction converted from inches to mm and offset so that the 1880–1900 mean = 0; the NOAA satellite series aligned to the reconstruction on the common 1993–2013 period (constant offset). Rate = difference of annual values over 10 years / 10.</span></li>
+      <li><span data-lang="pl"><strong>Budżet węglowy</strong>: od wartości opublikowanych (Forster i in. 2025: 130 Gt CO₂ od 1 I 2025 dla 1,5 °C/50 %; IPCC AR6: 1150 Gt od 1 I 2020 dla 2 °C/67 %) odejmujemy sumę rocznych emisji CO₂ z paliw i użytkowania ziemi (Global Carbon Budget) za lata, które od tego czasu upłynęły.</span><span data-lang="en"><strong>Carbon budget</strong>: from the published values (Forster et al. 2025: 130 Gt CO₂ from 1 Jan 2025 for 1.5 °C/50 %; IPCC AR6: 1150 Gt from 1 Jan 2020 for 2 °C/67 %) we subtract the sum of annual CO₂ emissions from fuels and land use (Global Carbon Budget) for the years elapsed since.</span></li>
+      <li><span data-lang="pl"><strong>Rankingi krajów</strong>: średnia anomalii z ostatnich 10 pełnych lat (wymagane ≥8 lat); emisje per capita i udziały wg OWID dla ostatniego dostępnego roku; progi ludności (1 lub 5 mln) podane przy wykresach.</span><span data-lang="en"><strong>Country rankings</strong>: mean anomaly of the last 10 full years (≥8 years required); per-capita emissions and shares per OWID for the latest available year; population thresholds (1 or 5 million) stated by the charts.</span></li>
+      <li><span data-lang="pl"><strong>Zaokrąglenia</strong>: temperatury do 0,01 °C, emisje do 0,1 Gt, udziały do 0,1 pkt proc. Formatowanie liczb zależy od języka (przecinek/kropka dziesiętna).</span><span data-lang="en"><strong>Rounding</strong>: temperatures to 0.01 °C, emissions to 0.1 Gt, shares to 0.1 pp. Number formatting follows the language (decimal comma/point).</span></li>
+    </ul>
+    <h3><span data-lang="pl">Rurociąg danych</span><span data-lang="en">Data pipeline</span></h3>
+    <div class="pipe"><b>16. dnia każdego miesiąca</b> (GitHub Actions) → <b>build_climate_data.py</b>: GISTEMP siatka + seria globalna → climate-data.json<br>→ <b>build_indicators.py</b>: NOAA CO₂/CH₄/N₂O, GISTEMP strefy, poziom morza, NSIDC, NCEI, ONI → indicators.json<br>→ <b>build_emissions.py</b>: OWID co2-data + energy-data → emissions.json<br>→ commit do repozytorium strony → GitHub Pages publikuje w ciągu minuty.<br><span class="muted">Każde uruchomienie zapisuje datę, adres pliku i sumę kontrolną; błąd pobrania jednego zbioru nie zatrzymuje pozostałych i jest zapisywany w metadanych.</span></div>
+    <p style="margin-top:14px"><a href="https://github.com/futureshow1/futureshow1.github.io/tree/main/klimat/pipeline" target="_blank" rel="noopener"><span data-lang="pl">Kod rurociągu na GitHubie ↗</span><span data-lang="en">Pipeline code on GitHub ↗</span></a> · <a href="data/climate-data.json" target="_blank">climate-data.json</a> · <a href="data/indicators.json" target="_blank">indicators.json</a> · <a href="data/emissions.json" target="_blank">emissions.json</a> · <a href="data/countries.min.json" target="_blank">countries.min.json</a></p>
+    <h2><span data-lang="pl">3. Jak to sprawdzić samodzielnie</span><span data-lang="en">3. How to verify it yourself</span></h2>
+    <ol>
+      <li><span data-lang="pl">Kliknij plakietkę źródła przy dowolnej liczbie → „Plik danych” → pobierz plik z serwera instytucji.</span><span data-lang="en">Click the source badge next to any number → “Data file” → download the file from the institution’s server.</span></li>
+      <li><span data-lang="pl">Porównaj początek sumy SHA-256 (np. <code>sha256sum plik.csv</code>) z tą na karcie. Jeśli się różni, instytucja opublikowała nowszą wersję niż nasza — sprawdź datę pobrania.</span><span data-lang="en">Compare the beginning of the SHA-256 checksum (e.g. <code>sha256sum file.csv</code>) with the one on the card. If it differs, the institution has published a newer version than ours — check the fetch date.</span></li>
+      <li><span data-lang="pl">Otwórz nasz JSON i znajdź tę samą liczbę; skrypt w repozytorium pokazuje każdy krok przetwarzania.</span><span data-lang="en">Open our JSON and find the same number; the script in the repository shows every processing step.</span></li>
+      <li><span data-lang="pl">Znalazłeś błąd? Zgłoś go w repozytorium (Issues) — poprawki są publiczne.</span><span data-lang="en">Found an error? Report it in the repository (Issues) — fixes are public.</span></li>
+    </ol>
+    <h2><span data-lang="pl">4. Literatura i oceny naukowe cytowane w tekstach</span><span data-lang="en">4. Literature and assessments cited in the texts</span></h2>
+    <p class="muted" style="font-size:13px"><span data-lang="pl">Wartości z tych źródeł (np. wymuszenia radiacyjne, progi punktów krytycznych, scenariusze) są przepisane z publikacji i oznaczone plakietką przy każdym użyciu.</span><span data-lang="en">Values from these sources (e.g. radiative forcings, tipping thresholds, scenarios) are transcribed from the publications and badged at every use.</span></p>
+    <div id="refs"></div>
+    <h2><span data-lang="pl">5. Licencje i autorstwo</span><span data-lang="en">5. Licences and authorship</span></h2>
+    <p><span data-lang="pl">Dane NASA, NOAA, NSIDC i NCEI są w domenie publicznej (prace rządu USA). Dane Our World in Data — CC BY 4.0 (Global Carbon Project, Jones i in., Energy Institute, Ember). Granice — Natural Earth, domena publiczna. Mapa — Leaflet (BSD) i kafelki Esri. Teksty portalu: FutureShow, 2026; można cytować z podaniem źródła. Portal nie zbiera danych osobowych; statystyki odwiedzin — GoatCounter (bez ciasteczek).</span><span data-lang="en">NASA, NOAA, NSIDC and NCEI data are in the public domain (US Government works). Our World in Data — CC BY 4.0 (Global Carbon Project, Jones et al., Energy Institute, Ember). Borders — Natural Earth, public domain. Map — Leaflet (BSD) and Esri tiles. Portal texts: FutureShow, 2026; may be quoted with attribution. The portal collects no personal data; visit statistics — GoatCounter (no cookies).</span></p>
+    <div class="pn" id="pn"></div>
+  </div>
+</main>
+<script src="portal.js"></script>
+<script>
+const K = KLIMAT, { $, T, fmt } = K; K.chrome();
+let D;
+function card(s) {
+  const cad = s.cadence ? (K.pl() ? s.cadence.pl : s.cadence.en) : null;
+  return `<div class="scard"><h3>${s.name}</h3><div class="inst">${s.institution || ''}</div><dl>${s.coverage ? `<dt>${T('Zakres', 'Coverage')}</dt><dd>${s.coverage}</dd>` : ''}${cad ? `<dt>${T('Aktualizacja', 'Cadence')}</dt><dd class="txt">${cad}</dd>` : ''}${s.fetched ? `<dt>${T('Pobrano', 'Fetched')}</dt><dd>${s.fetched.replace('T', ' ').replace('Z', ' UTC')}</dd>` : ''}${s.license ? `<dt>${T('Licencja', 'License')}</dt><dd class="txt">${s.license}</dd>` : ''}${s.citation ? `<dt>${T('Cytowanie', 'Citation')}</dt><dd class="txt">${s.citation}</dd>` : ''}${s.sha ? `<dt>SHA-256</dt><dd>${s.sha}…</dd>` : ''}</dl><div class="links">${s.url ? `<a href="${s.url}" target="_blank" rel="noopener">${T('Strona źródła', 'Source page')} ↗</a>` : ''}${s.file ? `<a href="${s.file}" target="_blank" rel="noopener">${T('Plik danych', 'Data file')} ↗</a>` : ''}${s.doi && !s.doi.includes('XXX') ? `<a href="https://doi.org/${s.doi}" target="_blank" rel="noopener">DOI ↗</a>` : ''}</div></div>`;
+}
+function render() {
+  const { climate: c, indicators: i, emissions: e } = D;
+  const groups = [[T('Temperatura (mapa i seria globalna)', 'Temperature (map and global series)'), c.meta], [T('Wskaźniki fizyczne', 'Physical indicators'), i.meta], [T('Emisje i energia', 'Emissions and energy'), e.meta]];
+  let n = 0; $('#datasets').innerHTML = groups.map(([title, m]) => `<h3>${title} <span class="chip">${T('pobrano', 'fetched')} ${m.generated_utc.slice(0, 10)}</span></h3>` + (m.sources || []).map(s => { n++; return card(Object.assign({}, s, { fetched: m.generated_utc, sha: s.sha256 || (m.sha256 && m.sha256[s.id]) })); }).join('')).join('');
+  const refs = Object.entries(K.REFS); $('#refs').innerHTML = refs.map(([id, r]) => card(r)).join('');
+  const kn = (v, l) => `<div class="kn"><div class="v">${v}</div><div class="l">${l}</div></div>`;
+  $('#knSrc').innerHTML = kn(n, T('zbiorów danych, odświeżanych automatycznie', 'datasets, refreshed automatically')) + kn(refs.length, T('cytowanych publikacji i ocen naukowych', 'cited publications and assessments')) + kn(Object.values(i.meta.errors || {}).length, T('błędów pobierania w ostatnim przebiegu', 'fetch errors in the last run'));
+  $('#method').textContent = K.pl() ? c.meta.method.pl : c.meta.method.en;
+  K.stamp([c.meta, i.meta, e.meta]);
+}
+K.load('climate', 'indicators', 'emissions').then(d => { D = d; render(); K.onRender(render); });
+</script>
+<script data-goatcounter="https://futureshow.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
