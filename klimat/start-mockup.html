@@ -19,20 +19,20 @@
 .tl .yr{font-family:var(--mono);font-size:clamp(30px,4vw,44px);font-weight:700;color:var(--white);line-height:1;letter-spacing:-.03em;position:absolute;top:56px;transform:translate(-50%,-100%);pointer-events:none;transition:left .06s linear;text-shadow:0 4px 30px rgba(0,0,0,.7)}
 .tl .yr small{display:block;font-family:var(--sans);font-size:10px;font-weight:600;color:var(--warn);letter-spacing:.14em;text-transform:uppercase;text-align:center;margin-bottom:4px}
 .tl .brk{position:absolute;top:34px;height:14px;border:1px solid rgba(255,255,255,.55);border-bottom:0;border-radius:6px 6px 0 0;pointer-events:none;transition:left .06s linear,width .06s linear}
-.tl .brk span{position:absolute;left:50%;top:-16px;transform:translateX(-50%);font:600 11px/1 var(--mono);color:var(--white);letter-spacing:.08em;white-space:nowrap;text-transform:uppercase}
+.tl .brk span{position:absolute;right:0;top:-16px;font:600 11px/1 var(--mono);color:var(--white);letter-spacing:.08em;white-space:nowrap;text-transform:uppercase}
 .tl .strip .stripes i{transform:scaleY(0);transform-origin:bottom;animation:grow .5s cubic-bezier(.2,.8,.2,1) forwards}
 @keyframes grow{to{transform:scaleY(1)}}
 .tl .strip canvas.trend{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .tl .world{position:relative;height:14px;margin-top:6px;border-radius:4px;overflow:hidden;opacity:.9}
 .tl .world .stripes{height:100%;border:0;border-radius:0}.tl .world .stripes i{animation:none;transform:none}
 .tl .world b{position:absolute;left:8px;top:0;font:600 9px/14px var(--mono);letter-spacing:.14em;color:#fff;text-shadow:0 0 4px #000;text-transform:uppercase}
-.tl .ev{position:relative;height:22px;margin-top:4px}
-.tl .ev a{position:absolute;top:0;transform:translateX(-50%);font:500 10px/1.2 var(--mono);color:var(--dim);white-space:nowrap;text-decoration:none;padding-top:8px}
+.tl .ev{position:relative;height:34px;margin-top:4px}
+.tl .ev a{position:absolute;top:0;transform:translateX(-50%);font:500 10px/1.2 var(--mono);color:var(--dim);white-space:nowrap;text-decoration:none;padding-top:8px}.tl .ev a:nth-child(even){padding-top:22px}.tl .ev a:nth-child(even)::before{height:20px}.tl .ev a:last-child{transform:translateX(-100%)}.tl .ev a:last-child::before{left:auto;right:0}
 .tl .ev a::before{content:"";position:absolute;left:50%;top:0;width:1px;height:6px;background:var(--muted)}
 .tl .ev a:hover{color:var(--white)}
 .tl .lg{display:flex;align-items:center;gap:8px;font:500 10.5px var(--mono);color:var(--muted);margin-top:6px;justify-content:flex-end}
 .tl .lg i{width:90px;height:8px;border-radius:4px;background:linear-gradient(90deg,#1d4ed8,#60a5fa,#e5e7eb,#fb923c,#dc2626,#7f1d1d)}
-@media(max-width:700px){.tl .ev a:nth-child(even){display:none}}
+@media(max-width:700px){.tl .ev a em{display:none}.tl .brk span{display:none}.tl .axis{flex-wrap:wrap}.tl .axis .cap{order:3;width:100%;text-align:center;margin-top:4px}}
 .tl .strip{position:relative;height:64px;border-radius:10px;overflow:hidden;border:1px solid var(--border2);box-shadow:0 20px 60px rgba(0,0,0,.45)}
 .tl .strip .stripes{height:100%;border:0;border-radius:0}
 .tl .dim-l{position:absolute;top:0;bottom:0;left:0;background:rgba(6,8,13,.72);pointer-events:none;transition:width .06s linear}
@@ -72,7 +72,7 @@
     <div class="tl" id="tl">
       <div class="yr" id="yr"><small data-lang="pl">rok urodzenia</small><small data-lang="en">birth year</small><span id="yrv">1985</span></div>
       <div class="brk" id="brk"><span id="brkT"></span></div><div class="strip"><div class="stripes" id="bigStripes"></div><canvas class="trend" id="trend"></canvas><div class="dim-l" id="dimL"></div><div class="mark" id="mark"></div><input type="range" id="rng" min="1880" max="2020" value="1985" step="1" aria-label="rok urodzenia"></div>
-      <div class="world"><div class="stripes" id="worldStripes"></div><b data-lang="pl">świat</b><b data-lang="en">world</b></div><div class="ev" id="ev"></div><div class="axis"><span>1880</span><span data-lang="pl">każdy pasek to jeden rok · kolor = odchylenie temperatury od średniej 1951–1980</span><span data-lang="en">each bar is one year · colour = temperature deviation from the 1951–1980 mean</span><span id="axR"></span></div>
+      <div class="world"><div class="stripes" id="worldStripes"></div><b data-lang="pl">świat</b><b data-lang="en">world</b></div><div class="ev" id="ev"></div><div class="axis"><span>1880</span><span class="cap"><span data-lang="pl">każdy pasek to jeden rok · kolor = odchylenie od średniej 1951–1980</span><span data-lang="en">each bar is one year · colour = deviation from the 1951–1980 mean</span></span><span id="axR"></span></div>
       <div class="hint"><span data-lang="pl">← przeciągnij lub użyj strzałek · <b>im bardziej czerwono, tym cieplej</b></span><span data-lang="en">← drag or use arrow keys · <b>the redder, the warmer</b></span></div>
       <div class="presets" id="presets"></div><div class="lg"><span>−2 °C</span><i></i><span>+3 °C</span><span style="margin-left:6px" data-lang="pl">wzgl. 1951–1980</span><span style="margin-left:6px" data-lang="en">vs 1951–1980</span></div>
     </div>
@@ -105,8 +105,8 @@ function render() {
   K.stripes($('#bigStripes'), c.countries[iso].anom, 1880, gy);
   K.$$('#bigStripes i').forEach((el, k) => el.style.animationDelay = (k * 6) + 'ms');
   K.stripes($('#worldStripes'), c.global, 1880, gy);
-  const EV = [[1958, T('Keeling zaczyna pomiary CO₂', 'Keeling starts CO₂ measurements')], [1988, T('Hansen w Senacie USA: „to już się dzieje”', 'Hansen to the US Senate: “it is happening”')], [2015, T('Porozumienie paryskie', 'Paris Agreement')], [+Object.keys(c.global).reduce((a, b) => c.global[b] > c.global[a] ? b : a), T('rekordowy rok', 'record year')]];
-  $('#ev').innerHTML = EV.map(([y, l]) => `<a href="01-co-sie-dzieje.html" style="left:${(y - 1880) / (gy - 1880) * 100}%" title="${y}: ${l}">${y} · ${l}</a>`).join('');
+  const EV = [[1958, T('pierwsze pomiary CO₂', 'first CO₂ measurements')], [1988, T('Hansen ostrzega Senat USA', 'Hansen warns the US Senate')], [2015, T('Paryż: cel 1,5 °C', 'Paris: 1.5 °C goal')], [+Object.keys(c.global).reduce((a, b) => c.global[b] > c.global[a] ? b : a), T('rekordowy rok', 'record year')]];
+  $('#ev').innerHTML = EV.map(([y, l]) => `<a href="01-co-sie-dzieje.html" style="left:${(y - 1880) / (gy - 1880) * 100}%" title="${y}: ${l}">${y}<em style="font-style:normal"> · ${l}</em></a>`).join('');
   drawTrend(c.countries[iso].anom, gy);
   update();
 }
