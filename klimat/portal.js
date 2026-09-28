@@ -360,9 +360,9 @@ window.KLIMAT = (function () {
       if ($('#lifebar')) $('#lifebar').remove();
       const st = lifeStats(c, life.y, life.iso), name = countryName(life.iso, geo);
       const bar = document.createElement('div'); bar.id = 'lifebar';
-      bar.innerHTML = `<div class="in"><a class="lb-txt" href="index.html#tl"><b>${T('Twoje życie', 'Your life')} ${life.y}→${st.gy}</b> <span>${name} <em style="color:${tcolor(st.d)}">${fmt(st.d, 1, { sign: true })} °C</em> · ${T('świat', 'world')} <em>${fmt(st.dg, 1, { sign: true })} °C</em> · ${st.inLife}/10 ${T('najcieplejszych lat', 'warmest years')}</span></a><div class="lb-stripes" id="lbStripes"></div><button class="lb-x" title="${T('Ukryj', 'Hide')}">✕</button></div>`;
+      bar.innerHTML = `<div class="in"><a class="lb-txt" href="index.html#tl"><b>${T('Twoje życie', 'Your life')} ${life.y}→${st.gy}</b> <span>${name} <em style="color:${tcolor(st.d)}">${fmt(st.d, 1, { sign: true })} °C</em> · ${T('świat', 'world')} <em>${fmt(st.dg, 1, { sign: true })} °C</em> · ${st.inLife}/10 ${T('najcieplejszych lat', 'warmest years')}</span></a><canvas class="lb-stripes" id="lbStripes" height="16"></canvas><button class="lb-x" title="${T('Ukryj', 'Hide')}">✕</button></div>`;
       const top = $('header.top'); top.insertAdjacentElement('afterend', bar); document.body.classList.add('has-life');
-      stripes($('#lbStripes'), st.s, life.y, st.gy);
+      const mini = $('#lbStripes'), drawMini = () => { const w = mini.clientWidth || 300, dpr = devicePixelRatio || 1; mini.width = w * dpr; mini.height = 16 * dpr; const x = mini.getContext('2d'); x.setTransform(dpr, 0, 0, dpr, 0, 0); const n = st.gy - life.y + 1, bw = w / n; for (let k = 0; k < n; k++) { x.fillStyle = tcolor(st.s[String(life.y + k)]); x.fillRect(k * bw, 0, Math.ceil(bw), 16); } }; drawMini(); window.addEventListener('resize', drawMini);
       $('.lb-x', bar).onclick = () => { bar.remove(); document.body.classList.remove('has-life'); try { sessionStorage.setItem('klimat_lifebar_hidden', '1'); } catch (e) {} };
     }).catch(() => {});
   }

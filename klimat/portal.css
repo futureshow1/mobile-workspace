@@ -43,7 +43,7 @@ html[lang="pl"] [data-lang="pl"].blk,[data-lang="en"].blk{display:block}html[lan
 #lifebar .in{max-width:var(--maxw);margin:0 auto;padding:6px 20px;display:flex;align-items:center;gap:14px}
 #lifebar .lb-txt{color:var(--dim);font-size:12.5px;white-space:nowrap;text-decoration:none;flex-shrink:0}
 #lifebar .lb-txt b{color:var(--white);font-weight:600;margin-right:6px}#lifebar .lb-txt em{font-style:normal;font-family:var(--mono);font-weight:600;color:var(--white)}
-#lifebar .lb-stripes{flex:1;display:flex;height:16px;border-radius:3px;overflow:hidden;min-width:80px}#lifebar .lb-stripes i{flex:1;display:block}
+#lifebar .lb-stripes{flex:1;display:block;height:16px;border-radius:3px;min-width:80px}
 #lifebar .lb-x{background:none;border:0;color:var(--muted);cursor:pointer;font-size:13px;padding:4px}#lifebar .lb-x:hover{color:var(--text)}
 body.has-life .progress{top:88px}
 @media(max-width:700px){#lifebar .lb-txt span{display:none}#lifebar .in{padding:6px 12px;gap:10px}}
