@@ -9,32 +9,32 @@
 <link rel="stylesheet" href="portal.css">
 <style>
 .mock{position:sticky;top:0;z-index:2000;background:#fbbf24;color:#06080d;font:600 12px/1.4 var(--mono);text-align:center;padding:6px 12px;letter-spacing:.06em}
-.hero.life{padding:56px 0 30px;border:0;position:relative}
+.hero.life{padding:40px 0 22px;border:0;position:relative}
 .hero.life::before{content:"";position:absolute;inset:0;background:radial-gradient(900px 420px at 15% 0%,rgba(29,78,216,.16),transparent 60%),radial-gradient(700px 400px at 90% 30%,rgba(220,38,38,.12),transparent 60%);pointer-events:none}
 .hero.life>*{position:relative}
 .hero.life h1{max-width:820px}
 .privacy{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--dim);margin-top:14px;border:1px solid var(--border);border-radius:999px;padding:6px 12px 6px 8px;background:rgba(255,255,255,.03)}
 .privacy i{width:16px;height:16px;border-radius:50%;background:rgba(52,211,153,.18);color:var(--ok);display:inline-flex;align-items:center;justify-content:center;font-style:normal;font-size:11px;font-weight:700}
-.tl{margin-top:18px;padding-top:118px;position:relative;user-select:none}
-.tl .yr{font-family:var(--mono);font-size:clamp(44px,7vw,84px);font-weight:700;color:var(--white);line-height:1;letter-spacing:-.03em;position:absolute;top:104px;transform:translate(-50%,-100%);pointer-events:none;transition:left .06s linear;text-shadow:0 4px 30px rgba(0,0,0,.7)}
-.tl .yr small{display:block;font-family:var(--sans);font-size:12px;font-weight:600;color:var(--warn);letter-spacing:.14em;text-transform:uppercase;text-align:center;margin-bottom:4px}
-.tl .strip{position:relative;height:120px;border-radius:10px;overflow:hidden;border:1px solid var(--border2);box-shadow:0 20px 60px rgba(0,0,0,.45)}
+.tl{margin-top:14px;padding-top:64px;position:relative;user-select:none}
+.tl .yr{font-family:var(--mono);font-size:clamp(30px,4vw,44px);font-weight:700;color:var(--white);line-height:1;letter-spacing:-.03em;position:absolute;top:56px;transform:translate(-50%,-100%);pointer-events:none;transition:left .06s linear;text-shadow:0 4px 30px rgba(0,0,0,.7)}
+.tl .yr small{display:block;font-family:var(--sans);font-size:10px;font-weight:600;color:var(--warn);letter-spacing:.14em;text-transform:uppercase;text-align:center;margin-bottom:4px}
+.tl .strip{position:relative;height:64px;border-radius:10px;overflow:hidden;border:1px solid var(--border2);box-shadow:0 20px 60px rgba(0,0,0,.45)}
 .tl .strip .stripes{height:100%;border:0;border-radius:0}
 .tl .dim-l{position:absolute;top:0;bottom:0;left:0;background:rgba(6,8,13,.72);pointer-events:none;transition:width .06s linear}
 .tl .mark{position:absolute;top:-6px;bottom:-6px;width:3px;background:var(--white);box-shadow:0 0 0 2px rgba(6,8,13,.6),0 0 24px rgba(255,255,255,.5);transform:translateX(-50%);pointer-events:none;transition:left .06s linear}
 .tl .mark::after{content:"";position:absolute;left:50%;bottom:-16px;transform:translateX(-50%);border:9px solid transparent;border-bottom-color:var(--white);border-top:0}
 .tl input[type=range]{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:ew-resize;-webkit-appearance:none;background:none}
 .tl .axis{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:8px}
-.tl .hint{text-align:center;font-size:13px;color:var(--dim);margin-top:10px}
+.tl .hint{text-align:center;font-size:12.5px;color:var(--dim);margin-top:6px}
 .tl .hint b{color:var(--white)}
-.presets{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:12px}
+.presets{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:8px}
 .presets button{background:transparent;border:1px solid var(--border2);color:var(--dim);border-radius:999px;padding:5px 12px;font-size:12.5px;cursor:pointer;font-family:var(--sans)}
 .presets button:hover{color:var(--white);border-color:var(--accent)}
-.who{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:22px;font-size:14px;color:var(--dim)}
+.who{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:14px;font-size:14px;color:var(--dim)}
 .who select{padding:6px 10px;font-size:13px}
-.res{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:12px;margin-top:22px}
+.res{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:10px;margin-top:14px}
 @media(max-width:760px){.res{grid-template-columns:1fr}}
-.res .kn .v{font-size:clamp(30px,4vw,44px)}
+.res .kn .v{font-size:clamp(26px,3vw,34px)}.res .kn{padding:14px 16px 12px}
 .res .kn.lead-kn{background:linear-gradient(180deg,rgba(255,90,60,.10),rgba(255,90,60,.02));border-color:rgba(255,90,60,.35)}
 .sent{font-family:var(--serif);font-size:clamp(17px,2vw,20px);color:#dfe5ee;margin-top:18px;max-width:820px;line-height:1.5}
 .cta2{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px;align-items:center}
@@ -50,8 +50,8 @@
 <main class="wrap">
   <section class="hero life">
     <div class="kick"><span class="n">FutureShow</span><span data-lang="pl">Klimat w faktach</span><span data-lang="en">Climate in facts</span></div>
-    <h1><span data-lang="pl">Klimat zmienił się w Twoim życiu. <em>O ile?</em></span><span data-lang="en">The climate changed during your life. <em>By how much?</em></span></h1>
-    <p class="lead" style="margin-top:14px"><span data-lang="pl">Przesuń znacznik do roku, w którym się urodziłeś. Zobaczysz, co przez ten czas zrobił klimat tam, gdzie mieszkasz — na tych samych danych NASA, z których korzystają naukowcy.</span><span data-lang="en">Drag the marker to the year you were born. You will see what the climate did in that time where you live — on the same NASA data scientists use.</span></p>
+    <h1 style="font-size:clamp(30px,4.4vw,46px)"><span data-lang="pl">Klimat zmienił się w Twoim życiu. <em>O ile?</em></span><span data-lang="en">The climate changed during your life. <em>By how much?</em></span></h1>
+    <p class="lead" style="margin-top:12px;font-size:clamp(16px,1.8vw,19px)"><span data-lang="pl">Przesuń znacznik do roku, w którym się urodziłeś. Zobaczysz, co przez ten czas zrobił klimat tam, gdzie mieszkasz — na tych samych danych NASA, z których korzystają naukowcy.</span><span data-lang="en">Drag the marker to the year you were born. You will see what the climate did in that time where you live — on the same NASA data scientists use.</span></p>
     <span class="privacy"><i>✓</i><span data-lang="pl">Nic nie wysyłamy i nie zapisujemy — wszystko liczy się w Twojej przeglądarce.</span><span data-lang="en">Nothing is sent or stored — everything is computed in your browser.</span></span>
 
     <div class="tl" id="tl">
