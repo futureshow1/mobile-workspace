@@ -355,12 +355,12 @@ window.KLIMAT = (function () {
   }
   function countryName(iso, geo) { const f = geo && geo.features.find(x => x.id === iso); return f ? (pl() ? (f.properties.name_pl || f.properties.name) : f.properties.name) : iso; }
   function lifeBar() {
-    const life = lifeGet(); if (!life || here() === 'index.html' && !document.body.dataset.lifebarOnHome) return;
+    const life = lifeGet(); if (!life || here() === 'index.html') return;
     load('climate', 'geo').then(({ climate: c, geo }) => {
       if ($('#lifebar')) $('#lifebar').remove();
       const st = lifeStats(c, life.y, life.iso), name = countryName(life.iso, geo);
       const bar = document.createElement('div'); bar.id = 'lifebar';
-      bar.innerHTML = `<div class="in"><a class="lb-txt" href="index.html#urodziny"><b>${T('Twoje życie', 'Your life')} ${life.y}→${st.gy}</b> <span>${name} <em style="color:${tcolor(st.d)}">${fmt(st.d, 1, { sign: true })} °C</em> · ${T('świat', 'world')} <em>${fmt(st.dg, 1, { sign: true })} °C</em> · ${st.inLife}/10 ${T('najcieplejszych lat', 'warmest years')}</span></a><div class="lb-stripes" id="lbStripes"></div><button class="lb-x" title="${T('Ukryj', 'Hide')}">✕</button></div>`;
+      bar.innerHTML = `<div class="in"><a class="lb-txt" href="index.html#tl"><b>${T('Twoje życie', 'Your life')} ${life.y}→${st.gy}</b> <span>${name} <em style="color:${tcolor(st.d)}">${fmt(st.d, 1, { sign: true })} °C</em> · ${T('świat', 'world')} <em>${fmt(st.dg, 1, { sign: true })} °C</em> · ${st.inLife}/10 ${T('najcieplejszych lat', 'warmest years')}</span></a><div class="lb-stripes" id="lbStripes"></div><button class="lb-x" title="${T('Ukryj', 'Hide')}">✕</button></div>`;
       const top = $('header.top'); top.insertAdjacentElement('afterend', bar); document.body.classList.add('has-life');
       stripes($('#lbStripes'), st.s, life.y, st.gy);
       $('.lb-x', bar).onclick = () => { bar.remove(); document.body.classList.remove('has-life'); try { sessionStorage.setItem('klimat_lifebar_hidden', '1'); } catch (e) {} };
@@ -384,7 +384,7 @@ window.KLIMAT = (function () {
   // re-render chrome texts on language change
   onRender(() => { const old = $('header.top'); const f = $('footer'); if (old) old.remove(); if (f) f.remove(); chrome(); });
   const _chrome = chrome;
-  chrome = function () { _chrome(); shareRow($('#shareRow'), {}); let hidden = false; try { hidden = sessionStorage.getItem('klimat_lifebar_hidden') === '1'; } catch (e) {} if (!hidden && document.body.dataset.lifebar === 'on') lifeBar(); };
+  chrome = function () { _chrome(); shareRow($('#shareRow'), {}); let hidden = false; try { hidden = sessionStorage.getItem('klimat_lifebar_hidden') === '1'; } catch (e) {} if (!hidden) lifeBar(); };
 
   return { $, $$, pl, T, fmt, countUp, revealWhenVisible, SITE, pageUrl, shareRow, lifeGet, lifeSet, lifeClear, lifeStats, countryName, lifePNG, here, fmtInt, fmtBig, monthLabel, MONTHS, load, col, obj2pts, last, at, mean, smooth5, tcolor, stripes, chart, PALETTE, chrome, stamp, onRender, toggleLang, addRefs, registerMeta, openSources, closeSources, bindSources, REFS, CH, niceTicks };
 })();
