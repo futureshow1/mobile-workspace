@@ -65,8 +65,9 @@ window.KLIMAT = (function () {
     return 'rgb(127,29,29)';
   }
   function stripes(el, o, from, to) {
-    let h = ''; for (let y = from; y <= to; y++) { const v = o[String(y)]; h += `<i style="background:${tcolor(v)}" title="${y}: ${v == null ? '—' : fmt(v, 2, { sign: true })}"></i>`; }
+    let h = '', k = 0; for (let y = from; y <= to; y++) { const v = o[String(y)]; h += `<i style="background:${tcolor(v)};animation-delay:${(k++) * 5}ms" title="${y}: ${v == null ? '—' : fmt(v, 2, { sign: true })}"></i>`; }
     el.innerHTML = h;
+    if (!REDUCED && !el.classList.contains('no-anim')) { el.classList.add('anim'); el.classList.remove('in'); revealWhenVisible(el, () => el.classList.add('in')); }
   }
 
   // ── charts ───────────────────────────────────────────────
@@ -79,6 +80,31 @@ window.KLIMAT = (function () {
     const step = [1, 2, 2.5, 5, 10].map(m => m * mag).find(s => span / s <= n + 1) || mag * 10;
     const t = []; for (let v = Math.ceil(min / step) * step; v <= max + 1e-9; v += step) t.push(+v.toFixed(10)); return t;
   }
+  const REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const ease = t => 1 - Math.pow(1 - t, 3);
+  function revealWhenVisible(el, fn) {
+    if (!('IntersectionObserver' in window)) { fn(); return; }
+    const io = new IntersectionObserver(es => { es.forEach(e => { if (e.isIntersecting) { io.disconnect(); fn(); } }); }, { threshold: 0.15 });
+    io.observe(el);
+  }
+  function animate(canvas, draw, ms = 1100) {
+    const t0 = performance.now();
+    const step = now => { canvas._t = Math.min(1, ease((now - t0) / ms)); draw(); if (canvas._t < 1) requestAnimationFrame(step); else canvas._t = 1; };
+    requestAnimationFrame(step);
+  }
+  // count-up for key numbers: animates the first number inside .kn .v when it scrolls into view
+  function countUp(root) {
+    if (REDUCED) return;
+    $$('.kn .v', root).forEach(el => {
+      if (el._cu) return; el._cu = 1;
+      const html = el.innerHTML, m = html.match(/([-−+]?)(\d[\d\s\u00a0]*)([.,](\d+))?/); if (!m) return;
+      const sign = m[1], intPart = m[2].replace(/[\s\u00a0]/g, ''), dec = m[4] ? m[4].length : 0, target = parseFloat(intPart + (m[4] ? '.' + m[4] : '')); if (isNaN(target) || target === 0) return;
+      const fmtN = v => { const s = new Intl.NumberFormat(loc(), { minimumFractionDigits: dec, maximumFractionDigits: dec }).format(v); return s; };
+      const render = v => { el.innerHTML = html.replace(m[0], sign + fmtN(v)); };
+      render(0);
+      revealWhenVisible(el, () => { const t0 = performance.now(), ms = 900; const step = now => { const t = Math.min(1, ease((now - t0) / ms)); render(target * t); if (t < 1) requestAnimationFrame(step); else el.innerHTML = html; }; requestAnimationFrame(step); });
+    });
+  }
   function chart(canvas, spec) {
     if (typeof canvas === 'string') canvas = $(canvas);
     if (!canvas) return;
@@ -87,6 +113,8 @@ window.KLIMAT = (function () {
       if (!W) return;
       canvas.width = W * dpr; canvas.height = H * dpr;
       const ctx = canvas.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+      const t = canvas._t == null ? 1 : canvas._t;
+      if (t < 1) { ctx.beginPath(); ctx.rect(0, 0, W * t, H); ctx.clip(); }
       const type = spec.type || 'line';
       if (type === 'hbar') return drawHBar(ctx, W, H, spec);
       const series = spec.series.filter(s => s.points && s.points.length);
@@ -136,6 +164,7 @@ window.KLIMAT = (function () {
       (spec.hlines || []).forEach(m => { ctx.strokeStyle = m.color || 'rgba(255,255,255,.35)'; ctx.setLineDash([3, 4]); ctx.beginPath(); ctx.moveTo(pad.l, Y(m.y)); ctx.lineTo(W - pad.r, Y(m.y)); ctx.stroke(); ctx.setLineDash([]); if (m.label) { ctx.fillStyle = m.color || C.text; ctx.font = '10px JetBrains Mono, monospace'; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom'; ctx.fillText(m.label, W - pad.r - 2, Y(m.y) - 2); } });
       canvas._geo = { X, Y, xmin, xmax, pad, W, H, series, stacked };
     };
+    if (canvas._t == null && !REDUCED) { canvas._t = 0; revealWhenVisible(canvas, () => animate(canvas, draw)); }
     draw();
     if (!canvas._ro) { canvas._ro = new ResizeObserver(() => draw()); canvas._ro.observe(canvas); }
     canvas._draw = draw;
@@ -229,7 +258,7 @@ window.KLIMAT = (function () {
     if (id) { const el = $('#src-' + CSS.escape(id), drawerEl); if (el) el.scrollIntoView({ block: 'start' }); }
   }
   function closeSources() { if (drawerEl) { drawerEl.classList.remove('on'); dimEl.classList.remove('on'); } }
-  function bindSources(root) { $$('[data-src]', root).forEach(el => { if (el._b) return; el._b = 1; el.classList.add('src'); el.addEventListener('click', e => { e.preventDefault(); openSources(el.dataset.src.split(',')[0]); }); }); }
+  function bindSources(root) { try { countUp(root); } catch (e) {} $$('[data-src]', root).forEach(el => { if (el._b) return; el._b = 1; el.classList.add('src'); el.addEventListener('click', e => { e.preventDefault(); openSources(el.dataset.src.split(',')[0]); }); }); }
 
   // ── navigation / chrome ──────────────────────────────────
   const CH = [
@@ -357,5 +386,5 @@ window.KLIMAT = (function () {
   const _chrome = chrome;
   chrome = function () { _chrome(); shareRow($('#shareRow'), {}); let hidden = false; try { hidden = sessionStorage.getItem('klimat_lifebar_hidden') === '1'; } catch (e) {} if (!hidden && document.body.dataset.lifebar === 'on') lifeBar(); };
 
-  return { $, $$, pl, T, fmt, SITE, pageUrl, shareRow, lifeGet, lifeSet, lifeClear, lifeStats, countryName, lifePNG, here, fmtInt, fmtBig, monthLabel, MONTHS, load, col, obj2pts, last, at, mean, smooth5, tcolor, stripes, chart, PALETTE, chrome, stamp, onRender, toggleLang, addRefs, registerMeta, openSources, closeSources, bindSources, REFS, CH, niceTicks };
+  return { $, $$, pl, T, fmt, countUp, revealWhenVisible, SITE, pageUrl, shareRow, lifeGet, lifeSet, lifeClear, lifeStats, countryName, lifePNG, here, fmtInt, fmtBig, monthLabel, MONTHS, load, col, obj2pts, last, at, mean, smooth5, tcolor, stripes, chart, PALETTE, chrome, stamp, onRender, toggleLang, addRefs, registerMeta, openSources, closeSources, bindSources, REFS, CH, niceTicks };
 })();

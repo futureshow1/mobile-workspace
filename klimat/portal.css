@@ -109,6 +109,9 @@ p .src,li .src{margin-left:4px;transform:translateY(-1px)}
 .ctrl button{background:transparent;border:1px solid var(--border2);color:var(--dim);border-radius:7px;padding:5px 10px;font-size:12px;cursor:pointer;font-family:var(--sans)}
 .ctrl button.on{color:var(--white);border-color:var(--accent);background:rgba(99,179,255,.12)}
 .stripes{display:flex;height:40px;border-radius:6px;overflow:hidden;border:1px solid var(--border)}.stripes i{flex:1;display:block}
+.stripes.anim i{transform:scaleY(0);transform-origin:bottom}.stripes.anim.in i{animation:growBar .55s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes growBar{to{transform:scaleY(1)}}
+@media(prefers-reduced-motion:reduce){.stripes.anim i{transform:none;animation:none}}
 .stripes-lbl{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:4px}
 
 /* ── tables ──────────────────────────────────────────────── */
