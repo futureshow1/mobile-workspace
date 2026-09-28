@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Klimat w 7 obrazach — Klimat w faktach | FutureShow</title>
+<meta name="description" content="Siedem wykresów i siedem zdań: temperatura, CO₂, przyczyna, paliwa, lód, morze, scenariusze. Pięć minut, żeby rozumieć każdą rozmowę o klimacie.">
+<link rel="canonical" href="https://futureshow.pl/klimat/skrot.html">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="portal.css">
+<style>
+.pic{margin:34px 0 46px;scroll-margin-top:80px}
+.pic .num{font-family:var(--mono);font-size:12px;letter-spacing:.2em;color:var(--accent);font-weight:600}
+.pic h2{margin:6px 0 10px;font-size:clamp(22px,2.8vw,30px)}
+.pic .one{font-family:var(--serif);font-size:19px;line-height:1.5;color:#dfe5ee;max-width:760px;margin-bottom:14px}
+.pic .fig{margin:0}
+.pic .more{font-size:13px;margin-top:8px}
+.dots{position:fixed;right:14px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:8px;z-index:800}
+.dots a{width:8px;height:8px;border-radius:50%;background:var(--border2);display:block}.dots a.on{background:var(--accent)}
+@media(max-width:900px){.dots{display:none}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <section class="hero">
+    <div class="kick"><span class="n">5 min</span><span data-lang="pl">Skrót</span><span data-lang="en">Summary</span></div>
+    <h1><span data-lang="pl">Klimat w <em>7 obrazach</em>.</span><span data-lang="en">Climate in <em>7 pictures</em>.</span></h1>
+    <p class="lead"><span data-lang="pl">Siedem wykresów i siedem zdań. Tyle wystarczy, żeby rozumieć, o co chodzi w każdej rozmowie o klimacie. Wszystko z danych na żywo; każdy obraz prowadzi do rozdziału, który wyjaśnia więcej.</span><span data-lang="en">Seven charts and seven sentences. Enough to follow any conversation about the climate. All from live data; each picture leads to a chapter that explains more.</span></p>
+  </section>
+  <div class="read" id="pics"></div>
+  <div class="read"><div class="take"><h3><span data-lang="pl">Jednym zdaniem</span><span data-lang="en">In one sentence</span></h3><p style="font-family:var(--serif);font-size:18px;color:#e5e7eb;margin:0"><span data-lang="pl">Ziemia się ociepla, bo spalamy paliwa kopalne; wiemy to z pomiarów, nie z modeli; skutki rosną nieliniowo z każdą dziesiątą stopnia; a to, ile ostatecznie się ociepli, zależy od emisji w najbliższych dwudziestu latach.</span><span data-lang="en">Earth is warming because we burn fossil fuels; we know it from measurements, not models; the impacts grow non-linearly with every tenth of a degree; and how much it finally warms depends on emissions in the next twenty years.</span></p></div>
+  <div class="cta" style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn" href="01-co-sie-dzieje.html"><span data-lang="pl">Czytaj dalej: 01 Co się dzieje →</span><span data-lang="en">Read on: 01 What is happening →</span></a><a class="btn ghost" href="09-sprawdz-sie.html"><span data-lang="pl">Sprawdź się (quiz)</span><span data-lang="en">Test yourself (quiz)</span></a><div class="share-row" id="shareSkrot" style="margin:0"></div></div>
+  <div class="pn" id="pn"></div></div>
+</main>
+<nav class="dots" id="dots"></nav>
+<script src="portal.js"></script>
+<script>
+const K = KLIMAT, { $, T, fmt } = K; K.chrome();
+let D;
+function render() {
+  const { climate: c, indicators: i, emissions: e } = D, g = c.global, ys = Object.keys(g).map(Number), y1 = ys[ys.length - 1], rec = ys.reduce((a, b) => g[b] > g[a] ? b : a);
+  const w = e.countries.WLD.co2, Y = e.meta.co2_latest_year, wi = w.years.indexOf(Y);
+  const ice = i.sea_ice.arctic_september, [iy, iv] = K.last(ice), base = K.mean(Object.keys(ice).filter(y => y >= 1979 && y <= 1990).map(y => ice[y]));
+  const star = i.sea_level.satellite_noaa_star_mm || i.sea_level.satellite_annual_mm, [sy, sv] = K.last(star);
+  const P = [
+    { n: '01', h: T('Ziemia się ociepla — coraz szybciej', 'Earth is warming — faster and faster'), one: T(`Rok ${rec} był najcieplejszy od początku pomiarów w 1880 r.: ${fmt(g[rec], 2, { sign: true })} °C wzgl. 1951–1980, ok. 1,5 °C wzgl. epoki przedprzemysłowej. Każda dekada od lat 70. jest cieplejsza od poprzedniej.`, `${rec} was the warmest year since measurements began in 1880: ${fmt(g[rec], 2, { sign: true })} °C vs 1951–1980, about 1.5 °C vs pre-industrial. Every decade since the 1970s has been warmer than the last.`), src: 'gistemp-global', ch: '01-co-sie-dzieje.html', draw: cv => K.chart(cv, { series: [{ name: T('anomalia', 'anomaly'), points: ys.map(y => [y, g[y]]), bars: true, colorFn: K.tcolor }], y: { d: 1, fmt: v => fmt(v, 1, { sign: true }) }, x: { ticks: [1880, 1900, 1920, 1940, 1960, 1980, 2000, 2020] }, tipFmt: v => fmt(v, 2, { sign: true }) + ' °C', hlines: [{ y: 0, color: 'rgba(255,255,255,.25)' }] }) },
+    { n: '02', h: T('CO₂: najwięcej od 800 tysięcy lat', 'CO₂: the most in 800,000 years'), one: T(`${K.monthLabel(i.co2.latest.month)}: ${fmt(i.co2.latest.ppm, 1)} ppm — o połowę więcej niż przed rewolucją przemysłową (278) i więcej niż kiedykolwiek w rdzeniach lodowych sięgających 800 tys. lat wstecz. Przyrost przyspiesza.`, `${K.monthLabel(i.co2.latest.month)}: ${fmt(i.co2.latest.ppm, 1)} ppm — half again as much as before the industrial revolution (278) and more than at any time in ice cores reaching 800,000 years back. The growth is accelerating.`), src: 'noaa-co2', ch: '01-co-sie-dzieje.html', draw: cv => K.chart(cv, { series: [{ name: 'CO₂', points: K.obj2pts(i.co2.monthly), color: '#fb923c', width: 1.5, fill: true }], y: { min: 300, zero: false, d: 0, unit: 'ppm' }, x: { ticks: [1960, 1980, 2000, 2020] }, tipFmt: v => fmt(v, 2) + ' ppm', hlines: [{ y: 278, label: T('przed 1750: 278', 'pre-1750: 278'), color: 'rgba(255,255,255,.3)' }] }) },
+    { n: '03', h: T('To człowiek — praktycznie w całości', 'It is us — practically entirely'), one: T('IPCC: z 1,06 °C ocieplenia (2010–2019 wzgl. 1850–1900) człowiek odpowiada za 1,07 °C; Słońce i wulkany za od −0,1 do +0,1 °C. Fizykę znamy od 1859 r., a odciski palców (ochładzająca się stratosfera, izotopy węgla) wykluczają Słońce.', 'IPCC: of 1.06 °C of warming (2010–2019 vs 1850–1900) humans account for 1.07 °C; the Sun and volcanoes for −0.1 to +0.1 °C. The physics has been known since 1859, and the fingerprints (cooling stratosphere, carbon isotopes) rule out the Sun.'), src: 'ipcc-ar6-wg1-spm', ch: '02-dlaczego.html', draw: cv => K.chart(cv, { type: 'hbar', padL: Math.min(240, cv.clientWidth * 0.42), items: [[T('Zaobserwowane ocieplenie', 'Observed warming'), 1.06, '#e5e7eb'], [T('Człowiek (wszystkie czynniki)', 'Humans (all factors)'), 1.07, '#ff5a3c'], [T('Gazy cieplarniane', 'Greenhouse gases'), 1.5, '#fb923c'], [T('Aerozole (chłodzą)', 'Aerosols (cooling)'), -0.4, '#63b3ff'], [T('Słońce i wulkany', 'Sun and volcanoes'), 0.0, '#a78bfa']].map(([l, v, col]) => ({ label: l, value: v, color: col })), max: 1.6, fmt: v => fmt(v, 2, { sign: true }) + ' °C' }) },
+    { n: '04', h: T('Skąd: węgiel, ropa, gaz', 'Where from: coal, oil, gas'), one: T(`W ${Y} r. świat wyemitował rekordowe ${fmt(w.co2[wi] / 1000, 1)} Gt CO₂ z paliw i cementu (${fmt(w.co2_including_luc[wi] / 1000, 1)} Gt z wylesianiem). Do 1950 r. ludzkość wyemitowała łącznie mniej niż dziś w sześć lat.`, `In ${Y} the world emitted a record ${fmt(w.co2[wi] / 1000, 1)} Gt CO₂ from fuels and cement (${fmt(w.co2_including_luc[wi] / 1000, 1)} Gt with deforestation). By 1950 humanity had emitted less in total than it now does in six years.`), src: 'owid-co2', ch: '04-paliwa-kopalne.html', draw: cv => { const yrs = w.years.filter(y => y >= 1850), val = (k, y) => { const v = w[k] ? w[k][w.years.indexOf(y)] : null; return v == null ? 0 : v / 1000; }; K.chart(cv, { type: 'stacked', series: [['coal_co2', T('węgiel', 'coal'), '#94a3b8'], ['oil_co2', T('ropa', 'oil'), '#fb923c'], ['gas_co2', T('gaz', 'gas'), '#63b3ff'], ['cement_co2', T('cement', 'cement'), '#e5e7eb'], ['land_use_change_co2', T('wylesianie', 'deforestation'), '#34d399']].map(([k, n, col]) => ({ name: n, color: col, points: yrs.map(y => [y, val(k, y)]) })), y: { d: 0, unit: 'Gt' }, x: { ticks: [1850, 1900, 1950, 2000] }, tipFmt: v => fmt(v, 1) + ' Gt' }); } },
+    { n: '05', h: T('Arktyka: jedna trzecia lodu zniknęła', 'The Arctic: a third of the ice is gone'), one: T(`Wrześniowy zasięg lodu morskiego: ${fmt(iv, 2)} mln km² w ${iy} r., o ${fmt((1 - iv / base) * 100, 0)} % mniej niż w latach 1979–1990. Arktyka ociepla się prawie cztery razy szybciej niż świat: biały lód odbija słońce, ciemna woda je pochłania.`, `September sea-ice extent: ${fmt(iv, 2)} M km² in ${iy}, ${fmt((1 - iv / base) * 100, 0)} % below 1979–1990. The Arctic warms almost four times faster than the world: white ice reflects sunlight, dark water absorbs it.`), src: 'nsidc', ch: '01-co-sie-dzieje.html', draw: cv => K.chart(cv, { series: [{ name: T('wrzesień', 'September'), points: K.obj2pts(ice), color: '#63b3ff', width: 2.5, fill: true }], y: { d: 0, unit: T('mln km²', 'M km²'), min: 0 }, tipFmt: v => fmt(v, 2) + T(' mln km²', ' M km²'), hlines: [{ y: base, label: T('średnia 1979–1990', '1979–1990 mean'), color: 'rgba(255,255,255,.3)' }] }) },
+    { n: '06', h: T('Morze: podnosi się dwa razy szybciej', 'The sea: rising twice as fast'), one: T(`Poziom morza jest o ${fmt(sv / 10, 0)} cm wyższy niż w latach 1880–1900; w ostatniej dekadzie rośnie ${fmt((sv - star[String(+sy - 10)]) / 10, 1)} mm rocznie — ponad dwa razy szybciej niż w XX wieku. Woda rozszerza się od ciepła, a lodowce i lądolody topnieją.`, `Sea level is ${fmt(sv / 10, 0)} cm higher than in 1880–1900; in the last decade it has risen ${fmt((sv - star[String(+sy - 10)]) / 10, 1)} mm a year — more than twice as fast as in the 20th century. Water expands as it warms, and glaciers and ice sheets melt.`), src: 'sea-level', ch: '01-co-sie-dzieje.html', draw: cv => K.chart(cv, { series: [{ name: T('mareografy', 'tide gauges'), points: K.obj2pts(i.sea_level.reconstruction_mm), color: '#63b3ff', width: 2 }, { name: T('satelity', 'satellites'), points: K.obj2pts(star), color: '#fb923c', width: 2.5 }], y: { d: 0, unit: 'mm' }, x: { ticks: [1880, 1920, 1960, 2000] }, tipFmt: v => fmt(v, 0) + ' mm' }) },
+    { n: '07', h: T('Przyszłość: 1,4 °C albo 4,4 °C — to wybór', 'The future: 1.4 °C or 4.4 °C — a choice'), one: T('Do 2040 r. ok. 1,5 °C jest już przesądzone. Potem drogi się rozchodzą: szybka redukcja daje ok. 1,4 °C w 2100 r., obecne polityki ok. 2,7 °C, świat paliw kopalnych 4,4 °C. Budżet na 1,5 °C to ok. 3 lata dzisiejszych emisji.', 'About 1.5 °C by 2040 is already settled. Then the paths diverge: rapid reduction gives about 1.4 °C in 2100, current policies about 2.7 °C, a fossil-fuelled world 4.4 °C. The 1.5 °C budget is about 3 years of today’s emissions.'), src: 'ipcc-ar6-wg1-ch4', ch: '08-co-dalej.html', draw: cv => K.chart(cv, { type: 'hbar', padL: 110, items: [['SSP1-1.9', 1.4, '#34d399'], ['SSP1-2.6', 1.8, '#fbbf24'], [T('obecne polityki', 'current policies'), 2.7, '#fb923c'], ['SSP3-7.0', 3.6, '#ff5a3c'], ['SSP5-8.5', 4.4, '#dc2626']].map(([l, v, col]) => ({ label: l, value: v, color: col })), max: 6, fmt: v => fmt(v, 1) + ' °C' }) },
+  ];
+  $('#pics').innerHTML = P.map(p => `<section class="pic" id="${p.n}"><div class="num">${p.n} / 07</div><h2>${p.h}</h2><p class="one">${p.one}</p><div class="fig short"><canvas id="c${p.n}"></canvas><div class="cap"><a class="more" href="${p.ch}">${T('Więcej w rozdziale', 'More in chapter')} ${p.ch.slice(0, 2)} →</a><span class="src" data-src="${p.src}">${T('źródło', 'source')}</span></div></div></section>`).join('');
+  P.forEach(p => p.draw($('#c' + p.n)));
+  $('#dots').innerHTML = P.map(p => `<a href="#${p.n}" title="${p.n}"></a>`).join('');
+  K.shareRow($('#shareSkrot'), { text: T('Klimat w 7 obrazach — 5 minut, żeby rozumieć każdą rozmowę o klimacie', 'Climate in 7 pictures — 5 minutes to follow any conversation about the climate') });
+  K.bindSources(document); K.stamp([c.meta, i.meta, e.meta]);
+}
+K.load('climate', 'indicators', 'emissions').then(d => { D = d; K.registerMeta(d.climate.meta); K.registerMeta(d.indicators.meta); K.registerMeta(d.emissions.meta); render(); K.onRender(render); });
+</script>
+</body>
+</html>
