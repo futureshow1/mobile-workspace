@@ -38,6 +38,20 @@ html[lang="pl"] [data-lang="pl"].blk,[data-lang="en"].blk{display:block}html[lan
 .menu-btn{display:none;background:transparent;border:1px solid var(--border2);color:var(--text);border-radius:8px;width:36px;height:34px;cursor:pointer;font-size:16px}
 .progress{position:fixed;top:58px;left:0;height:2px;background:linear-gradient(90deg,var(--cold),var(--warm),var(--hot));width:0;z-index:901;transition:width .1s linear}
 
+/* ── pinned "your life" bar ──────────────────────────────── */
+#lifebar{position:sticky;top:58px;z-index:890;background:rgba(6,8,13,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+#lifebar .in{max-width:var(--maxw);margin:0 auto;padding:6px 20px;display:flex;align-items:center;gap:14px}
+#lifebar .lb-txt{color:var(--dim);font-size:12.5px;white-space:nowrap;text-decoration:none;flex-shrink:0}
+#lifebar .lb-txt b{color:var(--white);font-weight:600;margin-right:6px}#lifebar .lb-txt em{font-style:normal;font-family:var(--mono);font-weight:600;color:var(--white)}
+#lifebar .lb-stripes{flex:1;display:flex;height:16px;border-radius:3px;overflow:hidden;min-width:80px}#lifebar .lb-stripes i{flex:1;display:block}
+#lifebar .lb-x{background:none;border:0;color:var(--muted);cursor:pointer;font-size:13px;padding:4px}#lifebar .lb-x:hover{color:var(--text)}
+body.has-life .progress{top:88px}
+@media(max-width:700px){#lifebar .lb-txt span{display:none}#lifebar .in{padding:6px 12px;gap:10px}}
+/* ── share ──────────────────────────────────────────────── */
+.share-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.sh{background:transparent;border:1px solid var(--border2);color:var(--dim);border-radius:7px;padding:5px 10px;font-size:12px;cursor:pointer;font-family:var(--sans);text-decoration:none!important;line-height:1.4}
+.sh:hover{color:var(--white);border-color:var(--accent)}.sh.main{background:var(--accent);color:#06080d;border-color:var(--accent);font-weight:700}
+footer .author{font-size:13px;color:var(--dim);margin-top:10px}footer .author span{color:var(--muted)}footer .author a{color:var(--text)}
 /* ── layout ──────────────────────────────────────────────── */
 .wrap{max-width:var(--maxw);margin:0 auto;padding:0 20px}
 .read{max-width:var(--readw);margin:0 auto}
@@ -159,7 +173,12 @@ details .body p{font-size:15px}
 
 /* ── footer ──────────────────────────────────────────────── */
 footer{margin-top:80px;border-top:1px solid var(--border);padding:34px 0 50px;color:var(--dim);font-size:13px}
-footer .in{max-width:var(--maxw);margin:0 auto;padding:0 20px;display:grid;grid-template-columns:2fr 1fr 1fr;gap:24px}
+footer .in{max-width:var(--maxw);margin:0 auto;padding:0 20px;display:grid;grid-template-columns:1.6fr 1fr 1fr 1.5fr;gap:24px}
+footer .src-list li{margin-bottom:7px;line-height:1.45}
+footer .src-list a{color:var(--text);text-decoration:none;border-bottom:1px solid var(--border)}
+footer .src-list a:hover{border-color:currentColor}
+footer .src-list span{color:var(--muted);font-size:12px}
+@media(max-width:1100px){footer .in{grid-template-columns:1fr 1fr}}
 footer h5{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
 footer a{color:var(--dim)}footer a:hover{color:var(--text)}
 footer ul{list-style:none;margin:0;font-size:13px}footer li{margin-bottom:5px}

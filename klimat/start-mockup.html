@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Makieta strony startowej — Klimat w faktach | FutureShow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="portal.css">
+<style>
+.mock{position:sticky;top:0;z-index:2000;background:#fbbf24;color:#06080d;font:600 12px/1.4 var(--mono);text-align:center;padding:6px 12px;letter-spacing:.06em}
+.hero.life{padding:56px 0 30px;border:0;position:relative}
+.hero.life::before{content:"";position:absolute;inset:0;background:radial-gradient(900px 420px at 15% 0%,rgba(29,78,216,.16),transparent 60%),radial-gradient(700px 400px at 90% 30%,rgba(220,38,38,.12),transparent 60%);pointer-events:none}
+.hero.life>*{position:relative}
+.hero.life h1{max-width:820px}
+.privacy{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--dim);margin-top:14px;border:1px solid var(--border);border-radius:999px;padding:6px 12px 6px 8px;background:rgba(255,255,255,.03)}
+.privacy i{width:16px;height:16px;border-radius:50%;background:rgba(52,211,153,.18);color:var(--ok);display:inline-flex;align-items:center;justify-content:center;font-style:normal;font-size:11px;font-weight:700}
+.tl{margin-top:34px;position:relative;user-select:none}
+.tl .yr{font-family:var(--mono);font-size:clamp(44px,7vw,84px);font-weight:700;color:var(--white);line-height:1;letter-spacing:-.03em;position:absolute;top:-14px;transform:translate(-50%,-100%);pointer-events:none;transition:left .06s linear;text-shadow:0 4px 30px rgba(0,0,0,.7)}
+.tl .yr small{display:block;font-family:var(--sans);font-size:12px;font-weight:600;color:var(--warn);letter-spacing:.14em;text-transform:uppercase;text-align:center;margin-bottom:4px}
+.tl .strip{position:relative;height:120px;border-radius:10px;overflow:hidden;border:1px solid var(--border2);box-shadow:0 20px 60px rgba(0,0,0,.45)}
+.tl .strip .stripes{height:100%;border:0;border-radius:0}
+.tl .dim-l{position:absolute;top:0;bottom:0;left:0;background:rgba(6,8,13,.72);pointer-events:none;transition:width .06s linear}
+.tl .mark{position:absolute;top:-6px;bottom:-6px;width:3px;background:var(--white);box-shadow:0 0 0 2px rgba(6,8,13,.6),0 0 24px rgba(255,255,255,.5);transform:translateX(-50%);pointer-events:none;transition:left .06s linear}
+.tl .mark::after{content:"";position:absolute;left:50%;bottom:-16px;transform:translateX(-50%);border:9px solid transparent;border-bottom-color:var(--white);border-top:0}
+.tl input[type=range]{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:ew-resize;-webkit-appearance:none;background:none}
+.tl .axis{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:8px}
+.tl .hint{text-align:center;font-size:13px;color:var(--dim);margin-top:10px}
+.tl .hint b{color:var(--white)}
+.presets{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:12px}
+.presets button{background:transparent;border:1px solid var(--border2);color:var(--dim);border-radius:999px;padding:5px 12px;font-size:12.5px;cursor:pointer;font-family:var(--sans)}
+.presets button:hover{color:var(--white);border-color:var(--accent)}
+.who{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:22px;font-size:14px;color:var(--dim)}
+.who select{padding:6px 10px;font-size:13px}
+.res{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:12px;margin-top:22px}
+@media(max-width:760px){.res{grid-template-columns:1fr}}
+.res .kn .v{font-size:clamp(30px,4vw,44px)}
+.res .kn.lead-kn{background:linear-gradient(180deg,rgba(255,90,60,.10),rgba(255,90,60,.02));border-color:rgba(255,90,60,.35)}
+.sent{font-family:var(--serif);font-size:clamp(17px,2vw,20px);color:#dfe5ee;margin-top:18px;max-width:820px;line-height:1.5}
+.cta2{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px;align-items:center}
+.seven{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin:14px 0 6px}
+@media(max-width:900px){.seven{grid-template-columns:repeat(4,1fr)}}@media(max-width:560px){.seven{grid-template-columns:repeat(2,1fr)}}
+.seven a{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px 10px;color:var(--text);font-size:12.5px;line-height:1.35;min-height:92px;display:flex;flex-direction:column;justify-content:space-between}
+.seven a b{font-family:var(--mono);color:var(--accent);font-size:11px}.seven a:hover{border-color:rgba(99,179,255,.4);text-decoration:none}
+.later{border:1px dashed var(--border2);border-radius:14px;padding:18px 20px;color:var(--muted);font-size:13px;margin:30px 0}
+</style>
+</head>
+<body>
+<div class="mock">MAKIETA · propozycja nowej strony startowej · dane prawdziwe, układ do decyzji</div>
+<main class="wrap">
+  <section class="hero life">
+    <div class="kick"><span class="n">FutureShow</span><span data-lang="pl">Klimat w faktach</span><span data-lang="en">Climate in facts</span></div>
+    <h1><span data-lang="pl">Klimat zmienił się w Twoim życiu. <em>O ile?</em></span><span data-lang="en">The climate changed during your life. <em>By how much?</em></span></h1>
+    <p class="lead" style="margin-top:14px"><span data-lang="pl">Przesuń znacznik do roku, w którym się urodziłeś. Zobaczysz, co przez ten czas zrobił klimat tam, gdzie mieszkasz — na tych samych danych NASA, z których korzystają naukowcy.</span><span data-lang="en">Drag the marker to the year you were born. You will see what the climate did in that time where you live — on the same NASA data scientists use.</span></p>
+    <span class="privacy"><i>✓</i><span data-lang="pl">Nic nie wysyłamy i nie zapisujemy — wszystko liczy się w Twojej przeglądarce.</span><span data-lang="en">Nothing is sent or stored — everything is computed in your browser.</span></span>
+
+    <div class="tl" id="tl">
+      <div class="yr" id="yr"><small data-lang="pl">rok urodzenia</small><small data-lang="en">birth year</small><span id="yrv">1985</span></div>
+      <div class="strip"><div class="stripes" id="bigStripes"></div><div class="dim-l" id="dimL"></div><div class="mark" id="mark"></div><input type="range" id="rng" min="1880" max="2020" value="1985" step="1" aria-label="rok urodzenia"></div>
+      <div class="axis"><span>1880</span><span data-lang="pl">każdy pasek to jeden rok · kolor = odchylenie temperatury od średniej 1951–1980</span><span data-lang="en">each bar is one year · colour = temperature deviation from the 1951–1980 mean</span><span id="axR"></span></div>
+      <div class="hint"><span data-lang="pl">← przeciągnij lub użyj strzałek · <b>im bardziej czerwono, tym cieplej</b></span><span data-lang="en">← drag or use arrow keys · <b>the redder, the warmer</b></span></div>
+      <div class="presets" id="presets"></div>
+    </div>
+
+    <div class="who"><span data-lang="pl">Pokazujemy dane dla:</span><span data-lang="en">Showing data for:</span> <select class="input" id="cty"></select> <span class="muted" style="font-size:12px" data-lang="pl">(dobrane z języka przeglądarki — możesz zmienić)</span><span class="muted" style="font-size:12px" data-lang="en">(picked from your browser language — you can change it)</span></div>
+    <div class="res" id="res"></div>
+    <p class="sent" id="sent"></p>
+    <div class="cta2"><a class="btn" href="skrot.html"><span data-lang="pl">Klimat w 7 obrazach — 5 minut →</span><span data-lang="en">Climate in 7 pictures — 5 minutes →</span></a><a class="btn ghost" href="01-co-sie-dzieje.html"><span data-lang="pl">Czytaj od początku (9 rozdziałów)</span><span data-lang="en">Read from the start (9 chapters)</span></a><div class="share-row" id="shareLife" style="margin:0"></div></div>
+  </section>
+
+  <div class="sechead" style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:44px 0 6px"><h2 style="margin:0"><span data-lang="pl">Klimat w 7 obrazach</span><span data-lang="en">Climate in 7 pictures</span></h2><span class="mono muted" style="font-size:11px">5 min</span></div>
+  <p style="max-width:760px"><span data-lang="pl">Siedem wykresów i siedem zdań. Tyle wystarczy, żeby rozumieć, o co chodzi w każdej rozmowie o klimacie. Kto chce więcej — ma dziewięć rozdziałów, mapę, quiz i słownik.</span><span data-lang="en">Seven charts and seven sentences. Enough to follow any conversation about the climate. Those who want more have nine chapters, a map, a quiz and a glossary.</span></p>
+  <div class="seven" id="seven"></div>
+
+  <div class="later"><b style="color:var(--dim)">Niżej bez zmian (nie pokazano w makiecie):</b> „Stan klimatu — dziś” (12 wskaźników na żywo), dwa wykresy, ścieżka 9 rozdziałów, pięć pytań. Kafelki z liczbami schodzą z góry strony na dół — pierwsze 10 sekund należy do osobistego paska.</div>
+</main>
+<script src="portal.js"></script>
+<script>
+const K = KLIMAT, { $, T, fmt } = K; K.chrome();
+const COUNTRIES = [['POL','Polska','Poland'],['DEU','Niemcy','Germany'],['CZE','Czechy','Czechia'],['SVK','Słowacja','Slovakia'],['UKR','Ukraina','Ukraine'],['LTU','Litwa','Lithuania'],['GBR','Wielka Brytania','United Kingdom'],['FRA','Francja','France'],['ESP','Hiszpania','Spain'],['ITA','Włochy','Italy'],['NLD','Holandia','Netherlands'],['SWE','Szwecja','Sweden'],['NOR','Norwegia','Norway'],['FIN','Finlandia','Finland'],['GRC','Grecja','Greece'],['TUR','Turcja','Türkiye'],['USA','Stany Zjednoczone','United States'],['CAN','Kanada','Canada'],['BRA','Brazylia','Brazil'],['CHN','Chiny','China'],['IND','Indie','India'],['JPN','Japonia','Japan'],['AUS','Australia','Australia'],['ZAF','RPA','South Africa'],['EGY','Egipt','Egypt'],['ARE','Emiraty Arabskie','United Arab Emirates'],['ISL','Islandia','Iceland'],['MDV','Malediwy','Maldives']];
+const LANG2ISO = { pl: 'POL', de: 'DEU', cs: 'CZE', sk: 'SVK', uk: 'UKR', lt: 'LTU', fr: 'FRA', es: 'ESP', it: 'ITA', nl: 'NLD', sv: 'SWE', no: 'NOR', nb: 'NOR', fi: 'FIN', el: 'GRC', tr: 'TUR', pt: 'BRA', zh: 'CHN', hi: 'IND', ja: 'JPN', ar: 'ARE', is: 'ISL' };
+let D, year = 1985, iso = 'POL';
+function guessIso() { const l = (navigator.language || 'pl').toLowerCase(); if (l.startsWith('en-us')) return 'USA'; if (l.startsWith('en-gb')) return 'GBR'; if (l.startsWith('en-au')) return 'AUS'; if (l.startsWith('en-ca')) return 'CAN'; return LANG2ISO[l.split('-')[0]] || 'POL'; }
+function render() {
+  const c = D.climate, geo = D.geo, gy = c.meta.global_years[1];
+  $('#axR').textContent = gy;
+  const sel = $('#cty'); sel.innerHTML = COUNTRIES.filter(x => c.countries[x[0]]).map(x => `<option value="${x[0]}" ${x[0] === iso ? 'selected' : ''}>${K.pl() ? x[1] : x[2]}</option>`).join('');
+  $('#presets').innerHTML = [[1955, T('lata 50.', '1950s')], [1965, T('lata 60.', '1960s')], [1975, T('lata 70.', '1970s')], [1985, T('lata 80.', '1980s')], [1995, T('lata 90.', '1990s')], [2005, T('po 2000', 'after 2000')]].map(([y, l]) => `<button data-y="${y}">${l}</button>`).join('') + `<button data-y="1951">${T('pomiń — pokaż od 1951', 'skip — show since 1951')}</button>`;
+  K.$$('#presets button').forEach(b => b.onclick = () => { year = +b.dataset.y; $('#rng').value = year; update(); });
+  K.stripes($('#bigStripes'), c.countries[iso].anom, 1880, gy);
+  update();
+}
+function update() {
+  const c = D.climate, geo = D.geo, st = K.lifeStats(c, year, iso), name = K.countryName(iso, geo), gy = st.gy;
+  const pct = (year - 1880) / (gy - 1880) * 100;
+  $('#yrv').textContent = year; $('#yr').style.left = Math.min(92, Math.max(8, pct)) + '%'; $('#mark').style.left = pct + '%'; $('#dimL').style.width = pct + '%';
+  const kn = (cls, v, u, l) => `<div class="kn ${cls}"><div class="v">${v}<small>${u}</small></div><div class="l">${l}</div></div>`;
+  $('#res').innerHTML = kn('lead-kn ' + (st.d > 0 ? 'hot' : 'cold'), fmt(st.d, 1, { sign: true }), '°C', T(`${name}: tyle cieplej od Twoich urodzin (${year}→${gy}, średnie 5-letnie)`, `${name}: that much warmer since you were born (${year}→${gy}, 5-year means)`)) + kn('warm', fmt(st.dg, 1, { sign: true }), '°C', T(`cały świat w tym samym czasie`, `the whole world in the same time`)) + kn('hot', `${st.inLife}<small>/10</small>`, '', T(`najcieplejszych lat od 1880 przypada na Twoje życie`, `of the warmest years since 1880 fall within your lifetime`));
+  $('#sent').innerHTML = T(`Urodzony w ${year} r. w kraju <b>${name}</b> żyjesz w klimacie o <b>${fmt(st.d, 1, { sign: true })} °C</b> cieplejszym niż ten, w którym się urodziłeś. Dla porównania: różnica między dzisiejszym klimatem a epoką lodowcową to ok. 5–6 °C średniej globalnej. <a href="01-co-sie-dzieje.html">Skąd to wiemy →</a>`, `Born in ${year} in <b>${name}</b>, you live in a climate <b>${fmt(st.d, 1, { sign: true })} °C</b> warmer than the one you were born into. For comparison: the difference between today’s climate and an ice age is about 5–6 °C of global mean. <a href="01-co-sie-dzieje.html">How we know →</a>`);
+  K.shareRow($('#shareLife'), { url: K.SITE + '?rok=' + year + '&kraj=' + iso, text: T(`Klimat w moim życiu (${year}→${gy}, ${name}): ${fmt(st.d, 1, { sign: true })} °C. Sprawdź swój rok:`, `Climate in my lifetime (${year}→${gy}, ${name}): ${fmt(st.d, 1, { sign: true })} °C. Check your year:`), png: () => K.lifePNG(c, geo, year, iso) });
+}
+$('#rng').addEventListener('input', e => { year = +e.target.value; update(); });
+$('#cty').addEventListener('change', e => { iso = e.target.value; render(); });
+$('#seven').innerHTML = [['01', 'Ziemia: +1,3 °C od 1880 — i coraz szybciej'], ['02', 'CO₂: 429 ppm, najwięcej od 800 tys. lat'], ['03', 'To człowiek: 1,07 z 1,06 °C'], ['04', 'Skąd: węgiel, ropa, gaz — 38,6 Gt rocznie'], ['05', 'Arktyka: −33 % lodu we wrześniu'], ['06', 'Morze: +26 cm, tempo ×2'], ['07', 'Wybór: 1,4 °C albo 4,4 °C w 2100']].map(([n, t]) => `<a href="skrot.html#${n}"><b>${n}</b><span>${t}</span></a>`).join('');
+iso = guessIso();
+K.load('climate', 'geo').then(d => { D = d; if (!d.climate.countries[iso]) iso = 'POL'; render(); K.onRender(render); });
+</script>
+</body>
+</html>

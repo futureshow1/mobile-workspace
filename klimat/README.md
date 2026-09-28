@@ -6,9 +6,9 @@ NASA GISTEMP v4, względem średniej 1951–1980. PL/EN. Panel „Źródła dany
 ## Pliki
 
 - `index.html` — strona (Leaflet 1.9.4, bez build-stepu)
-- `data/climate-data.json` — dane, generowane automatycznie przez `../scripts/build_climate_data.py`
+- `data/climate-data.json` — dane, generowane automatycznie przez `pipeline/build_climate_data.py`
 - `data/countries.min.json` — granice Natural Earth 1:50m (id = ISO 3166-1 alpha-3, `name`, `name_pl`),
-  generowane przez `../scripts/prepare_borders.py`
+  generowane przez `pipeline/prepare_borders.py`
 
 ## Aktualizacja danych
 

@@ -7,6 +7,17 @@
 <meta name="description" content="Interaktywna mapa ocieplenia: roczne anomalie temperatury dla 239 krajów i globalna seria NASA GISTEMP v4, od 1880 do bieżącego miesiąca, względem średniej 1951–1980. Pełne źródła danych i metoda.">
 <meta property="og:title" content="Mapa zmian klimatu — FutureShow">
 <meta property="og:description" content="Jak ociepla się każdy kraj: anomalie temperatury 1880–2026 na mapie, suwak czasu, paski ocieplenia, źródła naukowe.">
+<meta property="og:title" content="Mapa zmian klimatu — anomalie temperatury 1880–2026 | Klimat · FutureShow">
+<meta property="og:description" content="Interaktywna mapa ocieplenia: roczne anomalie temperatury dla 239 krajów i globalna seria NASA GISTEMP v4, od 1880 do bieżącego miesiąca, względem średniej 1951–1980. Pełne źródła danych i metoda.">
+<meta property="og:url" content="https://futureshow.pl/klimat/mapa.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="FutureShow · Klimat w faktach">
+<meta property="og:image" content="https://futureshow.pl/klimat/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://futureshow.pl/klimat/assets/og.png">
+<link rel="canonical" href="https://futureshow.pl/klimat/mapa.html">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -49,6 +60,9 @@ a{color:var(--accent)}
 .big span{font-size:12px;color:var(--dim)}
 .ytd{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.06em;color:#fbbf24;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.35);border-radius:6px;padding:2px 7px;vertical-align:middle;margin-left:6px}
 .hint{font-size:12px;color:var(--dim);line-height:1.5}
+.mapshare{margin-top:10px;background:none;border:1px solid rgba(255,255,255,.18);color:var(--dim);
+  font:inherit;font-size:11.5px;padding:5px 11px;border-radius:99px;cursor:pointer}
+.mapshare:hover{color:var(--white);border-color:var(--accent)}
 .stripes{display:flex;height:34px;margin-top:12px;border-radius:6px;overflow:hidden;border:1px solid var(--border)}
 .stripes i{flex:1;display:block}
 .stripes-lbl{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:4px;font-family:var(--mono)}
@@ -151,6 +165,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;heigh
   <div class="country" id="cName"></div>
   <div class="big"><b id="cVal">—</b><span id="cUnit">°C</span><span class="ytd" id="cYtd" style="display:none"></span></div>
   <div class="hint" id="cHint"></div>
+  <button class="mapshare" id="mapShare"></button>
   <div class="stripes" id="cStripes"></div>
   <div class="stripes-lbl"><span id="sFrom"></span><span id="sTo"></span></div>
   <div class="sep"></div>
@@ -247,6 +262,7 @@ Promise.all([fetch('data/climate-data.json').then(r=>r.json()),fetch('data/count
   }}).addTo(map);
   buildGlobalStripes();
   render();
+  applyHash();
   $('load').classList.add('off');
 }).catch(e=>{$('load').innerHTML='<span style="color:#ff5a3c;letter-spacing:0;text-transform:none">'+T('Nie udało się wczytać danych: ','Could not load data: ')+e+'</span>';});
 
@@ -283,6 +299,8 @@ function render(){
   $('srcLine').innerHTML=T(`Kraje i świat: NASA GISS GISTEMP v4 (siatka 1200 km i seria ląd–ocean), ${Y0}–${lm}. Anomalie względem średniej 1951–1980. Granice: Natural Earth 1:50m. <a href="#" onclick="openSources();return false">Pełne źródła i metoda →</a>`,`Countries and world: NASA GISS GISTEMP v4 (1200 km grid and land–ocean series), ${Y0}–${lm}. Anomalies vs the 1951–1980 mean. Borders: Natural Earth 1:50m. <a href="#" onclick="openSources();return false">Full sources and method →</a>`);
   $('prov').innerHTML=`<span>${T('pobrano','fetched')} ${META.generated_utc.slice(0,10)}</span><span>${META.countries} ${T('krajów','countries')}</span><span>${T('baza','baseline')} ${META.baseline}</span>`;
   drawChart();
+  syncHash();
+  labelShare();
 }
 function firstValid(s){for(let y=Y0;y<=Y1;y++){const v=valueAt(s,y);if(v!=null)return{y,v};}return null;}
 function warmest(s){let best=null;for(const y in s){if(isYtd(+y))continue;if(best==null||s[y]>s[best])best=y;}return best;}
@@ -330,6 +348,51 @@ function closeSources(){$('modal').classList.remove('on');}
 
 // ---------- controls ----------
 $('slider').addEventListener('input',e=>{year=+e.target.value;render();});
+
+/* ---------- udostępnianie: #kraj=<ISO>&rok=<rok> ---------- */
+let hashTimer=null;
+function syncHash(){
+  clearTimeout(hashTimer);
+  hashTimer=setTimeout(()=>{
+    const h='#'+(selected?'kraj='+selected+'&':'')+'rok='+year;
+    try{history.replaceState(null,'',h)}catch(e){}
+  },250);
+}
+function readHash(){
+  const h=location.hash.slice(1);
+  if(!h)return null;
+  const out={};
+  h.split('&').forEach(part=>{
+    const [k,v]=part.split('=');
+    if(k==='kraj'||k==='country')out.kraj=decodeURIComponent(v||'');
+    if(k==='rok'||k==='year')out.rok=parseInt(v,10);
+  });
+  return (out.kraj||out.rok)?out:null;
+}
+function applyHash(){
+  const q=readHash(); if(!q||!DATA)return;
+  const ymin=+$('slider').min,ymax=+$('slider').max;
+  if(q.rok&&q.rok>=ymin&&q.rok<=ymax)year=q.rok;
+  if(q.kraj&&GEO.features.some(f=>f.id===q.kraj))selected=q.kraj;
+  render();
+  if(selected){
+    const l=layer.getLayers().find(x=>x.feature&&x.feature.id===selected);
+    if(l&&l.getBounds)try{map.fitBounds(l.getBounds(),{maxZoom:5,padding:[40,40]})}catch(e){}
+  }
+}
+addEventListener('hashchange',applyHash);
+$('mapShare').addEventListener('click',function(){
+  const link=location.origin+location.pathname+'#'+(selected?'kraj='+selected+'&':'')+'rok='+year;
+  const b=this;
+  const ok=()=>{b.textContent=T('✓ Skopiowano','✓ Copied');setTimeout(labelShare,2000)};
+  if(navigator.clipboard) navigator.clipboard.writeText(link).then(ok,()=>prompt(T('Kopiuj link','Copy link'),link));
+  else prompt(T('Kopiuj link','Copy link'),link);
+});
+function labelShare(){
+  $('mapShare').textContent=selected
+    ? T('🔗 Kopiuj link do tego widoku','🔗 Copy link to this view')
+    : T('🔗 Kopiuj link do tego roku','🔗 Copy link to this year');
+}
 $('smooth').addEventListener('change',render);
 $('play').addEventListener('click',()=>{
   const ymax=+$('slider').max;
@@ -344,5 +407,6 @@ document.addEventListener('keydown',e=>{
 });
 </script>
 <script data-goatcounter="https://futureshow.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script src="/assets/fs-home.js" data-pos="tl" data-top="148" defer></script>
 </body>
 </html>

@@ -3,17 +3,34 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Klimat — portal edukacyjny o zmianach klimatu | FutureShow</title>
-<meta name="description" content="Co się dzieje z klimatem, dlaczego, gdzie i co dalej. Portal edukacyjny FutureShow: żywe wskaźniki NASA/NOAA, mapa 239 krajów, paliwa kopalne, energia, scenariusze IPCC. Każda liczba ma źródło.">
-<meta property="og:title" content="Klimat — portal edukacyjny FutureShow">
+<title>Klimat w faktach — co się dzieje, dlaczego i co dalej | FutureShow</title>
+<meta name="description" content="Co się dzieje z klimatem, dlaczego, gdzie i co dalej. Fakty i konteksty na żywych wskaźnikach NASA/NOAA, mapa 239 krajów, paliwa kopalne, energia, scenariusze IPCC. Każda liczba ma źródło.">
+<meta property="og:title" content="Klimat w faktach — FutureShow">
 <meta property="og:description" content="Globalne ocieplenie wyjaśnione na danych: co się dzieje, dlaczego, gdzie, co dalej. Każda liczba ma źródło.">
+<meta property="og:title" content="Klimat w faktach — co się dzieje, dlaczego i co dalej | FutureShow">
+<meta property="og:description" content="Co się dzieje z klimatem, dlaczego, gdzie i co dalej. Fakty i konteksty na żywych wskaźnikach NASA/NOAA, mapa 239 krajów, paliwa kopalne, energia, scenariusze IPCC. Każda liczba ma źródło.">
+<meta property="og:url" content="https://futureshow.pl/klimat/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="FutureShow · Klimat w faktach">
+<meta property="og:image" content="https://futureshow.pl/klimat/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://futureshow.pl/klimat/assets/og.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="portal.css">
 <style>
-.hero.home{padding:70px 0 40px;border:0;position:relative}
+.hero.home{padding:70px 0 40px;border:0;position:relative;overflow:hidden}
+.hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;
+  opacity:.30;filter:saturate(.9) brightness(.85);pointer-events:none}
+.hero-vignette{position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 95% 85% at 30% 35%, transparent 25%, rgba(8,10,16,.86) 100%),
+             linear-gradient(to bottom, rgba(8,10,16,.55), rgba(8,10,16,.20) 40%, rgba(8,10,16,.92) 97%)}
+.hero.home > *:not(.hero-video):not(.hero-vignette){position:relative;z-index:1}
+@media(prefers-reduced-motion:reduce){.hero-video{display:none}}
 .hero.home::before{content:"";position:absolute;inset:0;background:radial-gradient(900px 400px at 20% 0%,rgba(29,78,216,.18),transparent 60%),radial-gradient(700px 400px at 90% 20%,rgba(220,38,38,.14),transparent 60%);pointer-events:none}
 .hero.home h1{max-width:900px}
 .hero .cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
@@ -35,18 +52,23 @@
 .path a b{font-family:var(--mono);font-size:22px;color:var(--accent);line-height:1}
 .path a span{font-size:13.5px;color:var(--dim)}.path a span strong{display:block;color:var(--white);font-size:15px;margin-bottom:2px}
 </style>
+<link rel="canonical" href="https://futureshow.pl/klimat/">
 </head>
 <body>
 <main class="wrap">
   <section class="hero home">
-    <div class="kick"><span class="n">FutureShow</span><span data-lang="pl">Portal edukacyjny · dane na żywo</span><span data-lang="en">Education portal · live data</span></div>
+    <video class="hero-video" autoplay muted loop playsinline preload="metadata" aria-hidden="true">
+      <source src="assets/klimat-bg.mp4" type="video/mp4">
+    </video>
+    <div class="hero-vignette" aria-hidden="true"></div>
+    <div class="kick"><span class="n">FutureShow</span><span data-lang="pl">Klimat w faktach · dane na żywo</span><span data-lang="en">Climate in facts · live data</span></div>
     <h1><span data-lang="pl">Klimat. Co się dzieje, <em>dlaczego</em> i co dalej.</span><span data-lang="en">Climate. What is happening, <em>why</em>, and what comes next.</span></h1>
     <p class="lead"><span data-lang="pl">Globalne ocieplenie wyjaśnione na danych, dla każdego obywatela: obserwacje, fizyka, mapa świata, paliwa kopalne, energia, inne czynniki i scenariusze. <b>Każda liczba na tej stronie ma źródło</b> — kliknij dowolną plakietkę, żeby zobaczyć, skąd pochodzi, kiedy ją pobrano i jak ją policzono.</span><span data-lang="en">Global warming explained with data, for every citizen: observations, physics, a world map, fossil fuels, energy, other factors and scenarios. <b>Every number on this site has a source</b> — click any badge to see where it comes from, when it was fetched and how it was computed.</span></p>
     <div class="cta"><a class="btn" href="01-co-sie-dzieje.html"><span data-lang="pl">Zacznij od rozdziału 01 →</span><span data-lang="en">Start with chapter 01 →</span></a><a class="btn ghost" href="mapa.html"><span data-lang="pl">Otwórz mapę</span><span data-lang="en">Open the map</span></a><a class="btn ghost" href="#urodziny"><span data-lang="pl">Twój rok urodzenia</span><span data-lang="en">Your birth year</span></a></div>
   </section>
 
   <div class="sechead"><h2><span data-lang="pl">Stan klimatu — dziś</span><span data-lang="en">State of the climate — today</span></h2><span class="meta" id="tilesMeta"></span></div>
-  <p style="max-width:800px"><span data-lang="pl">Wskaźniki poniżej są generowane automatycznie z plików NASA, NOAA, NSIDC i Global Carbon Project, odświeżanych co miesiąc. Wartości temperatury to anomalie względem średniej 1951–1980; „przedprzemysłowy” oznacza 1850–1900.</span><span data-lang="en">The indicators below are generated automatically from NASA, NOAA, NSIDC and Global Carbon Project files, refreshed monthly. Temperature values are anomalies vs the 1951–1980 mean; “pre-industrial” means 1850–1900.</span></p>
+  <p style="max-width:800px"><span data-lang="pl">Wskaźniki poniżej są aktualizowane na bieżąco na podstawie plików NASA, NOAA, NSIDC i Global Carbon Project, odświeżanych co miesiąc. Wartości temperatury to anomalie względem średniej 1951–1980; „przedprzemysłowy” oznacza 1850–1900.</span><span data-lang="en">The indicators below are kept up to date from NASA, NOAA, NSIDC and Global Carbon Project files, refreshed monthly. Temperature values are anomalies vs the 1951–1980 mean; “pre-industrial” means 1850–1900.</span></p>
   <div class="tiles" id="tiles"></div>
 
   <div class="mini">
@@ -153,5 +175,6 @@ K.load('climate', 'indicators', 'emissions').then(d => { D = d; K.registerMeta(d
   .catch(e => { $('#tiles').innerHTML = `<div class="note warn"><b>${T('Nie udało się wczytać danych', 'Could not load data')}</b>: ${e.message}</div>`; console.error(e); });
 </script>
 <script data-goatcounter="https://futureshow.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script src="/assets/fs-home.js" defer></script>
 </body>
 </html>

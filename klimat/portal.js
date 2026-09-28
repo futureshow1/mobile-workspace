@@ -224,7 +224,7 @@ window.KLIMAT = (function () {
     ensureDrawer();
     const ids = $$('[data-src]').map(e => e.dataset.src).flatMap(s => s.split(',')).filter((v, i, a) => a.indexOf(v) === i);
     const order = id ? [id].concat(ids.filter(x => x !== id)) : ids;
-    drawerEl.innerHTML = `<div class="dh"><h2>${T('Źródła na tej stronie', 'Sources on this page')}</h2><button class="x" aria-label="close">✕</button></div><div class="db">${order.map(x => sourceCard(x, x === id)).join('')}<p class="muted" style="font-size:12px;margin-top:14px">${T('Dane liczbowe są generowane automatycznie ze wskazanych plików źródłowych. Pełna lista i metoda:', 'Numbers are generated automatically from the listed source files. Full list and method:')} <a href="zrodla.html">${T('Źródła i metoda', 'Sources & method')} →</a></p></div>`;
+    drawerEl.innerHTML = `<div class="dh"><h2>${T('Źródła na tej stronie', 'Sources on this page')}</h2><button class="x" aria-label="close">✕</button></div><div class="db">${order.map(x => sourceCard(x, x === id)).join('')}<p class="muted" style="font-size:12px;margin-top:14px">${T('Dane liczbowe są aktualizowane na bieżąco ze wskazanych plików źródłowych. Pełna lista i metoda:', 'Numbers are kept up to date from the listed source files. Full list and method:')} <a href="zrodla.html">${T('Źródła i metoda', 'Sources & method')} →</a></p></div>`;
     $('.x', drawerEl).onclick = closeSources; drawerEl.classList.add('on'); dimEl.classList.add('on');
     if (id) { const el = $('#src-' + CSS.escape(id), drawerEl); if (el) el.scrollIntoView({ block: 'start' }); }
   }
@@ -234,6 +234,7 @@ window.KLIMAT = (function () {
   // ── navigation / chrome ──────────────────────────────────
   const CH = [
     { f: 'index.html', n: '', pl: 'Start', en: 'Home' },
+    { f: 'skrot.html', n: '', pl: 'W 7 obrazach', en: 'In 7 pictures' },
     { f: '01-co-sie-dzieje.html', n: '01', pl: 'Co się dzieje', en: 'What is happening' },
     { f: '02-dlaczego.html', n: '02', pl: 'Dlaczego', en: 'Why' },
     { f: '03-gdzie.html', n: '03', pl: 'Gdzie', en: 'Where' },
@@ -246,12 +247,24 @@ window.KLIMAT = (function () {
     { f: 'mapa.html', n: '', pl: 'Mapa', en: 'Map' },
     { f: 'slownik.html', n: '', pl: 'Słownik', en: 'Glossary' },
     { f: 'zrodla.html', n: '', pl: 'Źródła', en: 'Sources' },
+    { f: 'o-projekcie.html', n: '', pl: 'O projekcie', en: 'About' },
   ];
   function here() { const f = location.pathname.split('/').pop() || 'index.html'; return f === '' ? 'index.html' : f; }
-  function chrome() {
+  /* instytucje, z których pochodzą dane portalu (meta.sources w data/*.json) */
+  const SRC = [
+    { n: 'NASA GISS', u: 'https://data.giss.nasa.gov/gistemp/', pl: '— GISTEMP v4: temperatura globalna, siatka, strefy', en: '— GISTEMP v4: global, gridded and zonal temperature' },
+    { n: 'NOAA GML', u: 'https://gml.noaa.gov/ccgg/trends/', pl: '— CO₂ z Mauna Loa, metan, podtlenek azotu', en: '— Mauna Loa CO₂, methane, nitrous oxide' },
+    { n: 'NOAA NCEI', u: 'https://www.ncei.noaa.gov/access/global-ocean-heat-content/', pl: '— ciepło oceanu 0–2000 m', en: '— ocean heat content 0–2000 m' },
+    { n: 'NOAA CPC', u: 'https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php', pl: '— indeks El Niño / La Niña (ONI)', en: '— El Niño / La Niña index (ONI)' },
+    { n: 'NSIDC', u: 'https://nsidc.org/data/seaice_index', pl: '— zasięg lodu morskiego (Sea Ice Index v3)', en: '— sea ice extent (Sea Ice Index v3)' },
+    { n: 'CSIRO / EPA', u: 'https://www.epa.gov/climate-indicators/climate-change-indicators-sea-level', pl: '— poziom morza: mareografy i satelity', en: '— sea level: tide gauges and satellites' },
+    { n: 'Our World in Data', u: 'https://github.com/owid/co2-data', pl: '— emisje i energia, na danych Global Carbon Project', en: '— emissions and energy, built on Global Carbon Project' },
+    { n: 'Natural Earth', u: 'https://www.naturalearthdata.com/downloads/50m-cultural-vectors/', pl: '— granice krajów na mapie', en: '— country borders on the map' }
+  ];
+  let chrome = function () {
     const cur = here();
     const top = document.createElement('header'); top.className = 'top';
-    top.innerHTML = `<div class="in"><a class="back" href="../index.html">← FutureShow</a><a class="brand" href="index.html"><span class="mark"></span>Klimat<small>${T('portal edukacyjny', 'education portal')}</small></a>
+    top.innerHTML = `<div class="in"><a class="back" href="../index.html">← FutureShow</a><a class="brand" href="index.html"><span class="mark"></span>Klimat<small>${T('w faktach', 'in facts')}</small></a>
       <nav class="nav" id="nav">${CH.map(c => `<a href="${c.f}" class="${c.f === cur ? 'on' : ''}">${c.n ? `<b>${c.n}</b>` : ''}<span>${pl() ? c.pl : c.en}</span></a>`).join('')}</nav>
       <button class="menu-btn" aria-label="menu">☰</button><button class="lang">${pl() ? 'EN' : 'PL'}</button></div>`;
     document.body.prepend(top);
@@ -261,15 +274,19 @@ window.KLIMAT = (function () {
     window.addEventListener('scroll', () => { const h = document.documentElement; prog.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100 || 0) + '%'; }, { passive: true });
     // prev/next
     const i = CH.findIndex(c => c.f === cur), pn = $('#pn');
-    if (pn && i > 0 && i <= 9) {
+    if (pn && i > 1 && i <= 10) {
       const p = CH[i - 1], n = CH[i + 1];
       pn.innerHTML = `<a href="${p.f}"><small>← ${T('Poprzedni', 'Previous')}</small><b>${p.n ? p.n + ' · ' : ''}${pl() ? p.pl : p.en}</b></a>` + (n && n.n ? `<a class="next" href="${n.f}"><small>${T('Następny', 'Next')} →</small><b>${n.n} · ${pl() ? n.pl : n.en}</b></a>` : `<a class="next" href="index.html"><small>${T('Powrót', 'Back')}</small><b>${T('Start', 'Home')}</b></a>`);
     }
     // footer
     const f = document.createElement('footer');
-    f.innerHTML = `<div class="in"><div><h5>Klimat · FutureShow</h5><p style="font-size:13px;color:var(--dim);margin:0">${T('Portal edukacyjny o zmianach klimatu. Każda liczba pochodzi z otwartych, cytowanych zbiorów danych naukowych i jest odświeżana automatycznie.', 'An education portal on climate change. Every number comes from open, cited scientific datasets and is refreshed automatically.')}</p><div class="stamp" id="stamp"></div></div>
+    f.innerHTML = `<div class="in"><div><h5>Klimat · FutureShow</h5><p style="font-size:13px;color:var(--dim);margin:0">${T('Klimat w faktach: co się dzieje, dlaczego, gdzie i co dalej. Każda liczba pochodzi z otwartych, cytowanych zbiorów danych naukowych i jest aktualizowana na bieżąco.', 'Climate in facts: what is happening, why, where and what next. Every number comes from open, cited scientific datasets and is kept up to date.')}</p>
+      <p class="author"><span>${T('Autor', 'Author')}:</span> <a href="o-projekcie.html">Jan Lubicz Przyłuski</a> · <a href="https://futureshow.pl/studio/" target="_blank" rel="noopener">FutureShow Studio</a></p>
+      <div class="share-row" id="shareRow"></div><div class="stamp" id="stamp"></div></div>
       <div><h5>${T('Rozdziały', 'Chapters')}</h5><ul>${CH.filter(c => c.n).map(c => `<li><a href="${c.f}">${c.n} · ${pl() ? c.pl : c.en}</a></li>`).join('')}</ul></div>
-      <div><h5>${T('Narzędzia', 'Tools')}</h5><ul><li><a href="mapa.html">${T('Mapa zmian klimatu', 'Climate change map')}</a></li><li><a href="slownik.html">${T('Słownik', 'Glossary')}</a></li><li><a href="zrodla.html">${T('Źródła i metoda', 'Sources & method')}</a></li><li><a href="data/indicators.json">${T('Dane (JSON)', 'Data (JSON)')}</a></li><li><a href="https://github.com/futureshow1/futureshow1.github.io/tree/main/klimat" target="_blank" rel="noopener">GitHub ↗</a></li></ul></div></div>`;
+      <div><h5>${T('Narzędzia', 'Tools')}</h5><ul><li><a href="mapa.html">${T('Mapa zmian klimatu', 'Climate change map')}</a></li><li><a href="slownik.html">${T('Słownik', 'Glossary')}</a></li><li><a href="zrodla.html">${T('Źródła i metoda', 'Sources & method')}</a></li><li><a href="data/indicators.json">${T('Dane (JSON)', 'Data (JSON)')}</a></li><li><a href="https://github.com/futureshow1/futureshow1.github.io/tree/main/klimat" target="_blank" rel="noopener">GitHub ↗</a></li></ul></div>
+      <div><h5>${T('Źródła danych', 'Data sources')}</h5><ul class="src-list">${SRC.map(x => `<li><a href="${x.u}" target="_blank" rel="noopener">${x.n}</a> <span>${pl() ? x.pl : x.en}</span></li>`).join('')}</ul>
+        <p style="margin:10px 0 0"><a href="zrodla.html">${T('Pełna lista źródeł i metoda →', 'Full source list & method →')}</a></p></div></div>`;
     document.body.appendChild(f);
     bindSources(document);
   }
@@ -279,8 +296,66 @@ window.KLIMAT = (function () {
     if (d) el.textContent = T('Dane odświeżone: ', 'Data refreshed: ') + d.slice(0, 10) + ' UTC';
   }
 
+  // ── share ────────────────────────────────────────────────
+  const SITE = 'https://futureshow.pl/klimat/';
+  function pageUrl(extra) { const u = new URL(location.href); if (extra) Object.entries(extra).forEach(([k, v]) => u.searchParams.set(k, v)); return u.href.replace(/^http:\/\/localhost[^/]*\/klimat\//, SITE); }
+  function shareLinks(url, text) {
+    const e = encodeURIComponent;
+    return [['X', `https://twitter.com/intent/tweet?text=${e(text)}&url=${e(url)}`], ['Facebook', `https://www.facebook.com/sharer/sharer.php?u=${e(url)}`], ['LinkedIn', `https://www.linkedin.com/sharing/share-offsite/?url=${e(url)}`], ['WhatsApp', `https://wa.me/?text=${e(text + ' ' + url)}`], ['Bluesky', `https://bsky.app/intent/compose?text=${e(text + ' ' + url)}`]];
+  }
+  function shareRow(el, opts) {
+    if (!el) return; const url = opts.url || pageUrl(), text = opts.text || document.title;
+    let h = shareLinks(url, text).map(([n, u]) => `<a class="sh" href="${u}" target="_blank" rel="noopener">${n}</a>`).join('');
+    h += `<button class="sh" data-copy>${T('Kopiuj link', 'Copy link')}</button>`;
+    if (navigator.share) h = `<button class="sh main" data-native>${T('Udostępnij', 'Share')}</button>` + h;
+    if (opts.png) h += `<button class="sh" data-png>${T('Pobierz obrazek', 'Download image')}</button>`;
+    el.innerHTML = h;
+    const nb = el.querySelector('[data-native]'); if (nb) nb.onclick = () => navigator.share({ title: text, text, url }).catch(() => {});
+    el.querySelector('[data-copy]').onclick = ev => { navigator.clipboard.writeText(url).then(() => { ev.target.textContent = T('Skopiowano ✓', 'Copied ✓'); setTimeout(() => ev.target.textContent = T('Kopiuj link', 'Copy link'), 1800); }); };
+    const pb = el.querySelector('[data-png]'); if (pb) pb.onclick = opts.png;
+  }
+  // ── "your life" state + pinned bar ───────────────────────
+  function lifeGet() { const q = new URLSearchParams(location.search); const y = +q.get('rok') || +q.get('year'); const iso = (q.get('kraj') || q.get('country') || '').toUpperCase(); if (y >= 1880 && y <= 2020 && /^[A-Z]{3}$/.test(iso)) { lifeSet(y, iso); return { y, iso }; } try { const v = JSON.parse(localStorage.getItem('klimat_life') || 'null'); if (v && v.y && v.iso) return v; } catch (e) {} return null; }
+  function lifeSet(y, iso) { try { localStorage.setItem('klimat_life', JSON.stringify({ y, iso })); } catch (e) {} }
+  function lifeClear() { try { localStorage.removeItem('klimat_life'); } catch (e) {} const b = $('#lifebar'); if (b) b.remove(); document.body.classList.remove('has-life'); }
+  function lifeStats(c, y, iso) {
+    const gy = c.meta.global_years[1], s = (c.countries[iso] || {}).anom || {}, g = c.global;
+    const a = smooth5(s, y), b = smooth5(s, gy), ga = smooth5(g, y), gb = smooth5(g, gy);
+    const top10 = Object.keys(g).sort((p, q) => g[q] - g[p]).slice(0, 10), inLife = top10.filter(t => +t >= y).length;
+    return { gy, s, d: a != null && b != null ? b - a : null, dg: gb - ga, inLife, top10, rec: top10[0] };
+  }
+  function countryName(iso, geo) { const f = geo && geo.features.find(x => x.id === iso); return f ? (pl() ? (f.properties.name_pl || f.properties.name) : f.properties.name) : iso; }
+  function lifeBar() {
+    const life = lifeGet(); if (!life || here() === 'index.html' && !document.body.dataset.lifebarOnHome) return;
+    load('climate', 'geo').then(({ climate: c, geo }) => {
+      if ($('#lifebar')) $('#lifebar').remove();
+      const st = lifeStats(c, life.y, life.iso), name = countryName(life.iso, geo);
+      const bar = document.createElement('div'); bar.id = 'lifebar';
+      bar.innerHTML = `<div class="in"><a class="lb-txt" href="index.html#urodziny"><b>${T('Twoje życie', 'Your life')} ${life.y}→${st.gy}</b> <span>${name} <em style="color:${tcolor(st.d)}">${fmt(st.d, 1, { sign: true })} °C</em> · ${T('świat', 'world')} <em>${fmt(st.dg, 1, { sign: true })} °C</em> · ${st.inLife}/10 ${T('najcieplejszych lat', 'warmest years')}</span></a><div class="lb-stripes" id="lbStripes"></div><button class="lb-x" title="${T('Ukryj', 'Hide')}">✕</button></div>`;
+      const top = $('header.top'); top.insertAdjacentElement('afterend', bar); document.body.classList.add('has-life');
+      stripes($('#lbStripes'), st.s, life.y, st.gy);
+      $('.lb-x', bar).onclick = () => { bar.remove(); document.body.classList.remove('has-life'); try { sessionStorage.setItem('klimat_lifebar_hidden', '1'); } catch (e) {} };
+    }).catch(() => {});
+  }
+  // PNG card 1200×630 with warming stripes of the user's life
+  function lifePNG(c, geo, y, iso) {
+    const st = lifeStats(c, y, iso), name = countryName(iso, geo), W = 1200, H = 630, cv = document.createElement('canvas'); cv.width = W; cv.height = H; const x = cv.getContext('2d');
+    x.fillStyle = '#06080d'; x.fillRect(0, 0, W, H);
+    const yrs = []; for (let k = y; k <= st.gy; k++) yrs.push(k); const bw = (W - 120) / yrs.length;
+    yrs.forEach((k, i) => { x.fillStyle = tcolor(st.s[k]); x.fillRect(60 + i * bw, 200, Math.ceil(bw), 250); });
+    x.fillStyle = '#e5e7eb'; x.font = '600 26px Inter, Arial, sans-serif'; x.fillText(T('Klimat w faktach · futureshow.pl/klimat', 'Climate in facts · futureshow.pl/klimat'), 60, 70);
+    x.fillStyle = '#fff'; x.font = '800 56px Inter, Arial, sans-serif'; x.fillText(T(`Moje życie ${y}–${st.gy}: ${name}`, `My life ${y}–${st.gy}: ${name}`), 60, 150);
+    x.font = '700 40px JetBrains Mono, monospace'; x.fillStyle = tcolor(st.d); x.fillText(`${fmt(st.d, 1, { sign: true })} °C`, 60, 520);
+    x.fillStyle = '#e5e7eb'; x.font = '500 26px Inter, Arial, sans-serif'; x.fillText(T(`ocieplenie w moim życiu · świat ${fmt(st.dg, 1, { sign: true })} °C · ${st.inLife} z 10 najcieplejszych lat od 1880`, `warming in my lifetime · world ${fmt(st.dg, 1, { sign: true })} °C · ${st.inLife} of the 10 warmest years since 1880`), 260, 520);
+    x.fillStyle = '#8b95a7'; x.font = '22px JetBrains Mono, monospace'; x.fillText(`${y}`, 60, 480); x.textAlign = 'right'; x.fillText(`${st.gy}`, W - 60, 480); x.textAlign = 'left';
+    x.fillText(T('Roczne anomalie temperatury wzgl. 1951–1980 · NASA GISTEMP v4', 'Annual temperature anomalies vs 1951–1980 · NASA GISTEMP v4'), 60, 590);
+    const a = document.createElement('a'); a.download = `klimat-${iso}-${y}.png`; a.href = cv.toDataURL('image/png'); a.click();
+  }
+
   // re-render chrome texts on language change
   onRender(() => { const old = $('header.top'); const f = $('footer'); if (old) old.remove(); if (f) f.remove(); chrome(); });
+  const _chrome = chrome;
+  chrome = function () { _chrome(); shareRow($('#shareRow'), {}); let hidden = false; try { hidden = sessionStorage.getItem('klimat_lifebar_hidden') === '1'; } catch (e) {} if (!hidden && document.body.dataset.lifebar === 'on') lifeBar(); };
 
-  return { $, $$, pl, T, fmt, fmtInt, fmtBig, monthLabel, MONTHS, load, col, obj2pts, last, at, mean, smooth5, tcolor, stripes, chart, PALETTE, chrome, stamp, onRender, toggleLang, addRefs, registerMeta, openSources, closeSources, bindSources, REFS, CH, niceTicks };
+  return { $, $$, pl, T, fmt, SITE, pageUrl, shareRow, lifeGet, lifeSet, lifeClear, lifeStats, countryName, lifePNG, here, fmtInt, fmtBig, monthLabel, MONTHS, load, col, obj2pts, last, at, mean, smooth5, tcolor, stripes, chart, PALETTE, chrome, stamp, onRender, toggleLang, addRefs, registerMeta, openSources, closeSources, bindSources, REFS, CH, niceTicks };
 })();

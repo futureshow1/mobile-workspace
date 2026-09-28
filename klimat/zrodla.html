@@ -5,6 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Źródła i metoda — Klimat | FutureShow</title>
 <meta name="description" content="Wszystkie zbiory danych portalu Klimat: NASA GISTEMP, NOAA, NSIDC, NCEI, Global Carbon Budget, Energy Institute/Ember, IPCC. Wersje, daty pobrania, sumy kontrolne, metoda obliczeń, jak zweryfikować.">
+<meta property="og:title" content="Źródła i metoda — Klimat | FutureShow">
+<meta property="og:description" content="Wszystkie zbiory danych portalu Klimat: NASA GISTEMP, NOAA, NSIDC, NCEI, Global Carbon Budget, Energy Institute/Ember, IPCC. Wersje, daty pobrania, sumy kontrolne, metoda obliczeń, jak zweryfikować.">
+<meta property="og:url" content="https://futureshow.pl/klimat/zrodla.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="FutureShow · Klimat w faktach">
+<meta property="og:image" content="https://futureshow.pl/klimat/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://futureshow.pl/klimat/assets/og.png">
+<link rel="canonical" href="https://futureshow.pl/klimat/zrodla.html">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,7 +28,7 @@
   <section class="hero">
     <div class="kick"><span class="n">≡</span><span data-lang="pl">Proweniencja</span><span data-lang="en">Provenance</span></div>
     <h1><span data-lang="pl">Źródła i metoda. <em>Sprawdź nas.</em></span><span data-lang="en">Sources and method. <em>Check us.</em></span></h1>
-    <p class="lead"><span data-lang="pl">Ta strona jest generowana automatycznie z tych samych plików, z których powstają wykresy. Każdy zbiór ma instytucję, adres pliku źródłowego, datę pobrania i sumę kontrolną SHA-256 pierwszych 16 znaków — możesz pobrać plik z serwera NASA lub NOAA i porównać. Liczby, które nie pochodzą z plików (oceny IPCC, artykuły naukowe), mają osobną listę z DOI.</span><span data-lang="en">This page is generated automatically from the same files the charts are built from. Every dataset has an institution, the source-file address, the fetch date and the first 16 characters of its SHA-256 checksum — you can download the file from the NASA or NOAA server and compare. Numbers that do not come from files (IPCC assessments, scientific papers) have a separate list with DOIs.</span></p>
+    <p class="lead"><span data-lang="pl">Ta strona jest na bieżąco aktualizowana na podstawie tych samych plików, z których powstają wykresy. Każdy zbiór ma instytucję, adres pliku źródłowego, datę pobrania i sumę kontrolną SHA-256 pierwszych 16 znaków — możesz pobrać plik z serwera NASA lub NOAA i porównać. Liczby, które nie pochodzą z plików (oceny IPCC, artykuły naukowe), mają osobną listę z DOI.</span><span data-lang="en">This page is kept up to date from the same files the charts are built from. Every dataset has an institution, the source-file address, the fetch date and the first 16 characters of its SHA-256 checksum — you can download the file from the NASA or NOAA server and compare. Numbers that do not come from files (IPCC assessments, scientific papers) have a separate list with DOIs.</span></p>
   </section>
   <div class="read">
     <div class="grid g3" id="knSrc" style="margin-top:28px"></div>
@@ -73,5 +84,6 @@ function render() {
 K.load('climate', 'indicators', 'emissions').then(d => { D = d; render(); K.onRender(render); });
 </script>
 <script data-goatcounter="https://futureshow.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script src="/assets/fs-home.js" defer></script>
 </body>
 </html>
