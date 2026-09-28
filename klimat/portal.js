@@ -264,7 +264,7 @@ window.KLIMAT = (function () {
   let chrome = function () {
     const cur = here();
     const top = document.createElement('header'); top.className = 'top';
-    top.innerHTML = `<div class="in"><a class="back" href="../index.html">← FutureShow</a><a class="brand" href="index.html"><span class="mark"></span>Klimat<small>${T('w faktach', 'in facts')}</small></a>
+    top.innerHTML = `<div class="in"><a class="back" href="https://futureshow.pl/">← FutureShow</a><a class="brand" href="index.html"><span class="mark"></span>Klimat<small>${T('w faktach', 'in facts')}</small></a>
       <nav class="nav" id="nav">${CH.map(c => `<a href="${c.f}" class="${c.f === cur ? 'on' : ''}">${c.n ? `<b>${c.n}</b>` : ''}<span>${pl() ? c.pl : c.en}</span></a>`).join('')}</nav>
       <button class="menu-btn" aria-label="menu">☰</button><button class="lang">${pl() ? 'EN' : 'PL'}</button></div>`;
     document.body.prepend(top);
