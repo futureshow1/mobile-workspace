@@ -78,6 +78,8 @@ Every change that affects meaning is listed below. Filler words ("you know", "ok
 
 ## Decisions taken at review
 
+0. Two appendices were added after review: a redrawn version of the tree shown in the video, with the 22 tunnels, and a comparison with the Jewish Kabbalistic sources.
+
 1. The repeated A'arab Zaraq passage is kept in full as an editing error in the video, with a note.
 2. "Causes your free will to be somewhat spiked" (12:00) is kept as spoken.
 3. The speaker's Lilith and Naamah attributions (59:18, 1:03:05) are kept as spoken. "The smiter" (32:56) is kept singular.

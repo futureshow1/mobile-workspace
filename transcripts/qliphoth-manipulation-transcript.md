@@ -231,3 +231,55 @@ Consistency notes:
 - At 32:47 the speaker starts to say "Ghagiel" and corrects himself to Gha'agsheblah. The correction is right: the path from Satariel to Gha'agsheblah crosses the abyss diagonally.
 - The recap at 1:08:17 covers all ten spheres in the same order and with the same mechanisms, so the repeated A'arab Zaraq passage at 50:21 adds nothing and does not change the argument.
 - Two naming choices are the speaker's own and are kept as spoken: Gamaliel is called "Lilith's sphere", and Nahemoth is "also called Lilith" while ruled by Naamah. Samael is placed with the Demiurge rather than with Adrammelech, who is its traditional ruler.
+
+---
+
+## Appendix: the tree shown in the video
+
+The diagram displayed on screen is redrawn below. It follows the Western occult form of the Qliphoth: sphere names and meanings from S. L. MacGregor Mathers and Crowley's *Liber 777*, and the 22 "tunnels" with their names from Kenneth Grant's *Nightside of Eden* (1977), which in turn takes the names from Crowley's *Liber 231*. Each tunnel is the reverse side of one of the 22 paths of the Tree of Life and carries that path's Hebrew letter. Under each sphere the figure adds its Sephirothic counterpart and the archdemon traditionally assigned to it in *Liber 777*. Where the speaker's attribution differs (Samael with the Demiurge, Thagirion unnamed), the traditional name is shown here. The video's diagram calls the tenth sphere Lilith, Queen of the Night, which is why the speaker says Nahemoth is "also called Lilith".
+
+![The Qliphothic tree with the Tunnels of Set](qliphoth-tree.svg)
+
+| Tunnel | Letter | Name (Grant) | Joins spheres |
+|---|---|---|---|
+| I | Aleph | Amprodias | 1 to 2 |
+| II | Beth | Baratchial | 1 to 3 |
+| III | Gimel | Gargophias | 1 to 6 |
+| IV | Daleth | Dagdagiel | 2 to 3 |
+| V | Heh | Hemethterith | 2 to 6 |
+| VI | Vau | Uriens | 2 to 4 |
+| VII | Zain | Zamradiel | 3 to 6 |
+| VIII | Cheth | Characith | 3 to 5 |
+| IX | Teth | Temphioth | 4 to 5 |
+| X | Yod | Yamatu | 4 to 6 |
+| XI | Kaph | Kurgasiax | 4 to 7 |
+| XII | Lamed | Lafcursiax | 5 to 6 |
+| XIII | Mem | Malkunofat | 5 to 8 |
+| XIV | Nun | Niantiel | 6 to 7 |
+| XV | Samekh | Saksaksalim | 6 to 9 |
+| XVI | Ayin | A'ano'nin | 6 to 8 |
+| XVII | Peh | Parfaxitas | 7 to 8 |
+| XVIII | Tzaddi | Tzuflifu | 7 to 9 |
+| XIX | Qoph | Qulielfi | 7 to 10 |
+| XX | Resh | Raflifu | 8 to 9 |
+| XXI | Shin | Shalicu | 8 to 10 |
+| XXII | Tau | Thantifaxath | 9 to 10 |
+## Appendix: comparison with the Jewish Kabbalistic sources
+
+The talk uses the word Qliphoth (Hebrew *qelippot*, "shells" or "husks") and the image of an inverted tree, but the system it describes is a modern Western occult construction, three removes from the Jewish sources. The main points of contact and divergence are these.
+
+**1. Where the shells come from.** In the *Zohar* (13th century, Castile) the demonic realm is the *Sitra Achra*, "the Other Side", a parasitic domain that feeds on holiness and surrounds it the way bark surrounds a tree or a husk surrounds a kernel. The Zohar speaks of four husks, read out of Ezekiel 1:4 (the stormy wind, the great cloud, the flashing fire, and *nogah*, the brightness), and of *nogah* as a translucent husk that touches both sides and can be redeemed. Isaac ha-Kohen of Soria, writing a generation before the Zohar, produced the *Treatise on the Left Emanation*, the first text to describe a structured counter-emanation with Samael and Lilith as its ruling couple. This is the direct ancestor of the speaker's pairing of a male and female principle at the summit and base of the tree.
+
+**2. The ten-fold inverted tree.** A list of ten demonic counter-sephirot appears in Moses Cordovero's *Pardes Rimmonim* (1548, gate 25), drawing on earlier lists, and the Lurianic school of Safed gave the shells their fullest cosmology. For Isaac Luria, as recorded by Hayyim Vital in *Etz Hayyim*, the shells are the debris of the breaking of the vessels (*shevirat ha-kelim*): the first vessels could not hold the divine light, shattered, and their fragments fell, trapping sparks of light inside them. Here lies the real root of the speaker's language of shells, sparks and trapped potential, which he attributes to Gnosticism and to "the black flame". The Lurianic image is the closest Jewish source for his claim that the shells hold something valuable.
+
+**3. The names.** The sphere names in the video (Thaumiel, Ghagiel, Satariel, Gha'agsheblah, Golachab, Thagirion, A'arab Zaraq, Samael, Gamaliel, Lilith) are Hebrew or pseudo-Hebrew plurals that reached English through Knorr von Rosenroth's Latin *Kabbala Denudata* (1677 to 1684), then Mathers's *Kabbalah Unveiled* (1887) and the Golden Dawn, then Crowley's *Liber 777* (1909). Some are attested in Jewish lists (Samael, Lilith, Gamaliel, the "ravens" and "burners"); others are Christian-Kabbalistic or Golden Dawn coinages. The archdemons (Moloch, Beelzebub, Lucifuge, Astaroth, Asmodeus, Belphegor, Baal, Adrammelech, Naamah) are a Golden Dawn and Crowley arrangement that mixes biblical names with figures from the European grimoire tradition. Lucifuge Rofocale, for example, comes from the 18th-century *Grand Grimoire*, not from any Jewish text. The 22 tunnels are entirely Crowley's and Grant's work.
+
+**4. What one is supposed to do with them.** This is the sharpest divergence. In the Jewish sources the shells are to be separated from, sifted and, where possible, elevated (*birur*, *tikkun*), and direct engagement with the Other Side is prohibited. The task of the kabbalist is to raise the sparks and return them to their source, not to descend into the husks. The idea of an initiatory descent through the shells, sphere by sphere, as a path of liberation is a 20th-century development: it comes from Crowley's crossing of the Abyss, from Grant's "Nightside" working of the tunnels, and from the Left-Hand-Path orders that followed him. The speaker's version adds a further layer that has no counterpart in any of these sources: the shells as a map of the nervous system and of trauma, and the archons and Demiurge as expressions of personal karma. That is a psychological and Jungian reading, in the spirit of the "deep psyche" the channel names in its introduction.
+
+**5. Daath and the Abyss.** The dotted sphere in the diagram is Daath, Knowledge. In classical Kabbalah it is not one of the ten sephirot but a quasi-sephirah, the place where Keter is counted or not counted, and it is not treated as a gateway to the Other Side. The Abyss as a chasm to be crossed, and Daath as the door into the Nightside, are again Crowley and Grant. The speaker's remark that Gha'agsheblah is reached "diagonally across the abyss" from Satariel depends on this modern geography.
+
+**6. The Gnostic framing.** The Demiurge, Yaldabaoth, the archons and the spark of Sophia belong to second- and third-century Gnostic texts such as the *Apocryphon of John*, not to Kabbalah. The two traditions share the motif of light trapped in a lower world, and scholars from Gershom Scholem onward have debated whether the Kabbalistic *Sitra Achra* owes anything to Gnostic dualism. The speaker fuses them freely. Jewish Kabbalah is not dualist in that sense: the Other Side is derivative and parasitic, ultimately sustained by the divine, never an independent creator god.
+
+In short: the vocabulary is Jewish by way of Latin and English occultists, the geometry is Golden Dawn and Crowley, the tunnels and the "Nightside" are Kenneth Grant, the Gnostic overlay is late antique, and the trauma and nervous-system reading is the speaker's own. The one genuinely Kabbalistic idea that survives intact is the Lurianic one: that the husks contain something of value that must be recovered.
+
+*Note: this comparison was written from the standard scholarly accounts (Scholem, Tishby, Idel, Dan) and from the Grant and Crowley texts in your Drive. The NotebookLM sources could not be reached from this session; if they contain specific passages you want cited, send them and I will add them.*

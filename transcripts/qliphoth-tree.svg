@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 960" width="600" height="960" font-family="Georgia, serif">
+<rect width="600" height="960" fill="white"/>
+<line x1="300" y1="70" x2="500" y2="200" stroke="#333" stroke-width="2.2"/>
+<line x1="300" y1="70" x2="100" y2="200" stroke="#333" stroke-width="2.2"/>
+<line x1="300" y1="70" x2="300" y2="500" stroke="#333" stroke-width="2.2"/>
+<line x1="500" y1="200" x2="100" y2="200" stroke="#333" stroke-width="2.2"/>
+<line x1="500" y1="200" x2="300" y2="500" stroke="#333" stroke-width="2.2"/>
+<line x1="500" y1="200" x2="500" y2="380" stroke="#333" stroke-width="2.2"/>
+<line x1="100" y1="200" x2="300" y2="500" stroke="#333" stroke-width="2.2"/>
+<line x1="100" y1="200" x2="100" y2="380" stroke="#333" stroke-width="2.2"/>
+<line x1="500" y1="380" x2="100" y2="380" stroke="#333" stroke-width="2.2"/>
+<line x1="500" y1="380" x2="300" y2="500" stroke="#333" stroke-width="2.2"/>
+<line x1="500" y1="380" x2="500" y2="620" stroke="#333" stroke-width="2.2"/>
+<line x1="100" y1="380" x2="300" y2="500" stroke="#333" stroke-width="2.2"/>
+<line x1="100" y1="380" x2="100" y2="620" stroke="#333" stroke-width="2.2"/>
+<line x1="300" y1="500" x2="500" y2="620" stroke="#333" stroke-width="2.2"/>
+<line x1="300" y1="500" x2="300" y2="740" stroke="#333" stroke-width="2.2"/>
+<line x1="300" y1="500" x2="100" y2="620" stroke="#333" stroke-width="2.2"/>
+<line x1="500" y1="620" x2="100" y2="620" stroke="#333" stroke-width="2.2"/>
+<line x1="500" y1="620" x2="300" y2="740" stroke="#333" stroke-width="2.2"/>
+<line x1="500" y1="620" x2="300" y2="880" stroke="#333" stroke-width="2.2"/>
+<line x1="100" y1="620" x2="300" y2="740" stroke="#333" stroke-width="2.2"/>
+<line x1="100" y1="620" x2="300" y2="880" stroke="#333" stroke-width="2.2"/>
+<line x1="300" y1="740" x2="300" y2="880" stroke="#333" stroke-width="2.2"/>
+<rect x="389.0" y="126.0" width="22" height="18" rx="9" fill="white" stroke="#333" stroke-width="1"/>
+<text x="400.0" y="139.0" text-anchor="middle" font-size="10" font-family="Arial, sans-serif" fill="#111">I</text>
+<rect x="185.0" y="126.0" width="30" height="18" rx="9" fill="white" stroke="#333" stroke-width="1"/>
+<text x="200.0" y="139.0" text-anchor="middle" font-size="10" font-family="Arial, sans-serif" fill="#111">II</text>
+<rect x="281.0" y="276.0" width="38" height="18" rx="9" fill="white" stroke="#333" stroke-width="1"/>
+<text x="300.0" y="289.0" text-anchor="middle" font-size="10" font-family="Arial, sans-serif" fill="#111">III</text>
+<rect x="285.0" y="191.0" width="30" height="18" rx="9" fill="white" stroke="#333" stroke-width="1"/>
+<text x="300.0" y="204.0" text-anchor="middle" font-size="10" font-family="Arial, sans-serif" fill="#111">IV</text>
+<rect x="369.0" y="371.0" width="22" height="18" rx="9" fill="white" stroke="#333" stroke-width="1"/>
+<text x="380.0" y="384.0" text-anchor="middle" font-size="10" font-family="Arial, sans-serif" fill="#111">V</text>
+<rect x="485.0" y="281.0" width="30" height="18" rx="9" fill="white" stroke="#333" stroke-width="1"/>
+<text x="500.0" y="294.0" text-anchor="middle" font-size="10" font-family="Arial, sans-serif" fill="#111">VI</text>
+<rect x="201.0" y="371.0" width="38" height="18" rx="9" fill="white" stroke="#333" stroke-width="1"/>
+<text x="220.0" y="384.0" text-anchor="middle" font-size="10" font-family="Arial, sans-serif" fill="#111">VII</text>
+<rect x="77.0" y="281.0" width="46" height="18" rx="9" fill="white" stroke="#333" stroke-width="1"/>
+<text x="100.0" y="294.0" text-anchor="middle" font-size="10" font-family="Arial, sans-serif" fill="#111">VIII</text>
+<rect x="285.0" y="371.0" width="30" height="18" rx="9" fill="white" stroke="#333" stroke-width="1"/>
+<text x="300.0" y="384.0" text-anchor="middle" font-size="10" font-family="Arial, sans-serif" fill="#111">IX</text>
+<rect x="389.0" y="431.0" width="22" height="18" rx="9" fill="white" stroke="#333" stroke-width="1"/>
+<text x="400.0" y="444.0" text-anchor="middle" font-size="10" font-family="Arial, sans-serif" fill="#111">X</text>
+<rect x="485.0" y="491.0" width="30" height="18" rx="9" fill="white" stroke="#333" stroke-width="1"/>
+<text x="500.0" y="504.0" text-anchor="middle" font-size="10" font-family="Arial, sans-serif" fill="#111">XI</text>
+<rect x="181.0" y="431.0" width="38" height="18" rx="9" fill="white" stroke="#333" stroke-width="1"/>
+<text x="200.0" y="444.0" text-anchor="middle" font-size="10" font-family="Arial, sans-serif" fill="#111">XII</text>
+<rect x="77.0" y="491.0" width="46" height="18" rx="9" fill="white" stroke="#333" stroke-width="1"/>
+<text x="100.0" y="504.0" text-anchor="middle" font-size="10" font-family="Arial, sans-serif" fill="#111">XIII</text>
+<rect x="405.0" y="565.4" width="38" height="18" rx="9" fill="white" stroke="#333" stroke-width="1"/>
+<text x="424.0" y="578.4" text-anchor="middle" font-size="10" font-family="Arial, sans-serif" fill="#111">XIV</text>
+<rect x="285.0" y="591.8" width="30" height="18" rx="9" fill="white" stroke="#333" stroke-width="1"/>
+<text x="300.0" y="604.8" text-anchor="middle" font-size="10" font-family="Arial, sans-serif" fill="#111">XV</text>
+<rect x="157.0" y="565.4" width="38" height="18" rx="9" fill="white" stroke="#333" stroke-width="1"/>
+<text x="176.0" y="578.4" text-anchor="middle" font-size="10" font-family="Arial, sans-serif" fill="#111">XVI</text>
+<rect x="277.0" y="611.0" width="46" height="18" rx="9" fill="white" stroke="#333" stroke-width="1"/>
+<text x="300.0" y="624.0" text-anchor="middle" font-size="10" font-family="Arial, sans-serif" fill="#111">XVII</text>
+<rect x="373.0" y="671.0" width="54" height="18" rx="9" fill="white" stroke="#333" stroke-width="1"/>
+<text x="400.0" y="684.0" text-anchor="middle" font-size="10" font-family="Arial, sans-serif" fill="#111">XVIII</text>
+<rect x="381.0" y="741.0" width="38" height="18" rx="9" fill="white" stroke="#333" stroke-width="1"/>
+<text x="400.0" y="754.0" text-anchor="middle" font-size="10" font-family="Arial, sans-serif" fill="#111">XIX</text>
+<rect x="185.0" y="671.0" width="30" height="18" rx="9" fill="white" stroke="#333" stroke-width="1"/>
+<text x="200.0" y="684.0" text-anchor="middle" font-size="10" font-family="Arial, sans-serif" fill="#111">XX</text>
+<rect x="181.0" y="741.0" width="38" height="18" rx="9" fill="white" stroke="#333" stroke-width="1"/>
+<text x="200.0" y="754.0" text-anchor="middle" font-size="10" font-family="Arial, sans-serif" fill="#111">XXI</text>
+<rect x="277.0" y="801.0" width="46" height="18" rx="9" fill="white" stroke="#333" stroke-width="1"/>
+<text x="300.0" y="814.0" text-anchor="middle" font-size="10" font-family="Arial, sans-serif" fill="#111">XXII</text>
+<circle cx="300" cy="290" r="44" fill="white" stroke="#333" stroke-width="2" stroke-dasharray="7,5"/>
+<text x="300" y="295" text-anchor="middle" font-size="15" letter-spacing="2" fill="#111">DAATH</text>
+<circle cx="300" cy="70" r="58" fill="#111" stroke="#111" stroke-width="2"/>
+<circle cx="300" cy="70" r="54" fill="none" stroke="white" stroke-width="1"/>
+<text x="300" y="56" text-anchor="middle" font-size="12" font-family="Arial, sans-serif" fill="#ddd">1</text>
+<text x="300" y="72" text-anchor="middle" font-size="13" font-weight="bold" font-family="Arial, sans-serif" fill="white">THAUMIEL</text>
+<text x="300" y="87" text-anchor="middle" font-size="10" font-style="italic" fill="#eee">The Twin God</text>
+<text x="300" y="101" text-anchor="middle" font-size="6.5" font-family="Arial, sans-serif" fill="#bbb">Kether · Satan and Moloch</text>
+<circle cx="500" cy="200" r="58" fill="#111" stroke="#111" stroke-width="2"/>
+<circle cx="500" cy="200" r="54" fill="none" stroke="white" stroke-width="1"/>
+<text x="500" y="186" text-anchor="middle" font-size="12" font-family="Arial, sans-serif" fill="#ddd">2</text>
+<text x="500" y="202" text-anchor="middle" font-size="13" font-weight="bold" font-family="Arial, sans-serif" fill="white">GHAGIEL</text>
+<text x="500" y="217" text-anchor="middle" font-size="10" font-style="italic" fill="#eee">The Hinderer</text>
+<text x="500" y="231" text-anchor="middle" font-size="6.5" font-family="Arial, sans-serif" fill="#bbb">Chokmah · Beelzebub</text>
+<circle cx="100" cy="200" r="58" fill="#111" stroke="#111" stroke-width="2"/>
+<circle cx="100" cy="200" r="54" fill="none" stroke="white" stroke-width="1"/>
+<text x="100" y="186" text-anchor="middle" font-size="12" font-family="Arial, sans-serif" fill="#ddd">3</text>
+<text x="100" y="202" text-anchor="middle" font-size="13" font-weight="bold" font-family="Arial, sans-serif" fill="white">SATARIEL</text>
+<text x="100" y="217" text-anchor="middle" font-size="10" font-style="italic" fill="#eee">The Concealer</text>
+<text x="100" y="231" text-anchor="middle" font-size="6.5" font-family="Arial, sans-serif" fill="#bbb">Binah · Lucifuge Rofocale</text>
+<circle cx="500" cy="380" r="58" fill="#111" stroke="#111" stroke-width="2"/>
+<circle cx="500" cy="380" r="54" fill="none" stroke="white" stroke-width="1"/>
+<text x="500" y="366" text-anchor="middle" font-size="12" font-family="Arial, sans-serif" fill="#ddd">4</text>
+<text x="500" y="382" text-anchor="middle" font-size="11" font-weight="bold" font-family="Arial, sans-serif" fill="white">GHA'AGSHEBLAH</text>
+<text x="500" y="397" text-anchor="middle" font-size="10" font-style="italic" fill="#eee">The Smiter</text>
+<text x="500" y="411" text-anchor="middle" font-size="6.5" font-family="Arial, sans-serif" fill="#bbb">Chesed · Astaroth</text>
+<circle cx="100" cy="380" r="58" fill="#111" stroke="#111" stroke-width="2"/>
+<circle cx="100" cy="380" r="54" fill="none" stroke="white" stroke-width="1"/>
+<text x="100" y="366" text-anchor="middle" font-size="12" font-family="Arial, sans-serif" fill="#ddd">5</text>
+<text x="100" y="382" text-anchor="middle" font-size="13" font-weight="bold" font-family="Arial, sans-serif" fill="white">GOLACHAB</text>
+<text x="100" y="397" text-anchor="middle" font-size="10" font-style="italic" fill="#eee">The Burning One</text>
+<text x="100" y="411" text-anchor="middle" font-size="6.5" font-family="Arial, sans-serif" fill="#bbb">Geburah · Asmodeus</text>
+<circle cx="300" cy="500" r="58" fill="#111" stroke="#111" stroke-width="2"/>
+<circle cx="300" cy="500" r="54" fill="none" stroke="white" stroke-width="1"/>
+<text x="300" y="486" text-anchor="middle" font-size="12" font-family="Arial, sans-serif" fill="#ddd">6</text>
+<text x="300" y="502" text-anchor="middle" font-size="13" font-weight="bold" font-family="Arial, sans-serif" fill="white">THAGIRION</text>
+<text x="300" y="517" text-anchor="middle" font-size="10" font-style="italic" fill="#eee">The Disputer</text>
+<text x="300" y="531" text-anchor="middle" font-size="6.5" font-family="Arial, sans-serif" fill="#bbb">Tiphareth · Belphegor</text>
+<circle cx="500" cy="620" r="58" fill="#111" stroke="#111" stroke-width="2"/>
+<circle cx="500" cy="620" r="54" fill="none" stroke="white" stroke-width="1"/>
+<text x="500" y="606" text-anchor="middle" font-size="12" font-family="Arial, sans-serif" fill="#ddd">7</text>
+<text x="500" y="622" text-anchor="middle" font-size="13" font-weight="bold" font-family="Arial, sans-serif" fill="white">A'ARAB ZARAQ</text>
+<text x="500" y="637" text-anchor="middle" font-size="10" font-style="italic" fill="#eee">Raven of Dispersion</text>
+<text x="500" y="651" text-anchor="middle" font-size="6.5" font-family="Arial, sans-serif" fill="#bbb">Netzach · Baal</text>
+<circle cx="100" cy="620" r="58" fill="#111" stroke="#111" stroke-width="2"/>
+<circle cx="100" cy="620" r="54" fill="none" stroke="white" stroke-width="1"/>
+<text x="100" y="606" text-anchor="middle" font-size="12" font-family="Arial, sans-serif" fill="#ddd">8</text>
+<text x="100" y="622" text-anchor="middle" font-size="13" font-weight="bold" font-family="Arial, sans-serif" fill="white">SAMAEL</text>
+<text x="100" y="637" text-anchor="middle" font-size="10" font-style="italic" fill="#eee">Poison of God</text>
+<text x="100" y="651" text-anchor="middle" font-size="6.5" font-family="Arial, sans-serif" fill="#bbb">Hod · Adrammelech</text>
+<circle cx="300" cy="740" r="58" fill="#111" stroke="#111" stroke-width="2"/>
+<circle cx="300" cy="740" r="54" fill="none" stroke="white" stroke-width="1"/>
+<text x="300" y="726" text-anchor="middle" font-size="12" font-family="Arial, sans-serif" fill="#ddd">9</text>
+<text x="300" y="742" text-anchor="middle" font-size="13" font-weight="bold" font-family="Arial, sans-serif" fill="white">GAMALIEL</text>
+<text x="300" y="757" text-anchor="middle" font-size="10" font-style="italic" fill="#eee">The Obscene One</text>
+<text x="300" y="771" text-anchor="middle" font-size="6.5" font-family="Arial, sans-serif" fill="#bbb">Yesod · Lilith</text>
+<circle cx="300" cy="880" r="58" fill="#111" stroke="#111" stroke-width="2"/>
+<circle cx="300" cy="880" r="54" fill="none" stroke="white" stroke-width="1"/>
+<text x="300" y="866" text-anchor="middle" font-size="12" font-family="Arial, sans-serif" fill="#ddd">10</text>
+<text x="300" y="882" text-anchor="middle" font-size="11" font-weight="bold" font-family="Arial, sans-serif" fill="white">NAHEMOTH (LILITH)</text>
+<text x="300" y="897" text-anchor="middle" font-size="10" font-style="italic" fill="#eee">Queen of the Night</text>
+<text x="300" y="911" text-anchor="middle" font-size="6.5" font-family="Arial, sans-serif" fill="#bbb">Malkuth · Naamah</text>
+</svg>
