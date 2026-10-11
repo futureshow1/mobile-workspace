@@ -50,7 +50,6 @@ Every change that affects meaning is listed below. Filler words ("you know", "ok
 | sopernal / sopranal triad | Supernal triad | chapter 4 and 31:06, 31:52 |
 | self- evvolution | self-evolution | 1:49 |
 | sew / sews / sewing (discord, separation, control) | sow / sows / sowing | 9:37, 10:09, 12:28, 48:33, 1:05:03 |
-| spiked (free will) | skewed | 12:00. Best reading from context; "swerve your free will" is used at 13:05 |
 | alternate current | alternating current | 20:42, paired with "direct current" |
 | logos (Freemasons) | lodges | 23:25 |
 | hinderer | hinderers | 25:19, the meaning of Ghagiel |
@@ -72,13 +71,13 @@ Every change that affects meaning is listed below. Filler words ("you know", "ok
 
 ## Structural changes
 
-- **Duplicated passage removed.** The captions repeat the A'arab Zaraq section (44:40 to 49:07) a second time at 50:21 to 54:52, almost word for word. The second copy is replaced by a bracketed note. If the video really repeats it, say so and I will restore it.
+- **Repeated passage kept.** The video repeats the A'arab Zaraq section (44:40 to 49:07) a second time at 50:21 to 54:52, almost word for word, most likely an editing error in the upload. Both copies are kept, with an editorial note before the second.
 - **Chapter headings** were translated from the Polish YouTube interface ("Rozdział") to English, and the chapter names fixed: "Clifothic manipulation" to "Qliphothic manipulation", "Sopernal triad" to "Supernal triad", "Satariel and Gagshabla" to "Satariel and Gha'agsheblah".
 - **Timestamps** were reduced to one per paragraph, in m:ss form; the Polish duration text that was glued to each caption line was removed.
 - **Spelling** standardised to British English (honour, realise, behaviour, centre), matching the speaker's British usage.
 
-## Points to confirm
+## Decisions taken at review
 
-1. "Skewed" at 12:00 is an interpretation. Alternatives: "spiked" kept as spoken, or "hijacked".
-2. At 1:03:05 the speaker calls Nahemoth "also called Lilith" and rules it with Naamah; at 59:18 Gamaliel is "Lilith's sphere". Both are kept as spoken, since sources vary.
-3. "The smiter" (32:56) was kept singular as spoken; the usual translation is "the smiters".
+1. The repeated A'arab Zaraq passage is kept in full as an editing error in the video, with a note.
+2. "Causes your free will to be somewhat spiked" (12:00) is kept as spoken.
+3. The speaker's Lilith and Naamah attributions (59:18, 1:03:05) are kept as spoken. "The smiter" (32:56) is kept singular.
